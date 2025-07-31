@@ -9,25 +9,43 @@ function playSwedish(word) {
     // Stop any current speech
     window.speechSynthesis.cancel();
     
-    const utter = new window.SpeechSynthesisUtterance(word);
-    utter.lang = 'sv-SE';
-    utter.rate = 0.8; // Slightly slower for better pronunciation
-    utter.pitch = 1.0;
-    utter.volume = 1.0;
+    // Wait for voices to load
+    const speakWithSwedishVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Find the best Swedish voice
+      let swedishVoice = voices.find(voice => 
+        voice.lang === 'sv-SE' || 
+        voice.lang === 'sv' ||
+        voice.name.toLowerCase().includes('swedish') ||
+        voice.name.toLowerCase().includes('sverige')
+      );
+      
+      // If no Swedish voice, try any voice with 'sv' in the language code
+      if (!swedishVoice) {
+        swedishVoice = voices.find(voice => voice.lang.includes('sv'));
+      }
+      
+      const utter = new window.SpeechSynthesisUtterance(word);
+      utter.lang = 'sv-SE';
+      utter.rate = 0.6; // Slower for clearer pronunciation
+      utter.pitch = 1.0;
+      utter.volume = 1.0;
+      
+      if (swedishVoice) {
+        utter.voice = swedishVoice;
+      }
+      
+      window.speechSynthesis.speak(utter);
+    };
     
-    // Try to get a Swedish voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const swedishVoice = voices.find(voice => 
-      voice.lang.includes('sv') || 
-      voice.name.toLowerCase().includes('swedish') ||
-      voice.name.toLowerCase().includes('sverige')
-    );
-    
-    if (swedishVoice) {
-      utter.voice = swedishVoice;
+    // If voices are already loaded
+    if (window.speechSynthesis.getVoices().length > 0) {
+      speakWithSwedishVoice();
+    } else {
+      // Wait for voices to load
+      window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
     }
-    
-    window.speechSynthesis.speak(utter);
   }
 }
 
