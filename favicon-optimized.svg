@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- River Horse (Hippo) - Optimized for small size -->
+  <defs>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5dade2;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3498db;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Water background -->
+  <rect x="8" y="40" width="48" height="16" rx="8" fill="url(#waterGrad)" opacity="0.3"/>
+  
+  <!-- Hippo body -->
+  <ellipse cx="32" cy="28" rx="20" ry="12" fill="url(#bodyGrad)"/>
+  
+  <!-- Hippo head -->
+  <ellipse cx="32" cy="20" rx="12" ry="8" fill="url(#bodyGrad)"/>
+  
+  <!-- Eyes -->
+  <circle cx="28" cy="18" r="2" fill="#2c3e50"/>
+  <circle cx="36" cy="18" r="2" fill="#2c3e50"/>
+  
+  <!-- Nostrils -->
+  <ellipse cx="30" cy="22" rx="1" ry="0.5" fill="#2c3e50"/>
+  <ellipse cx="34" cy="22" rx="1" ry="0.5" fill="#2c3e50"/>
+  
+  <!-- Ears -->
+  <ellipse cx="24" cy="14" rx="2" ry="1.5" fill="#2980b9"/>
+  <ellipse cx="40" cy="14" rx="2" ry="1.5" fill="#2980b9"/>
+  
+  <!-- Swedish flag colors in background -->
+  <rect x="4" y="4" width="8" height="4" fill="#006AA7"/>
+  <rect x="4" y="8" width="8" height="4" fill="#FECC00"/>
+  <rect x="4" y="12" width="8" height="4" fill="#006AA7"/>
+</svg> 
