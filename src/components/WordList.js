@@ -13,12 +13,14 @@ function playSwedish(word) {
     const speakWithSwedishVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       
-      // Find the best Swedish voice
+      // Find the best Swedish voice - prioritize native Swedish voices
       let swedishVoice = voices.find(voice => 
         voice.lang === 'sv-SE' || 
         voice.lang === 'sv' ||
         voice.name.toLowerCase().includes('swedish') ||
-        voice.name.toLowerCase().includes('sverige')
+        voice.name.toLowerCase().includes('sverige') ||
+        voice.name.toLowerCase().includes('anna') || // Common Swedish voice name
+        voice.name.toLowerCase().includes('alva')   // Another common Swedish voice
       );
       
       // If no Swedish voice, try any voice with 'sv' in the language code
@@ -26,14 +28,27 @@ function playSwedish(word) {
         swedishVoice = voices.find(voice => voice.lang.includes('sv'));
       }
       
+      // If still no Swedish voice, try to find a Nordic/Scandinavian voice
+      if (!swedishVoice) {
+        swedishVoice = voices.find(voice => 
+          voice.name.toLowerCase().includes('nordic') ||
+          voice.name.toLowerCase().includes('scandinavian') ||
+          voice.name.toLowerCase().includes('norwegian') ||
+          voice.name.toLowerCase().includes('danish')
+        );
+      }
+      
       const utter = new window.SpeechSynthesisUtterance(word);
       utter.lang = 'sv-SE';
-      utter.rate = 0.6; // Slower for clearer pronunciation
+      utter.rate = 0.7; // Slightly faster for better flow
       utter.pitch = 1.0;
       utter.volume = 1.0;
       
       if (swedishVoice) {
         utter.voice = swedishVoice;
+        console.log('Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
+      } else {
+        console.log('No Swedish voice found. Available voices:', voices.map(v => `${v.name} (${v.lang})`));
       }
       
       window.speechSynthesis.speak(utter);
@@ -46,6 +61,8 @@ function playSwedish(word) {
       // Wait for voices to load
       window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
     }
+  } else {
+    console.log('Speech synthesis not supported in this browser');
   }
 }
 
