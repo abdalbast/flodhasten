@@ -49,9 +49,29 @@ class SwedishTTSApi {
 
   // Play Swedish text using the API
   async playSwedish(text, service = 'auto') {
-    // Skip API, use only browser TTS with Alva voice
-    console.log('🎤 Skipping API, using browser TTS with Alva (sv-SE) for:', text);
-    throw new Error('Using browser TTS only');
+    try {
+      console.log('🎤 Attempting to use TTS API for:', text);
+      const audioUrl = await this.generateAudio(text, service);
+      const audio = new Audio(audioUrl);
+      
+      // Clean up the URL after playing
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+      };
+      
+      audio.onerror = () => {
+        console.error('Audio playback failed');
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
+      console.log('✅ TTS API audio played successfully');
+      return audio;
+
+    } catch (error) {
+      console.error('❌ TTS API failed:', error);
+      throw error;
+    }
   }
 
   // Get available services
