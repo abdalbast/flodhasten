@@ -53,13 +53,7 @@ function AudioRecall({ words, onWordStatUpdate, onLessonComplete }) {
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState('');
   const [showConfetti, setShowConfetti] = useState(false);
-
-  // Always call hooks first
-  useEffect(() => {
-    if (idx === words.length - 1 && typeof onLessonComplete === 'function') {
-      onLessonComplete();
-    }
-  }, [idx, words.length, onLessonComplete]);
+  const [showContinue, setShowContinue] = useState(false);
 
   if (!words.length) return <div style={{textAlign:'center',marginTop:'2rem'}}>No words to practice!</div>;
   const word = words[idx];
@@ -70,18 +64,25 @@ function AudioRecall({ words, onWordStatUpdate, onLessonComplete }) {
     if (input.trim().toLowerCase() === word.english.toLowerCase()) {
       setFeedback('✅ Correct!');
       if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'correct');
-      setTimeout(() => {
-        setInput('');
-        setFeedback('');
-        setIdx((idx+1)%words.length);
-        if ((idx+1)%words.length === 0) {
-          setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 1500);
-        }
-      }, 900);
+      setShowContinue(true);
     } else {
       setFeedback('❌ Try again!');
       if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'incorrect');
+    }
+  }
+
+  // Handle continue to next word
+  function continueToNext() {
+    setInput('');
+    setFeedback('');
+    setShowContinue(false);
+    setIdx((idx+1)%words.length);
+    if ((idx+1)%words.length === 0) {
+      setShowConfetti(true);
+      setTimeout(() => {
+        setShowConfetti(false);
+        if (typeof onLessonComplete === 'function') onLessonComplete();
+      }, 1500);
     }
   }
 
@@ -94,6 +95,34 @@ function AudioRecall({ words, onWordStatUpdate, onLessonComplete }) {
         <button type="submit" style={{marginTop:14,width:'100%',background:'#388e3c',color:'#fff',border:'none',borderRadius:8,padding:10,fontWeight:'bold',fontSize:16,cursor:'pointer'}}>Check</button>
       </form>
       {feedback && <div style={{marginTop:12,fontWeight:'bold',color:feedback.includes('Correct')?'#388e3c':'#d32f2f'}}>{feedback}</div>}
+      {showContinue && (
+        <button 
+          onClick={continueToNext}
+          style={{
+            background:'#388e3c',
+            color:'#fff',
+            border:'none',
+            borderRadius:8,
+            padding:'0.8rem 1.5rem',
+            fontWeight:'bold',
+            fontSize:16,
+            cursor:'pointer',
+            marginTop:12,
+            boxShadow:'0 2px 6px rgba(0,0,0,0.1)',
+            transition:'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+          }}
+        >
+          Continue →
+        </button>
+      )}
       <div style={{marginTop:10,color:'#888'}}>Word {idx+1} of {words.length}</div>
       {showConfetti && <div style={{position:'absolute',top:0,left:0,right:0,fontSize:48,animation:'pop 1.5s'}}>
         <span role="img" aria-label="confetti">🎉🎊✨🎉🎊✨</span>

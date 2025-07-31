@@ -53,13 +53,7 @@ function Flashcards({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const [flipped, setFlipped] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [flippedOnce, setFlippedOnce] = useState(false);
-
-  // Always call hooks first
-  useEffect(() => {
-    if (idx === words.length - 1 && typeof onLessonComplete === 'function') {
-      onLessonComplete();
-    }
-  }, [idx, words.length, onLessonComplete]);
+  const [showContinue, setShowContinue] = useState(false);
 
   if (!words.length) return <div style={{textAlign:'center',marginTop:'2rem', color: isDarkMode ? '#ffffff' : '#000000'}}>No words to practice!</div>;
   const word = words[idx];
@@ -76,15 +70,19 @@ function Flashcards({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const next = () => {
     setFlipped(false);
     setFlippedOnce(false);
+    setShowContinue(false);
     if (idx + 1 === words.length) {
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 1500);
+      setTimeout(() => {
+        setShowConfetti(false);
+        if (typeof onLessonComplete === 'function') onLessonComplete();
+      }, 1500);
       setIdx(0);
     } else {
       setIdx(idx+1);
     }
   };
-  const prev = () => { setFlipped(false); setFlippedOnce(false); setIdx((idx-1+words.length)%words.length); };
+  const prev = () => { setFlipped(false); setFlippedOnce(false); setShowContinue(false); setIdx((idx-1+words.length)%words.length); };
 
   // Handle flip
   const handleFlip = () => {
@@ -92,6 +90,7 @@ function Flashcards({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       if (!f && !flippedOnce) {
         setFlippedOnce(true);
         if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'correct');
+        setShowContinue(true);
       }
       return !f;
     });
@@ -143,16 +142,41 @@ function Flashcards({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
           fontSize:18,
           cursor:'pointer'
         }}>Prev</button>
-        <button onClick={next} style={{
-          background: buttonBg,
-          color: buttonColor,
-          border:'none',
-          borderRadius:8,
-          padding:'0.5rem 1.2rem',
-          fontWeight:'bold',
-          fontSize:18,
-          cursor:'pointer'
-        }}>Next</button>
+        {showContinue && (
+          <button onClick={next} style={{
+            background: buttonBg,
+            color: buttonColor,
+            border:'none',
+            borderRadius:8,
+            padding:'0.8rem 1.5rem',
+            fontWeight:'bold',
+            fontSize:16,
+            cursor:'pointer',
+            boxShadow:'0 2px 6px rgba(0,0,0,0.1)',
+            transition:'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+          }}
+          >Continue →</button>
+        )}
+        {!showContinue && (
+          <button onClick={next} style={{
+            background: buttonBg,
+            color: buttonColor,
+            border:'none',
+            borderRadius:8,
+            padding:'0.5rem 1.2rem',
+            fontWeight:'bold',
+            fontSize:18,
+            cursor:'pointer'
+          }}>Next</button>
+        )}
       </div>
       <div style={{marginTop:10,color: infoColor}}>Card {idx+1} of {words.length}</div>
       <div style={{marginTop:8,fontSize:13,color: infoColor}}>(Tap card to flip)</div>
