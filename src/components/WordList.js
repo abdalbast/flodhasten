@@ -6,8 +6,27 @@ import { FaSpinner } from 'react-icons/fa';
 // Play Swedish word with TTS
 function playSwedish(word) {
   if ('speechSynthesis' in window) {
+    // Stop any current speech
+    window.speechSynthesis.cancel();
+    
     const utter = new window.SpeechSynthesisUtterance(word);
     utter.lang = 'sv-SE';
+    utter.rate = 0.8; // Slightly slower for better pronunciation
+    utter.pitch = 1.0;
+    utter.volume = 1.0;
+    
+    // Try to get a Swedish voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const swedishVoice = voices.find(voice => 
+      voice.lang.includes('sv') || 
+      voice.name.toLowerCase().includes('swedish') ||
+      voice.name.toLowerCase().includes('sverige')
+    );
+    
+    if (swedishVoice) {
+      utter.voice = swedishVoice;
+    }
+    
     window.speechSynthesis.speak(utter);
   }
 }
