@@ -12,6 +12,7 @@ function playSwedish(word) {
     // Wait for voices to load
     const speakWithSwedishVoice = () => {
       const voices = window.speechSynthesis.getVoices();
+      console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
       
       // Find the best Swedish voice - prioritize native Swedish voices
       let swedishVoice = voices.find(voice => 
@@ -38,9 +39,18 @@ function playSwedish(word) {
         );
       }
       
+      // If still no Swedish voice, try to find any European voice
+      if (!swedishVoice) {
+        swedishVoice = voices.find(voice => 
+          voice.lang.startsWith('en') || // English might work better than other languages
+          voice.lang.startsWith('de') || // German
+          voice.lang.startsWith('fr')    // French
+        );
+      }
+      
       const utter = new window.SpeechSynthesisUtterance(word);
       utter.lang = 'sv-SE';
-      utter.rate = 0.7; // Slightly faster for better flow
+      utter.rate = 0.6; // Slower for better pronunciation
       utter.pitch = 1.0;
       utter.volume = 1.0;
       
@@ -48,7 +58,8 @@ function playSwedish(word) {
         utter.voice = swedishVoice;
         console.log('Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
       } else {
-        console.log('No Swedish voice found. Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        console.log('No Swedish voice found. Using default voice.');
+        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
       }
       
       window.speechSynthesis.speak(utter);
