@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdSettings, MdExpandMore } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMoreVert } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -80,11 +80,11 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 border: `2px solid ${borderColor}`,
                 color: textColor,
                 cursor: 'pointer',
-                padding: '10px 16px',
+                padding: '8px 12px',
                 borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                justifyContent: 'center',
                 transition: 'all 0.3s ease',
                 transform: 'translateY(0)',
                 boxShadow: isDarkMode 
@@ -92,8 +92,9 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                   : '0 4px 12px rgba(52, 152, 219, 0.15)',
                 fontWeight: 'bold',
                 fontSize: '14px',
-                minWidth: '120px',
-                justifyContent: 'space-between'
+                minWidth: '40px',
+                width: '40px',
+                height: '40px'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'translateY(-2px)';
@@ -116,13 +117,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 e.target.style.transform = 'translateY(-2px)';
               }}
             >
-              <MdSettings style={{ fontSize: '18px' }} />
-              <span style={{ fontSize: '0.9rem' }}>Settings</span>
-              <MdExpandMore style={{ 
-                fontSize: '16px',
-                transition: 'transform 0.3s ease',
-                transform: showSettingsDropdown ? 'rotate(180deg)' : 'rotate(0deg)'
-              }} />
+              <MdMoreVert style={{ fontSize: '20px' }} />
             </button>
 
             {showSettingsDropdown && (
