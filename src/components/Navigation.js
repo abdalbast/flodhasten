@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage, MdTrendingUp } from 'react-icons/md';
+import './Navigation.css';
+import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -20,99 +21,66 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
   };
 
   return (
-    <nav style={{
-      backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
-      borderBottom: `1px solid ${isDarkMode ? '#333' : '#e0e0e0'}`,
-      padding: '0',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-      boxShadow: isDarkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'
-    }}>
+    <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`}>
       <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0 20px',
+        padding: '0 1rem',
         flexWrap: 'wrap',
-        gap: '10px'
+        gap: '0.5rem'
       }}>
         <div style={{
           display: 'flex',
-          gap: '5px',
-          flexWrap: 'wrap',
-          alignItems: 'center'
+          gap: '0.5rem',
+          flexWrap: 'wrap'
         }}>
-          {[
-            { id: 'home', icon: MdHome, label: 'Home' },
-            { id: 'add', icon: MdAddCircle, label: 'Add Words' },
-            { id: 'list', icon: MdList, label: 'Word List' },
-            { id: 'games', icon: MdGames, label: 'Games' },
-            { id: 'explore', icon: MdLocationOn, label: 'Explore' },
-            { id: 'story', icon: MdBook, label: 'Stories' },
-            { id: 'experiment-map', icon: MdMap, label: 'Experiment Map' },
-            { id: 'avatar-shop', icon: MdStore, label: 'Shop' },
-            { id: 'progress', icon: MdTrendingUp, label: 'Progress' }
-          ].map(({ id, icon: Icon, label }) => (
-            <button
-              key={id}
-              style={{
-                padding: '12px 16px',
-                backgroundColor: currentScreen === id 
-                  ? (isDarkMode ? '#2193b0' : '#2193b0') 
-                  : 'transparent',
-                color: currentScreen === id 
-                  ? '#ffffff' 
-                  : (isDarkMode ? '#ffffff' : '#333333'),
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: currentScreen === id ? 'bold' : 'normal',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                textDecoration: 'none',
-                minHeight: '44px'
-              }}
-              onClick={() => setScreen(id)}
-              aria-label={label}
-              aria-current={currentScreen === id ? 'page' : undefined}
-            >
-              <Icon style={{ fontSize: '18px' }} />
-              {label}
-            </button>
-          ))}
+          <button className={currentScreen === 'home' ? 'active' : ''} onClick={() => setScreen('home')}><MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home</button>
+          <button className={currentScreen === 'add' ? 'active' : ''} onClick={() => setScreen('add')}><MdAddCircle style={{verticalAlign:'middle',marginRight:4}} /> Add Words</button>
+          <button className={currentScreen === 'list' ? 'active' : ''} onClick={() => setScreen('list')}><MdList style={{verticalAlign:'middle',marginRight:4}} /> Word List</button>
+          <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
+          <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>
+          <button className={currentScreen === 'story' ? 'active' : ''} onClick={() => setScreen('story')}><MdBook style={{verticalAlign:'middle',marginRight:4}} /> Stories</button>
+          <button className={currentScreen === 'experiment-map' ? 'active' : ''} onClick={() => setScreen('experiment-map')}><MdMap style={{verticalAlign:'middle',marginRight:4}} /> Experiment Map</button>
+          <button className={currentScreen === 'avatar-shop' ? 'active' : ''} onClick={() => setScreen('avatar-shop')}><MdStore style={{verticalAlign:'middle',marginRight:4}} /> Shop</button>
         </div>
         
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          flexWrap: 'wrap'
+          gap: '0.5rem'
         }}>
           <button
             onClick={onPlayIntro}
             style={{
-              padding: '8px 12px',
-              backgroundColor: 'transparent',
-              color: isDarkMode ? '#ffffff' : '#333333',
-              border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
-              borderRadius: '6px',
+              background: 'none',
+              border: 'none',
+              color: isDarkMode ? '#ffffff' : '#000000',
               cursor: 'pointer',
-              fontSize: '14px',
+              padding: '8px',
+              borderRadius: '4px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.3s ease',
-              minHeight: '36px'
+              gap: '4px',
+              transition: 'all 0.2s ease',
+              transform: 'translateY(0)'
             }}
-            aria-label="Play introduction"
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
+            }}
+            onMouseDown={(e) => {
+              e.target.style.transform = 'translateY(0)';
+            }}
+            onMouseUp={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+            }}
           >
-            <MdPlayArrow style={{ fontSize: '16px' }} />
+            <MdPlayArrow />
             Intro
           </button>
 
@@ -121,47 +89,56 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
             <button
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
               style={{
-                padding: '8px 12px',
-                backgroundColor: 'transparent',
-                color: isDarkMode ? '#ffffff' : '#333333',
-                border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
-                borderRadius: '6px',
+                background: 'none',
+                border: 'none',
+                color: isDarkMode ? '#ffffff' : '#000000',
                 cursor: 'pointer',
-                fontSize: '14px',
+                padding: '8px 12px',
+                borderRadius: '4px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                transition: 'all 0.3s ease',
-                minHeight: '36px'
+                gap: '4px',
+                transition: 'all 0.2s ease',
+                transform: 'translateY(0)',
+                minWidth: '80px',
+                justifyContent: 'space-between'
               }}
-              aria-label="Select language"
-              aria-expanded={showLanguageDropdown}
-              aria-haspopup="true"
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateY(0)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+              }}
             >
-              <MdLanguage style={{ fontSize: '16px' }} />
+              <MdLanguage />
               <span>{getCurrentLanguageInfo().flag}</span>
-              <span style={{ fontSize: '12px' }}>{getCurrentLanguageInfo().name}</span>
+              <span style={{ fontSize: '0.8rem' }}>{getCurrentLanguageInfo().name}</span>
             </button>
 
             {showLanguageDropdown && (
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: '0',
-                  background: isDarkMode ? '#2a2a2a' : '#ffffff',
-                  border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
-                  borderRadius: '8px',
-                  boxShadow: isDarkMode ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.1)',
-                  zIndex: 1001,
-                  minWidth: '140px',
-                  overflow: 'hidden',
-                  marginTop: '5px'
-                }}
-                role="menu"
-                aria-label="Language options"
-              >
-                {languages.map((language, index) => (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: '0',
+                background: isDarkMode ? '#3d3d3d' : '#ffffff',
+                border: `2px solid ${isDarkMode ? '#555555' : '#e8f4f8'}`,
+                borderRadius: '8px',
+                boxShadow: isDarkMode 
+                  ? '0 8px 25px rgba(0,0,0,0.3)' 
+                  : '0 8px 25px rgba(52, 152, 219, 0.15)',
+                zIndex: 1000,
+                minWidth: '120px',
+                overflow: 'hidden'
+              }}>
+                {languages.map((language) => (
                   <button
                     key={language.code}
                     onClick={() => handleLanguageChange(language.code)}
@@ -170,33 +147,35 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                       padding: '12px 16px',
                       background: 'none',
                       border: 'none',
-                      color: isDarkMode ? '#ffffff' : '#333333',
+                      color: isDarkMode ? '#f5f5f5' : '#2c3e50',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
                       transition: 'all 0.2s ease',
-                      fontSize: '14px',
-                      minHeight: '44px',
-                      borderBottom: index !== languages.length - 1 
-                        ? `1px solid ${isDarkMode ? '#555' : '#eee'}` 
+                      borderBottom: language.code !== languages[languages.length - 1].code 
+                        ? `1px solid ${isDarkMode ? '#555555' : '#e8f4f8'}` 
                         : 'none'
                     }}
-                    role="menuitem"
-                    aria-label={`Select ${language.name}`}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'none';
+                    }}
                   >
-                    <span style={{ fontSize: '16px' }}>{language.flag}</span>
+                    <span style={{ fontSize: '1.2rem' }}>{language.flag}</span>
                     <span style={{ 
-                      fontSize: '12px',
-                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : 'inherit'
+                      fontSize: '0.9rem',
+                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '"Georgia", serif'
                     }}>
                       {language.name}
                     </span>
                     {currentLanguage === language.code && (
                       <span style={{ 
-                        color: '#2193b0',
+                        color: '#3498db',
                         marginLeft: 'auto',
-                        fontSize: '12px'
+                        fontSize: '0.8rem'
                       }}>
                         ✓
                       </span>
@@ -210,25 +189,35 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           <button
             onClick={onToggleDarkMode}
             style={{
-              padding: '8px 12px',
-              backgroundColor: 'transparent',
-              color: isDarkMode ? '#ffffff' : '#333333',
-              border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
-              borderRadius: '6px',
+              background: 'none',
+              border: 'none',
+              color: isDarkMode ? '#ffffff' : '#000000',
               cursor: 'pointer',
-              fontSize: '14px',
+              padding: '8px',
+              borderRadius: '4px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.3s ease',
-              minHeight: '36px'
+              gap: '4px',
+              transition: 'all 0.2s ease',
+              transform: 'translateY(0)'
             }}
-            aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
+            }}
+            onMouseDown={(e) => {
+              e.target.style.transform = 'translateY(0)';
+            }}
+            onMouseUp={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+            }}
           >
-            {isDarkMode ? <MdLightMode style={{ fontSize: '16px' }} /> : <MdDarkMode style={{ fontSize: '16px' }} />}
-            <span style={{ fontSize: '12px' }}>
-              {isDarkMode ? 'Light' : 'Dark'}
-            </span>
+            {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
+            {isDarkMode ? 'Light' : 'Dark'}
           </button>
         </div>
       </div>

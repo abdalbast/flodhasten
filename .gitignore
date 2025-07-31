@@ -21,11 +21,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Large unused assets
-public/sweden-map.png
-public/hippo-icon.svg
-public/.DS_Store
-
-# Service worker cache
-sw.js.map
+.vercel
