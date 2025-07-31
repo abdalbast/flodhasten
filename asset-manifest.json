@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/flodhasten/static/css/main.9cfc1c8d.css",
-    "main.js": "/flodhasten/static/js/main.e8a64189.js",
+    "main.js": "/flodhasten/static/js/main.65b2bbf5.js",
     "static/js/685.1ed5ceb4.chunk.js": "/flodhasten/static/js/685.1ed5ceb4.chunk.js",
     "service-worker.js": "/flodhasten/service-worker.js",
     "index.html": "/flodhasten/index.html"
   },
   "entrypoints": [
     "static/css/main.9cfc1c8d.css",
-    "static/js/main.e8a64189.js"
+    "static/js/main.65b2bbf5.js"
   ]
 }
