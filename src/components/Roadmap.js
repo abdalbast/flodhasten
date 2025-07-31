@@ -177,7 +177,7 @@ function Roadmap({ skills, progress, onSelectSkill, isDarkMode }) {
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text'
       }}>
-        Swedish Learning Journey
+        Learn with the River Horse
       </h2>
       
       <div 

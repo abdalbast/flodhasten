@@ -49,7 +49,7 @@ function ExperimentMap({ skills, progress, onSelectSkill, isDarkMode }) {
           zIndex: 1,
           fontFamily: '"Georgia", serif'
         }}>
-          Swedish Learning Journey
+          Learn with the River Horse
         </h2>
         
         <p style={{
