@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/flodhasten/static/css/main.963870ca.css",
-    "main.js": "/flodhasten/static/js/main.75c82a1e.js",
+    "main.js": "/flodhasten/static/js/main.c85e2c6e.js",
     "static/js/568.31e1d085.chunk.js": "/flodhasten/static/js/568.31e1d085.chunk.js",
     "service-worker.js": "/flodhasten/service-worker.js",
     "index.html": "/flodhasten/index.html",
     "main.963870ca.css.map": "/flodhasten/static/css/main.963870ca.css.map",
-    "main.75c82a1e.js.map": "/flodhasten/static/js/main.75c82a1e.js.map",
+    "main.c85e2c6e.js.map": "/flodhasten/static/js/main.c85e2c6e.js.map",
     "568.31e1d085.chunk.js.map": "/flodhasten/static/js/568.31e1d085.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.963870ca.css",
-    "static/js/main.75c82a1e.js"
+    "static/js/main.c85e2c6e.js"
   ]
 }
