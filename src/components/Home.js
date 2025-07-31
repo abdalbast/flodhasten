@@ -183,7 +183,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
             ? '0 2px 4px rgba(0,0,0,0.3)' 
             : '0 2px 4px rgba(233, 30, 99, 0.2)'
         }}>
-          I love you Clara
+          
         </p>
         
         <p style={{
@@ -196,7 +196,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           fontFamily: '"Georgia", serif'
         }}>
           Learn Swedish with the River Horse
-          I love you Clara
+      
         </p>
         
         {/* Moomin-inspired decorative elements */}
