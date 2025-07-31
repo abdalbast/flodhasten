@@ -9,7 +9,6 @@ import ExperimentMap from './components/ExperimentMap';
 import AvatarShop from './components/AvatarShop';
 import IntroAnimation from './components/IntroAnimation';
 import Dialogue from './components/Dialogue';
-import Logo from './components/Logo';
 import GamesMenu from './games/GamesMenu';
 import Flashcards from './games/Flashcards';
 import Matching from './games/Matching';

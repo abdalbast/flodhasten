@@ -4,7 +4,6 @@ import { GiDress } from 'react-icons/gi';
 import { BsPersonFill, BsPersonHeart, BsPersonBoundingBox } from 'react-icons/bs';
 import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import LessonCircles from './LessonCircles';
-import Logo from './Logo';
 
 // Home screen with welcome, app description, and progress tracker
 function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 0, progress = { gamesPlayed: 0, streak: 1 }, wordOfTheDay, onStartLesson, isDarkMode, onResetProgress, userData, currentLanguage }) {
@@ -155,21 +154,9 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           </div>
         </div>
         
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '1rem',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          <Logo size={60} isDarkMode={isDarkMode} />
-        </div>
-        
         <h1 style={{ 
           color: moominBlue, 
-          fontSize: '3rem', 
+          fontSize: '4rem', 
           fontWeight: 'bold',
           margin: '0',
           textShadow: isDarkMode 

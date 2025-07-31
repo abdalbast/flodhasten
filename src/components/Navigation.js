@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
 import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
-import Logo from './Logo';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -31,15 +30,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
         flexWrap: 'wrap',
         gap: '0.5rem'
       }}>
-        {/* Logo */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginRight: '1rem'
-        }}>
-          <Logo size={32} isDarkMode={isDarkMode} />
-        </div>
-        
         <div style={{
           display: 'flex',
           gap: '0.5rem',
