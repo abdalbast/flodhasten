@@ -632,13 +632,15 @@ function App() {
       content = <GamesMenu setGame={setGame} isDarkMode={isDarkMode} />;
     } else {
       const onLessonComplete = handleBackToGames;
+      // Use lessonWords if available, otherwise use default words from all lessons
+      const gameWords = lessonWords.length > 0 ? lessonWords : currentSkills.flatMap(skill => skill.words);
       let gameComp;
-      if (game === 'flashcards') gameComp = <Flashcards words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'matching') gameComp = <Matching words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'spelling') gameComp = <Spelling words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'multiple') gameComp = <MultipleChoice words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'audio') gameComp = <AudioRecall words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'odd') gameComp = <OddOneOut words={lessonWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      if (game === 'flashcards') gameComp = <Flashcards words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      else if (game === 'matching') gameComp = <Matching words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      else if (game === 'spelling') gameComp = <Spelling words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      else if (game === 'multiple') gameComp = <MultipleChoice words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      else if (game === 'audio') gameComp = <AudioRecall words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      else if (game === 'odd') gameComp = <OddOneOut words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
       content = <div><button onClick={handleBackToGames} style={{margin:'1rem',background:'#2193b0',color:'#fff',border:'none',borderRadius:8,padding:'0.5rem 1.2rem',fontWeight:'bold',fontSize:16,cursor:'pointer'}}>← Back to Games</button>{gameComp}</div>;
     }
   }
