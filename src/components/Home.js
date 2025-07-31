@@ -171,6 +171,22 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
         </h1>
         
         <p style={{
+          color: moominPink,
+          fontSize: '1.1rem',
+          margin: '0.5rem 0 0 0',
+          fontStyle: 'italic',
+          position: 'relative',
+          zIndex: 1,
+          fontFamily: '"Georgia", serif',
+          fontWeight: 'bold',
+          textShadow: isDarkMode 
+            ? '0 2px 4px rgba(0,0,0,0.3)' 
+            : '0 2px 4px rgba(233, 30, 99, 0.2)'
+        }}>
+          I love you Clara
+        </p>
+        
+        <p style={{
           color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
           fontSize: '1.3rem',
           margin: '0.8rem 0 0 0',
