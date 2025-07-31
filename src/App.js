@@ -17,6 +17,8 @@ import MultipleChoice from './games/MultipleChoice';
 import AudioRecall from './games/AudioRecall';
 import OddOneOut from './games/OddOneOut';
 import { register as registerServiceWorker, requestNotificationPermission } from './serviceWorkerRegistration';
+import Layout from './components/ui/Layout';
+import { SkipLink, LiveRegion } from './components/ui/Accessibility';
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
@@ -653,15 +655,10 @@ function App() {
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: isDarkMode 
-        ? 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%)' 
-        : 'linear-gradient(180deg, #e0f7fa 0%, #fff 100%)',
-      position: 'relative',
-      color: isDarkMode ? '#ffffff' : '#000000',
-      overflow: 'hidden'
-    }}>
+    <Layout isDarkMode={isDarkMode}>
+      <SkipLink targetId="main-content" />
+      <LiveRegion aria-live="polite" />
+      
       {/* Subtle river-themed background elements */}
       <div style={{
         position: 'fixed',
@@ -705,6 +702,7 @@ function App() {
           50% { transform: translateY(-15px) rotate(1deg); }
         }
       `}</style>
+      
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} isDarkMode={isDarkMode} />}
       {showDialogue && selectedSkill && (
         <Dialogue 
@@ -714,38 +712,50 @@ function App() {
           isDarkMode={isDarkMode}
         />
       )}
-              <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
-      {content}
-      {showSkillComplete && (
-        <>
-          <style>{`
-            @keyframes skillCompletePop {
-              0% { opacity: 0; transform: scale(0.7); }
-              20% { opacity: 1; transform: scale(1.1); }
-              60% { opacity: 1; transform: scale(1); }
-              100% { opacity: 0; transform: scale(0.9); }
-            }
-          `}</style>
-          <div style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,display:'flex',justifyContent:'center',alignItems:'flex-start',pointerEvents:'none'}}>
-            <div style={{
-              marginTop:60,
-              padding:'1.2rem 2.5rem',
-              background:'#81c784',
-              color:'#fff',
-              borderRadius:16,
-              boxShadow:'0 4px 16px #388e3c88',
-              fontSize:28,
-              fontWeight:'bold',
-              letterSpacing:1.5,
-              animation:'skillCompletePop 2.5s cubic-bezier(.23,1.12,.62,.99)'
-            }}>
-              🎉 Skill Complete!
+      
+      <Navigation 
+        currentScreen={screen} 
+        setScreen={s => { setScreen(s); setGame(null); }} 
+        isDarkMode={isDarkMode} 
+        onToggleDarkMode={toggleDarkMode} 
+        onToggleLanguage={toggleLanguage} 
+        currentLanguage={currentLanguage} 
+        onPlayIntro={handlePlayIntro} 
+      />
+      
+      <main id="main-content" role="main">
+        {content}
+      </main>
+              {showSkillComplete && (
+          <>
+            <style>{`
+              @keyframes skillCompletePop {
+                0% { opacity: 0; transform: scale(0.7); }
+                20% { opacity: 1; transform: scale(1.1); }
+                60% { opacity: 1; transform: scale(1); }
+                100% { opacity: 0; transform: scale(0.9); }
+              }
+            `}</style>
+            <div style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,display:'flex',justifyContent:'center',alignItems:'flex-start',pointerEvents:'none'}}>
+              <div style={{
+                marginTop:60,
+                padding:'1.2rem 2.5rem',
+                background:'#81c784',
+                color:'#fff',
+                borderRadius:16,
+                boxShadow:'0 4px 16px #388e3c88',
+                fontSize:28,
+                fontWeight:'bold',
+                letterSpacing:1.5,
+                animation:'skillCompletePop 2.5s cubic-bezier(.23,1.12,.62,.99)'
+              }}>
+                🎉 Skill Complete!
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
+          </>
+        )}
+      </Layout>
+    );
 }
 
 export default App;

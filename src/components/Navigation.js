@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Navigation.css';
+import { componentStyles, designTokens, getThemeColors } from '../styles/designSystem';
 import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
@@ -20,67 +20,81 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
     setShowLanguageDropdown(false);
   };
 
+  const themeColors = getThemeColors(isDarkMode);
+  
+  const navStyle = {
+    ...componentStyles.navigation.base,
+    backgroundColor: themeColors.surface,
+    borderBottomColor: isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[200]
+  };
+
+  const navItemStyle = (isActive) => ({
+    ...componentStyles.navigation.item,
+    color: isActive ? themeColors.primary : themeColors.textSecondary,
+    backgroundColor: isActive ? designTokens.colors.primary[100] : 'transparent',
+    '&:hover': {
+      backgroundColor: isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[100]
+    }
+  });
+
   return (
-    <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`}>
+    <nav style={navStyle} role="navigation" aria-label="Main navigation">
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0 1rem',
+        padding: `${designTokens.spacing[4]} ${designTokens.spacing[6]}`,
         flexWrap: 'wrap',
-        gap: '0.5rem'
+        gap: designTokens.spacing[2],
+        maxWidth: '1200px',
+        margin: '0 auto'
       }}>
         <div style={{
           display: 'flex',
-          gap: '0.5rem',
+          gap: designTokens.spacing[2],
           flexWrap: 'wrap'
         }}>
-          <button className={currentScreen === 'home' ? 'active' : ''} onClick={() => setScreen('home')}><MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home</button>
-          <button className={currentScreen === 'add' ? 'active' : ''} onClick={() => setScreen('add')}><MdAddCircle style={{verticalAlign:'middle',marginRight:4}} /> Add Words</button>
-          <button className={currentScreen === 'list' ? 'active' : ''} onClick={() => setScreen('list')}><MdList style={{verticalAlign:'middle',marginRight:4}} /> Word List</button>
-          <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
-          <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>
-          <button className={currentScreen === 'story' ? 'active' : ''} onClick={() => setScreen('story')}><MdBook style={{verticalAlign:'middle',marginRight:4}} /> Stories</button>
-          <button className={currentScreen === 'experiment-map' ? 'active' : ''} onClick={() => setScreen('experiment-map')}><MdMap style={{verticalAlign:'middle',marginRight:4}} /> Experiment Map</button>
-          <button className={currentScreen === 'avatar-shop' ? 'active' : ''} onClick={() => setScreen('avatar-shop')}><MdStore style={{verticalAlign:'middle',marginRight:4}} /> Shop</button>
+          {[
+            { id: 'home', icon: MdHome, label: 'Home' },
+            { id: 'add', icon: MdAddCircle, label: 'Add Words' },
+            { id: 'list', icon: MdList, label: 'Word List' },
+            { id: 'games', icon: MdGames, label: 'Games' },
+            { id: 'explore', icon: MdLocationOn, label: 'Explore' },
+            { id: 'story', icon: MdBook, label: 'Stories' },
+            { id: 'experiment-map', icon: MdMap, label: 'Experiment Map' },
+            { id: 'avatar-shop', icon: MdStore, label: 'Shop' }
+          ].map(({ id, icon: Icon, label }) => (
+            <button
+              key={id}
+              style={navItemStyle(currentScreen === id)}
+              onClick={() => setScreen(id)}
+              aria-label={label}
+              aria-current={currentScreen === id ? 'page' : undefined}
+            >
+              <Icon style={{ verticalAlign: 'middle', marginRight: designTokens.spacing[1] }} />
+              {label}
+            </button>
+          ))}
         </div>
         
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem'
+          gap: designTokens.spacing[2]
         }}>
           <button
             onClick={onPlayIntro}
             style={{
-              background: 'none',
-              border: 'none',
-              color: isDarkMode ? '#ffffff' : '#000000',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              transition: 'all 0.2s ease',
-              transform: 'translateY(0)'
+              ...componentStyles.button.base,
+              ...componentStyles.button.variants.secondary,
+              ...componentStyles.button.sizes.sm,
+              color: themeColors.textSecondary,
+              backgroundColor: 'transparent',
+              border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`
             }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
-            }}
-            onMouseDown={(e) => {
-              e.target.style.transform = 'translateY(0)';
-            }}
-            onMouseUp={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-            }}
+            aria-label="Play introduction"
           >
-            <MdPlayArrow />
+            <MdPlayArrow style={{ marginRight: designTokens.spacing[1] }} />
             Intro
           </button>
 
@@ -89,93 +103,83 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
             <button
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
               style={{
-                background: 'none',
-                border: 'none',
-                color: isDarkMode ? '#ffffff' : '#000000',
-                cursor: 'pointer',
-                padding: '8px 12px',
-                borderRadius: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                transition: 'all 0.2s ease',
-                transform: 'translateY(0)',
-                minWidth: '80px',
+                ...componentStyles.button.base,
+                ...componentStyles.button.variants.secondary,
+                ...componentStyles.button.sizes.sm,
+                color: themeColors.textSecondary,
+                backgroundColor: 'transparent',
+                border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`,
+                minWidth: '100px',
                 justifyContent: 'space-between'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
-              }}
-              onMouseDown={(e) => {
-                e.target.style.transform = 'translateY(0)';
-              }}
-              onMouseUp={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-              }}
+              aria-label="Select language"
+              aria-expanded={showLanguageDropdown}
+              aria-haspopup="true"
             >
-              <MdLanguage />
+              <MdLanguage style={{ marginRight: designTokens.spacing[1] }} />
               <span>{getCurrentLanguageInfo().flag}</span>
-              <span style={{ fontSize: '0.8rem' }}>{getCurrentLanguageInfo().name}</span>
+              <span style={{ fontSize: designTokens.typography.fontSize.sm }}>{getCurrentLanguageInfo().name}</span>
             </button>
 
             {showLanguageDropdown && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                right: '0',
-                background: isDarkMode ? '#3d3d3d' : '#ffffff',
-                border: `2px solid ${isDarkMode ? '#555555' : '#e8f4f8'}`,
-                borderRadius: '8px',
-                boxShadow: isDarkMode 
-                  ? '0 8px 25px rgba(0,0,0,0.3)' 
-                  : '0 8px 25px rgba(52, 152, 219, 0.15)',
-                zIndex: 1000,
-                minWidth: '120px',
-                overflow: 'hidden'
-              }}>
-                {languages.map((language) => (
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: '0',
+                  background: themeColors.surface,
+                  border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`,
+                  borderRadius: designTokens.borderRadius.lg,
+                  boxShadow: designTokens.shadows.lg,
+                  zIndex: designTokens.zIndex.dropdown,
+                  minWidth: '140px',
+                  overflow: 'hidden',
+                  marginTop: designTokens.spacing[1]
+                }}
+                role="menu"
+                aria-label="Language options"
+              >
+                {languages.map((language, index) => (
                   <button
                     key={language.code}
                     onClick={() => handleLanguageChange(language.code)}
                     style={{
                       width: '100%',
-                      padding: '12px 16px',
+                      padding: `${designTokens.spacing[3]} ${designTokens.spacing[4]}`,
                       background: 'none',
                       border: 'none',
-                      color: isDarkMode ? '#f5f5f5' : '#2c3e50',
+                      color: themeColors.text,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      gap: designTokens.spacing[2],
                       transition: 'all 0.2s ease',
-                      borderBottom: language.code !== languages[languages.length - 1].code 
-                        ? `1px solid ${isDarkMode ? '#555555' : '#e8f4f8'}` 
-                        : 'none'
+                      borderBottom: index !== languages.length - 1 
+                        ? `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[200]}` 
+                        : 'none',
+                      minHeight: '44px' // Accessibility: minimum touch target
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                      e.target.style.background = isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[100];
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.background = 'none';
                     }}
+                    role="menuitem"
+                    aria-label={`Select ${language.name}`}
                   >
-                    <span style={{ fontSize: '1.2rem' }}>{language.flag}</span>
+                    <span style={{ fontSize: designTokens.typography.fontSize.lg }}>{language.flag}</span>
                     <span style={{ 
-                      fontSize: '0.9rem',
-                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '"Georgia", serif'
+                      fontSize: designTokens.typography.fontSize.sm,
+                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : designTokens.typography.fontFamily.primary
                     }}>
                       {language.name}
                     </span>
                     {currentLanguage === language.code && (
                       <span style={{ 
-                        color: '#3498db',
+                        color: themeColors.primary,
                         marginLeft: 'auto',
-                        fontSize: '0.8rem'
+                        fontSize: designTokens.typography.fontSize.sm
                       }}>
                         ✓
                       </span>
@@ -189,35 +193,19 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           <button
             onClick={onToggleDarkMode}
             style={{
-              background: 'none',
-              border: 'none',
-              color: isDarkMode ? '#ffffff' : '#000000',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              transition: 'all 0.2s ease',
-              transform: 'translateY(0)'
+              ...componentStyles.button.base,
+              ...componentStyles.button.variants.secondary,
+              ...componentStyles.button.sizes.sm,
+              color: themeColors.textSecondary,
+              backgroundColor: 'transparent',
+              border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`
             }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.color = isDarkMode ? '#64b5f6' : '#2193b0';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.color = isDarkMode ? '#ffffff' : '#000000';
-            }}
-            onMouseDown={(e) => {
-              e.target.style.transform = 'translateY(0)';
-            }}
-            onMouseUp={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-            }}
+            aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
           >
             {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
-            {isDarkMode ? 'Light' : 'Dark'}
+            <span style={{ marginLeft: designTokens.spacing[1] }}>
+              {isDarkMode ? 'Light' : 'Dark'}
+            </span>
           </button>
         </div>
       </div>
