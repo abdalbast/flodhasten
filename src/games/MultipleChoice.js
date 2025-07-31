@@ -25,37 +25,10 @@ async function playSwedish(word) {
         const voices = window.speechSynthesis.getVoices();
         console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
         
-        // Find the best Swedish voice - prioritize native Swedish voices
+        // Only use Alva (sv-SE) voice
         let swedishVoice = voices.find(voice => 
-          voice.lang === 'sv-SE' || 
-          voice.lang === 'sv' ||
-          voice.name.toLowerCase().includes('swedish') ||
-          voice.name.toLowerCase().includes('sverige') ||
-          voice.name.toLowerCase().includes('anna') && voice.lang === 'sv-SE' || // Only Swedish Anna
-          voice.name.toLowerCase().includes('alva') && voice.lang === 'sv-SE'   // Only Swedish Alva
+          voice.name.toLowerCase().includes('alva') && voice.lang === 'sv-SE'
         );
-        
-        // If no Swedish voice, try any voice with 'sv' in the language code
-        if (!swedishVoice) {
-          swedishVoice = voices.find(voice => voice.lang.includes('sv'));
-        }
-        
-        // If still no Swedish voice, try to find a Nordic/Scandinavian voice
-        if (!swedishVoice) {
-          swedishVoice = voices.find(voice => 
-            voice.name.toLowerCase().includes('nordic') ||
-            voice.name.toLowerCase().includes('scandinavian') ||
-            voice.name.toLowerCase().includes('norwegian') ||
-            voice.name.toLowerCase().includes('danish')
-          );
-        }
-        
-        // If still no Swedish voice, try to find any European voice
-        if (!swedishVoice) {
-          swedishVoice = voices.find(voice => 
-            voice.lang.startsWith('en') // English might work better than other languages
-          );
-        }
         
         const utter = new window.SpeechSynthesisUtterance(word);
         utter.lang = 'sv-SE';
@@ -65,10 +38,11 @@ async function playSwedish(word) {
         
         if (swedishVoice) {
           utter.voice = swedishVoice;
-          console.log('🎤 Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
+          console.log('🎤 Using Alva (sv-SE) voice:', swedishVoice.name, swedishVoice.lang);
         } else {
-          console.log('⚠️ No Swedish voice found. Using default voice.');
+          console.log('⚠️ Alva (sv-SE) voice not found. Not playing audio.');
           console.log('📋 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+          return; // Don't play audio if Alva is not available
         }
         
         window.speechSynthesis.speak(utter);
