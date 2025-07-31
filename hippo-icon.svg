@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+  <!-- Hippo body -->
+  <ellipse cx="50" cy="65" rx="35" ry="20" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  
+  <!-- Hippo head -->
+  <ellipse cx="50" cy="45" rx="25" ry="18" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  
+  <!-- Ears -->
+  <ellipse cx="35" cy="35" rx="8" ry="6" fill="#A0522D"/>
+  <ellipse cx="65" cy="35" rx="8" ry="6" fill="#A0522D"/>
+  
+  <!-- Eyes -->
+  <circle cx="42" cy="40" r="3" fill="#000"/>
+  <circle cx="58" cy="40" r="3" fill="#000"/>
+  <circle cx="43" cy="39" r="1" fill="#FFF"/>
+  <circle cx="59" cy="39" r="1" fill="#FFF"/>
+  
+  <!-- Nose -->
+  <ellipse cx="50" cy="50" rx="8" ry="4" fill="#654321"/>
+  
+  <!-- Nostrils -->
+  <circle cx="46" cy="50" r="1.5" fill="#000"/>
+  <circle cx="54" cy="50" r="1.5" fill="#000"/>
+  
+  <!-- Mouth -->
+  <path d="M 45 55 Q 50 58 55 55" stroke="#000" stroke-width="1.5" fill="none"/>
+  
+  <!-- Legs -->
+  <rect x="35" y="80" width="6" height="15" fill="#8B4513" rx="3"/>
+  <rect x="45" y="80" width="6" height="15" fill="#8B4513" rx="3"/>
+  <rect x="55" y="80" width="6" height="15" fill="#8B4513" rx="3"/>
+  <rect x="65" y="80" width="6" height="15" fill="#8B4513" rx="3"/>
+  
+  <!-- Water splash effect -->
+  <circle cx="30" cy="85" r="2" fill="#87CEEB" opacity="0.7"/>
+  <circle cx="70" cy="85" r="2" fill="#87CEEB" opacity="0.7"/>
+  <circle cx="40" cy="90" r="1.5" fill="#87CEEB" opacity="0.5"/>
+  <circle cx="60" cy="90" r="1.5" fill="#87CEEB" opacity="0.5"/>
+</svg> 

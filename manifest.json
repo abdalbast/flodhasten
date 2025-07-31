@@ -1,6 +1,7 @@
 {
   "short_name": "Flodhästen",
   "name": "Flodhästen - Learn with the River Horse",
+  "description": "Learn Swedish with the River Horse - Interactive lessons, games, and cultural exploration",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,19 +9,43 @@
       "type": "image/x-icon"
     },
     {
+      "src": "hippo-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#3498db",
-  "background_color": "#ffffff",
-  "description": "Learn Swedish with the River Horse - Interactive lessons, games, and cultural exploration"
+  "background_color": "#f8f9fa",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["education", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshot-desktop.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
 }
