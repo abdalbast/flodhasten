@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/swedish-learning-app/static/css/main.963870ca.css",
+    "main.js": "/swedish-learning-app/static/js/main.6d91036f.js",
+    "static/js/568.31e1d085.chunk.js": "/swedish-learning-app/static/js/568.31e1d085.chunk.js",
+    "service-worker.js": "/swedish-learning-app/service-worker.js",
+    "index.html": "/swedish-learning-app/index.html",
+    "main.963870ca.css.map": "/swedish-learning-app/static/css/main.963870ca.css.map",
+    "main.6d91036f.js.map": "/swedish-learning-app/static/js/main.6d91036f.js.map",
+    "568.31e1d085.chunk.js.map": "/swedish-learning-app/static/js/568.31e1d085.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.963870ca.css",
+    "static/js/main.6d91036f.js"
+  ]
+}
