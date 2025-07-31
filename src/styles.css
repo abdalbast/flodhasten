@@ -1,0 +1,108 @@
+/* Flödhästen Global Styles - Modern, Playful, Mobile-First */
+
+:root {
+  --primary: #2193b0;
+  --secondary: #6dd5ed;
+  --accent: #fbc02d;
+  --danger: #f44336;
+  --success: #388e3c;
+  --info: #1976d2;
+  --purple: #8e24aa;
+  --orange: #fb8c00;
+  --pink: #d81b60;
+  --bg: #e0f7fa;
+  --white: #fff;
+  --shadow: 0 2px 8px rgba(33,147,176,0.08);
+  --radius: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Quicksand', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--white) 100%);
+  min-height: 100vh;
+  color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Quicksand', 'Segoe UI', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-top: 0;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+button:active {
+  box-shadow: 0 1px 4px rgba(33,147,176,0.12);
+  transform: scale(0.98);
+}
+
+input, textarea {
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid #b2ebf2;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  background: #f7fbfc;
+  transition: border 0.2s;
+}
+input:focus, textarea:focus {
+  border: 1.5px solid var(--primary);
+  outline: none;
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.text-center { text-align: center; }
+.rounded { border-radius: var(--radius); }
+.shadow { box-shadow: var(--shadow); }
+
+/* Responsive typography */
+@media (max-width: 600px) {
+  html { font-size: 15px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.3rem; }
+  button, input, textarea { font-size: 1rem; }
+}
+@media (min-width: 601px) {
+  html { font-size: 17px; }
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 1.7rem; }
+}
+
+/* Fun accent for headings */
+h1, h2 {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+} 

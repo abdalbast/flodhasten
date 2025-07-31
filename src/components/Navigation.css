@@ -1,0 +1,81 @@
+/* Navigation bar styles */
+.nav-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(90deg, #6dd5ed, #2193b0);
+  padding: 0.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background 0.3s ease;
+}
+
+/* Dark mode navigation */
+.nav-bar.dark {
+  background: linear-gradient(90deg, #2c3e50, #34495e);
+}
+
+.nav-bar button {
+  background: #fff;
+  color: #2193b0;
+  border: none;
+  border-radius: 20px;
+  padding: 0.7rem 1.2rem;
+  margin: 0 0.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  transform: translateY(0);
+}
+
+/* Dark mode button styles */
+.nav-bar.dark button {
+  background: #34495e;
+  color: #ecf0f1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.nav-bar button:hover {
+  background: #2193b0;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 147, 176, 0.3);
+}
+
+.nav-bar button.active {
+  background: #2193b0;
+  color: #fff;
+}
+
+.nav-bar button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Dark mode active/hover states */
+.nav-bar.dark button:hover {
+  background: #3498db;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.nav-bar.dark button.active {
+  background: #3498db;
+  color: #fff;
+}
+
+.nav-bar.dark button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 600px) {
+  .nav-bar button {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.7rem;
+  }
+} 
