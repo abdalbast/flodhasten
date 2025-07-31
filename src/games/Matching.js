@@ -1,82 +1,91 @@
 import React, { useState } from 'react';
 import { MdVolumeUp } from 'react-icons/md';
+import ttsApi from '../utils/ttsApi';
 
 // Shuffle array helper
 function shuffle(arr) {
   return arr.map(v => [Math.random(), v]).sort().map(a => a[1]);
 }
 
-// Play Swedish word with TTS
-function playSwedish(word) {
-  if ('speechSynthesis' in window) {
-    // Stop any current speech
-    window.speechSynthesis.cancel();
+// Play Swedish word with TTS API
+async function playSwedish(word) {
+  try {
+    // First try the API
+    await ttsApi.playSwedish(word);
+  } catch (error) {
+    console.log('TTS API failed, falling back to browser TTS:', error.message);
     
-    // Wait for voices to load
-    const speakWithSwedishVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+    // Fallback to browser TTS
+    if ('speechSynthesis' in window) {
+      // Stop any current speech
+      window.speechSynthesis.cancel();
       
-      // Find the best Swedish voice - prioritize native Swedish voices
-      let swedishVoice = voices.find(voice => 
-        voice.lang === 'sv-SE' || 
-        voice.lang === 'sv' ||
-        voice.name.toLowerCase().includes('swedish') ||
-        voice.name.toLowerCase().includes('sverige') ||
-        voice.name.toLowerCase().includes('anna') || // Common Swedish voice name
-        voice.name.toLowerCase().includes('alva')   // Another common Swedish voice
-      );
-      
-      // If no Swedish voice, try any voice with 'sv' in the language code
-      if (!swedishVoice) {
-        swedishVoice = voices.find(voice => voice.lang.includes('sv'));
-      }
-      
-      // If still no Swedish voice, try to find a Nordic/Scandinavian voice
-      if (!swedishVoice) {
-        swedishVoice = voices.find(voice => 
-          voice.name.toLowerCase().includes('nordic') ||
-          voice.name.toLowerCase().includes('scandinavian') ||
-          voice.name.toLowerCase().includes('norwegian') ||
-          voice.name.toLowerCase().includes('danish')
-        );
-      }
-      
-      // If still no Swedish voice, try to find any European voice
-      if (!swedishVoice) {
-        swedishVoice = voices.find(voice => 
-          voice.lang.startsWith('en') || // English might work better than other languages
-          voice.lang.startsWith('de') || // German
-          voice.lang.startsWith('fr')    // French
-        );
-      }
-      
-      const utter = new window.SpeechSynthesisUtterance(word);
-      utter.lang = 'sv-SE';
-      utter.rate = 0.6; // Slower for better pronunciation
-      utter.pitch = 1.0;
-      utter.volume = 1.0;
-      
-      if (swedishVoice) {
-        utter.voice = swedishVoice;
-        console.log('Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
-      } else {
-        console.log('No Swedish voice found. Using default voice.');
-        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-      }
-      
-      window.speechSynthesis.speak(utter);
-    };
-    
-    // If voices are already loaded
-    if (window.speechSynthesis.getVoices().length > 0) {
-      speakWithSwedishVoice();
-    } else {
       // Wait for voices to load
-      window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
+      const speakWithSwedishVoice = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        
+        // Find the best Swedish voice - prioritize native Swedish voices
+        let swedishVoice = voices.find(voice => 
+          voice.lang === 'sv-SE' || 
+          voice.lang === 'sv' ||
+          voice.name.toLowerCase().includes('swedish') ||
+          voice.name.toLowerCase().includes('sverige') ||
+          voice.name.toLowerCase().includes('anna') || // Common Swedish voice name
+          voice.name.toLowerCase().includes('alva')   // Another common Swedish voice
+        );
+        
+        // If no Swedish voice, try any voice with 'sv' in the language code
+        if (!swedishVoice) {
+          swedishVoice = voices.find(voice => voice.lang.includes('sv'));
+        }
+        
+        // If still no Swedish voice, try to find a Nordic/Scandinavian voice
+        if (!swedishVoice) {
+          swedishVoice = voices.find(voice => 
+            voice.name.toLowerCase().includes('nordic') ||
+            voice.name.toLowerCase().includes('scandinavian') ||
+            voice.name.toLowerCase().includes('norwegian') ||
+            voice.name.toLowerCase().includes('danish')
+          );
+        }
+        
+        // If still no Swedish voice, try to find any European voice
+        if (!swedishVoice) {
+          swedishVoice = voices.find(voice => 
+            voice.lang.startsWith('en') || // English might work better than other languages
+            voice.lang.startsWith('de') || // German
+            voice.lang.startsWith('fr')    // French
+          );
+        }
+        
+        const utter = new window.SpeechSynthesisUtterance(word);
+        utter.lang = 'sv-SE';
+        utter.rate = 0.6; // Slower for better pronunciation
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+        
+        if (swedishVoice) {
+          utter.voice = swedishVoice;
+          console.log('Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
+        } else {
+          console.log('No Swedish voice found. Using default voice.');
+          console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        }
+        
+        window.speechSynthesis.speak(utter);
+      };
+      
+      // If voices are already loaded
+      if (window.speechSynthesis.getVoices().length > 0) {
+        speakWithSwedishVoice();
+      } else {
+        // Wait for voices to load
+        window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
+      }
+    } else {
+      console.log('Speech synthesis not supported in this browser');
     }
-  } else {
-    console.log('Speech synthesis not supported in this browser');
   }
 }
 
