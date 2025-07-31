@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMoreVert } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -117,7 +117,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 e.target.style.transform = 'translateY(-2px)';
               }}
             >
-              <MdMoreVert style={{ fontSize: '20px' }} />
+              <MdMenu style={{ fontSize: '24px', fontWeight: 'bold' }} />
             </button>
 
             {showSettingsDropdown && (
