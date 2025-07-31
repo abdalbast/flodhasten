@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { componentStyles, designTokens, getThemeColors } from '../styles/designSystem';
 import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage, MdTrendingUp } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
@@ -20,40 +19,125 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
     setShowLanguageDropdown(false);
   };
 
-  const themeColors = getThemeColors(isDarkMode);
-  
   const navStyle = {
-    ...componentStyles.navigation.base,
-    backgroundColor: themeColors.surface,
-    borderBottomColor: isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[200]
+    backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
+    borderBottom: `1px solid ${isDarkMode ? '#333' : '#e0e0e0'}`,
+    padding: '0',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+    boxShadow: isDarkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'
+  };
+
+  const navContainerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0 20px',
+    flexWrap: 'wrap',
+    gap: '10px'
+  };
+
+  const navItemsStyle = {
+    display: 'flex',
+    gap: '5px',
+    flexWrap: 'wrap',
+    alignItems: 'center'
   };
 
   const navItemStyle = (isActive) => ({
-    ...componentStyles.navigation.item,
-    color: isActive ? themeColors.primary : themeColors.textSecondary,
-    backgroundColor: isActive ? designTokens.colors.primary[100] : 'transparent',
+    padding: '12px 16px',
+    backgroundColor: isActive 
+      ? (isDarkMode ? '#2193b0' : '#2193b0') 
+      : 'transparent',
+    color: isActive 
+      ? '#ffffff' 
+      : (isDarkMode ? '#ffffff' : '#333333'),
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: isActive ? 'bold' : 'normal',
+    transition: 'all 0.3s ease',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    textDecoration: 'none',
+    minHeight: '44px',
     '&:hover': {
-      backgroundColor: isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[100]
+      backgroundColor: isActive 
+        ? (isDarkMode ? '#1a7a8f' : '#1a7a8f') 
+        : (isDarkMode ? '#333' : '#f0f0f0')
     }
   });
 
+  const controlsStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    flexWrap: 'wrap'
+  };
+
+  const buttonStyle = {
+    padding: '8px 12px',
+    backgroundColor: 'transparent',
+    color: isDarkMode ? '#ffffff' : '#333333',
+    border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    transition: 'all 0.3s ease',
+    minHeight: '36px',
+    '&:hover': {
+      backgroundColor: isDarkMode ? '#333' : '#f0f0f0'
+    }
+  };
+
+  const dropdownStyle = {
+    position: 'relative'
+  };
+
+  const dropdownMenuStyle = {
+    position: 'absolute',
+    top: '100%',
+    right: '0',
+    background: isDarkMode ? '#2a2a2a' : '#ffffff',
+    border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`,
+    borderRadius: '8px',
+    boxShadow: isDarkMode ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.1)',
+    zIndex: 1001,
+    minWidth: '140px',
+    overflow: 'hidden',
+    marginTop: '5px'
+  };
+
+  const dropdownItemStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    background: 'none',
+    border: 'none',
+    color: isDarkMode ? '#ffffff' : '#333333',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    transition: 'all 0.2s ease',
+    fontSize: '14px',
+    minHeight: '44px',
+    '&:hover': {
+      backgroundColor: isDarkMode ? '#333' : '#f0f0f0'
+    }
+  };
+
   return (
     <nav style={navStyle} role="navigation" aria-label="Main navigation">
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: `${designTokens.spacing[4]} ${designTokens.spacing[6]}`,
-        flexWrap: 'wrap',
-        gap: designTokens.spacing[2],
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
-        <div style={{
-          display: 'flex',
-          gap: designTokens.spacing[2],
-          flexWrap: 'wrap'
-        }}>
+      <div style={navContainerStyle}>
+        <div style={navItemsStyle}>
           {[
             { id: 'home', icon: MdHome, label: 'Home' },
             { id: 'add', icon: MdAddCircle, label: 'Add Words' },
@@ -72,71 +156,39 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
               aria-label={label}
               aria-current={currentScreen === id ? 'page' : undefined}
             >
-              <Icon style={{ verticalAlign: 'middle', marginRight: designTokens.spacing[1] }} />
+              <Icon style={{ fontSize: '18px' }} />
               {label}
             </button>
           ))}
         </div>
         
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: designTokens.spacing[2]
-        }}>
+        <div style={controlsStyle}>
           <button
             onClick={onPlayIntro}
-            style={{
-              ...componentStyles.button.base,
-              ...componentStyles.button.variants.secondary,
-              ...componentStyles.button.sizes.sm,
-              color: themeColors.textSecondary,
-              backgroundColor: 'transparent',
-              border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`
-            }}
+            style={buttonStyle}
             aria-label="Play introduction"
           >
-            <MdPlayArrow style={{ marginRight: designTokens.spacing[1] }} />
+            <MdPlayArrow style={{ fontSize: '16px' }} />
             Intro
           </button>
 
           {/* Language Dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div style={dropdownStyle}>
             <button
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-              style={{
-                ...componentStyles.button.base,
-                ...componentStyles.button.variants.secondary,
-                ...componentStyles.button.sizes.sm,
-                color: themeColors.textSecondary,
-                backgroundColor: 'transparent',
-                border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`,
-                minWidth: '100px',
-                justifyContent: 'space-between'
-              }}
+              style={buttonStyle}
               aria-label="Select language"
               aria-expanded={showLanguageDropdown}
               aria-haspopup="true"
             >
-              <MdLanguage style={{ marginRight: designTokens.spacing[1] }} />
+              <MdLanguage style={{ fontSize: '16px' }} />
               <span>{getCurrentLanguageInfo().flag}</span>
-              <span style={{ fontSize: designTokens.typography.fontSize.sm }}>{getCurrentLanguageInfo().name}</span>
+              <span style={{ fontSize: '12px' }}>{getCurrentLanguageInfo().name}</span>
             </button>
 
             {showLanguageDropdown && (
               <div 
-                style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: '0',
-                  background: themeColors.surface,
-                  border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`,
-                  borderRadius: designTokens.borderRadius.lg,
-                  boxShadow: designTokens.shadows.lg,
-                  zIndex: designTokens.zIndex.dropdown,
-                  minWidth: '140px',
-                  overflow: 'hidden',
-                  marginTop: designTokens.spacing[1]
-                }}
+                style={dropdownMenuStyle}
                 role="menu"
                 aria-label="Language options"
               >
@@ -145,42 +197,26 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                     key={language.code}
                     onClick={() => handleLanguageChange(language.code)}
                     style={{
-                      width: '100%',
-                      padding: `${designTokens.spacing[3]} ${designTokens.spacing[4]}`,
-                      background: 'none',
-                      border: 'none',
-                      color: themeColors.text,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: designTokens.spacing[2],
-                      transition: 'all 0.2s ease',
+                      ...dropdownItemStyle,
                       borderBottom: index !== languages.length - 1 
-                        ? `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[200]}` 
-                        : 'none',
-                      minHeight: '44px' // Accessibility: minimum touch target
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = isDarkMode ? designTokens.colors.neutral[700] : designTokens.colors.neutral[100];
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'none';
+                        ? `1px solid ${isDarkMode ? '#555' : '#eee'}` 
+                        : 'none'
                     }}
                     role="menuitem"
                     aria-label={`Select ${language.name}`}
                   >
-                    <span style={{ fontSize: designTokens.typography.fontSize.lg }}>{language.flag}</span>
+                    <span style={{ fontSize: '16px' }}>{language.flag}</span>
                     <span style={{ 
-                      fontSize: designTokens.typography.fontSize.sm,
-                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : designTokens.typography.fontFamily.primary
+                      fontSize: '12px',
+                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : 'inherit'
                     }}>
                       {language.name}
                     </span>
                     {currentLanguage === language.code && (
                       <span style={{ 
-                        color: themeColors.primary,
+                        color: '#2193b0',
                         marginLeft: 'auto',
-                        fontSize: designTokens.typography.fontSize.sm
+                        fontSize: '12px'
                       }}>
                         ✓
                       </span>
@@ -193,18 +229,11 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
 
           <button
             onClick={onToggleDarkMode}
-            style={{
-              ...componentStyles.button.base,
-              ...componentStyles.button.variants.secondary,
-              ...componentStyles.button.sizes.sm,
-              color: themeColors.textSecondary,
-              backgroundColor: 'transparent',
-              border: `1px solid ${isDarkMode ? designTokens.colors.neutral[600] : designTokens.colors.neutral[300]}`
-            }}
+            style={buttonStyle}
             aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
           >
-            {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
-            <span style={{ marginLeft: designTokens.spacing[1] }}>
+            {isDarkMode ? <MdLightMode style={{ fontSize: '16px' }} /> : <MdDarkMode style={{ fontSize: '16px' }} />}
+            <span style={{ fontSize: '12px' }}>
               {isDarkMode ? 'Light' : 'Dark'}
             </span>
           </button>

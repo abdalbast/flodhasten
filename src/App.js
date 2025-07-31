@@ -22,6 +22,7 @@ import { SkipLink, LiveRegion } from './components/ui/Accessibility';
 import ProgressTracker from './components/ui/ProgressTracker';
 import Achievements, { ACHIEVEMENTS } from './components/ui/Achievements';
 import Personalization, { AdaptiveLearning } from './components/ui/Personalization';
+import { designTokens } from './styles/designSystem';
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
