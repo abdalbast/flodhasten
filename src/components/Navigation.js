@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
-import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -36,7 +36,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           flexWrap: 'wrap'
         }}>
           <button className={currentScreen === 'home' ? 'active' : ''} onClick={() => setScreen('home')}><MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home</button>
-          <button className={currentScreen === 'add' ? 'active' : ''} onClick={() => setScreen('add')}><MdAddCircle style={{verticalAlign:'middle',marginRight:4}} /> Add Words</button>
           <button className={currentScreen === 'list' ? 'active' : ''} onClick={() => setScreen('list')}><MdList style={{verticalAlign:'middle',marginRight:4}} /> Word List</button>
           <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
           <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>

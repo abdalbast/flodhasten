@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
-import AddWord from './components/AddWord';
 import WordList from './components/WordList';
 import Explore from './components/Explore';
 import StoryMode from './components/StoryMode';
@@ -613,8 +612,7 @@ function App() {
       }}
     />
   );
-  else if (screen === 'add') content = <AddWord onAdd={handleAdd} isDarkMode={isDarkMode} />;
-  else if (screen === 'list') content = <WordList words={words} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} isDarkMode={isDarkMode} />;
+  else if (screen === 'list') content = <WordList words={words} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
   else if (screen === 'explore') content = <Explore isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <StoryMode isDarkMode={isDarkMode} />;
   else if (screen === 'experiment-map') content = <ExperimentMap skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;

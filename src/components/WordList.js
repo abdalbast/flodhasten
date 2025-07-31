@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
-import { MdVolumeUp } from 'react-icons/md';
+import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 import ttsApi from '../utils/ttsApi';
 
@@ -97,14 +97,34 @@ function parseWordFile(text, ext) {
   return words;
 }
 
-// List of saved Swedish words and their English meanings, with edit/delete
-function WordList({ words, onDelete, onEdit, onImportWords }) {
+// List of saved Swedish words and their English meanings, with edit/delete and add functionality
+function WordList({ words, onDelete, onEdit, onImportWords, onAdd }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editSwedish, setEditSwedish] = useState('');
   const [editEnglish, setEditEnglish] = useState('');
   const [importMsg, setImportMsg] = useState('');
   const [translatingIdx, setTranslatingIdx] = useState(null);
   const [translatingAll, setTranslatingAll] = useState(false);
+  
+  // Add word form state
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newSwedish, setNewSwedish] = useState('');
+  const [newEnglish, setNewEnglish] = useState('');
+  const [addMessage, setAddMessage] = useState('');
+
+  // Handle adding a new word
+  const handleAddWord = (e) => {
+    e.preventDefault();
+    if (!newSwedish.trim() || !newEnglish.trim()) {
+      setAddMessage('Please enter both words.');
+      return;
+    }
+    onAdd({ swedish: newSwedish.trim(), english: newEnglish.trim() });
+    setNewSwedish('');
+    setNewEnglish('');
+    setAddMessage('Word added!');
+    setTimeout(() => setAddMessage(''), 1200);
+  };
 
   // Translate Swedish to English using local proxy (single word)
   async function handleTranslate(idx, swedish) {
@@ -211,6 +231,111 @@ function WordList({ words, onDelete, onEdit, onImportWords }) {
   return (
     <div style={{ maxWidth: 400, margin: '2rem auto', background: '#fffde7', padding: '1.5rem', borderRadius: 16, boxShadow: '0 2px 8px #ffe082' }}>
       <h2 style={{ color: '#fbc02d' }}><FaBookOpen style={{verticalAlign:'middle',marginRight:6}}/>Saved Words</h2>
+      
+      {/* Add Word Section */}
+      <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#e0f7fa', borderRadius: 12, border: '2px solid #b2ebf2' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <h3 style={{ color: '#2193b0', margin: 0 }}><MdAddCircle style={{verticalAlign:'middle',marginRight:6}}/>Add New Word</h3>
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            style={{
+              background: '#2193b0',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              padding: '0.5rem 1rem',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: 14,
+              transition: 'all 0.2s ease',
+              transform: 'translateY(0)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+            }}
+          >
+            {showAddForm ? 'Cancel' : 'Add Word'}
+          </button>
+        </div>
+        
+        {showAddForm && (
+          <form onSubmit={handleAddWord} style={{ marginTop: '1rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>Swedish</label>
+              <input 
+                value={newSwedish} 
+                onChange={e => setNewSwedish(e.target.value)} 
+                style={{ 
+                  width: '100%', 
+                  padding: 8, 
+                  borderRadius: 8, 
+                  border: '1px solid #b2ebf2',
+                  fontSize: 14
+                }}
+                placeholder="Enter Swedish word..."
+              />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>English</label>
+              <input 
+                value={newEnglish} 
+                onChange={e => setNewEnglish(e.target.value)} 
+                style={{ 
+                  width: '100%', 
+                  padding: 8, 
+                  borderRadius: 8, 
+                  border: '1px solid #b2ebf2',
+                  fontSize: 14
+                }}
+                placeholder="Enter English translation..."
+              />
+            </div>
+            <button 
+              type="submit" 
+              style={{ 
+                width: '100%', 
+                background: '#2193b0', 
+                color: '#fff', 
+                border: 'none', 
+                borderRadius: 8, 
+                padding: 10, 
+                fontWeight: 'bold', 
+                fontSize: 16, 
+                cursor: 'pointer',
+                transition:'all 0.2s ease',
+                transform:'translateY(0)',
+                boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+              }}
+            >
+              Add Word
+            </button>
+            {addMessage && <div style={{ color: '#388e3c', marginTop: 10, textAlign: 'center', fontWeight: 'bold' }}>{addMessage}</div>}
+          </form>
+        )}
+      </div>
+
       {/* Import file input */}
       <div style={{marginBottom:12}}>
         <input type="file" accept=".csv,.txt" onChange={handleImportFile} style={{marginBottom:4}} />
