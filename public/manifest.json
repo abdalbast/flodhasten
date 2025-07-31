@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Flodhästen",
+  "name": "Flodhästen - Learn with the River Horse",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#3498db",
+  "background_color": "#ffffff",
+  "description": "Learn Swedish with the River Horse - Interactive lessons, games, and cultural exploration"
 }

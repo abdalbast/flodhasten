@@ -16,6 +16,7 @@ import Spelling from './games/Spelling';
 import MultipleChoice from './games/MultipleChoice';
 import AudioRecall from './games/AudioRecall';
 import OddOneOut from './games/OddOneOut';
+import { register as registerServiceWorker, requestNotificationPermission } from './serviceWorkerRegistration';
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
@@ -416,6 +417,12 @@ function App() {
     return !hasSeenIntro;
   });
   const [showDialogue, setShowDialogue] = useState(false);
+
+  // Register service worker for PWA features
+  useEffect(() => {
+    registerServiceWorker();
+    requestNotificationPermission();
+  }, []);
 
   // Get the selected skill and its words based on current language
   const currentSkills = SKILLS[currentLanguage] || SKILLS.en;
