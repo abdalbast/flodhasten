@@ -19,6 +19,9 @@ import OddOneOut from './games/OddOneOut';
 import { register as registerServiceWorker, requestNotificationPermission } from './serviceWorkerRegistration';
 import Layout from './components/ui/Layout';
 import { SkipLink, LiveRegion } from './components/ui/Accessibility';
+import ProgressTracker from './components/ui/ProgressTracker';
+import Achievements, { ACHIEVEMENTS } from './components/ui/Achievements';
+import Personalization, { AdaptiveLearning } from './components/ui/Personalization';
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
@@ -382,7 +385,19 @@ function getInitialUserData() {
     ownedAvatars: ['moomin'],
     ownedMerchandise: [],
     completedObjectives: [],
-    lastObjectiveReset: null
+    lastObjectiveReset: null,
+    streak: 0,
+    lastLoginDate: new Date().toISOString().split('T')[0],
+    dailyGoal: 1,
+    completedLessons: 0,
+    preferredTopics: [],
+    difficulty: 'normal',
+    unlockedAchievements: [],
+    perfectScores: 0,
+    gamesPlayed: 0,
+    earlyBirdCount: 0,
+    nightOwlCount: 0,
+    wordStats: {}
   };
 }
 
@@ -515,13 +530,21 @@ function App() {
         ...(nextSkill && { [nextSkill.id]: 0 })
       };
     });
+    
     // Add XP for completing a lesson
     addXP(50);
+    
     // Add coins for completing a lesson
     setUserData(prev => ({
       ...prev,
-      coins: prev.coins + 25
+      coins: prev.coins + 25,
+      completedLessons: prev.completedLessons + 1,
+      gamesPlayed: prev.gamesPlayed + 1
     }));
+    
+    // Check for time-based achievements
+    checkTimeBasedAchievements();
+    
     setShowSkillComplete(true);
   };
 
@@ -563,7 +586,102 @@ function App() {
 
   // Update stats for a word (by Swedish+English)
   const handleWordStatUpdate = (swedish, english, result) => {
-    // Not implemented: update stats in skill (could be added if needed)
+    // Update word statistics for adaptive learning
+    setUserData(prev => {
+      const wordStats = prev.wordStats || {};
+      const currentStats = wordStats[swedish] || { correct: 0, incorrect: 0, lastPracticed: null };
+      
+      const updatedStats = {
+        ...currentStats,
+        [result]: currentStats[result] + 1,
+        lastPracticed: new Date().toISOString()
+      };
+      
+      return {
+        ...prev,
+        wordStats: {
+          ...wordStats,
+          [swedish]: updatedStats
+        }
+      };
+    });
+  };
+
+  // Handle achievement unlocks
+  const handleAchievementUnlock = (achievement) => {
+    setUserData(prev => ({
+      ...prev,
+      xp: prev.xp + achievement.xpReward,
+      unlockedAchievements: [...(prev.unlockedAchievements || []), achievement.id]
+    }));
+    
+    // Show achievement notification
+    alert(`🎉 Achievement Unlocked: ${achievement.title}! +${achievement.xpReward} XP`);
+  };
+
+  // Handle daily goal updates
+  const handleGoalUpdate = (newGoal) => {
+    setUserData(prev => ({
+      ...prev,
+      dailyGoal: newGoal
+    }));
+  };
+
+  // Handle preference updates
+  const handlePreferenceUpdate = (preferences) => {
+    setUserData(prev => ({
+      ...prev,
+      ...preferences
+    }));
+  };
+
+  // Handle streak updates
+  const updateStreak = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const lastLogin = userData.lastLoginDate;
+    
+    if (lastLogin !== today) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      
+      if (lastLogin === yesterdayStr) {
+        // Consecutive day
+        setUserData(prev => ({
+          ...prev,
+          streak: prev.streak + 1,
+          lastLoginDate: today
+        }));
+      } else {
+        // Streak broken
+        setUserData(prev => ({
+          ...prev,
+          streak: 1,
+          lastLoginDate: today
+        }));
+      }
+    }
+  };
+
+  // Update streak on component mount
+  useEffect(() => {
+    updateStreak();
+  }, []);
+
+  // Check for special achievements (early bird, night owl)
+  const checkTimeBasedAchievements = () => {
+    const hour = new Date().getHours();
+    if (hour < 9) {
+      setUserData(prev => ({
+        ...prev,
+        earlyBirdCount: prev.earlyBirdCount + 1
+      }));
+    } else if (hour >= 22) {
+      setUserData(prev => ({
+        ...prev,
+        nightOwlCount: prev.nightOwlCount + 1
+      }));
+    }
   };
 
   // Toggle dark mode
@@ -636,6 +754,37 @@ function App() {
     currentAvatar={userData.currentAvatar} 
     isDarkMode={isDarkMode} 
   />;
+  else if (screen === 'progress') content = (
+    <div style={{ padding: designTokens.spacing[6] }}>
+      <ProgressTracker 
+        userData={userData}
+        skillProgress={skillProgress}
+        isDarkMode={isDarkMode}
+        onGoalUpdate={handleGoalUpdate}
+      />
+      <Achievements 
+        userData={userData}
+        isDarkMode={isDarkMode}
+        onAchievementUnlock={handleAchievementUnlock}
+      />
+      <Personalization 
+        userData={userData}
+        isDarkMode={isDarkMode}
+        onGoalUpdate={handleGoalUpdate}
+        onPreferenceUpdate={handlePreferenceUpdate}
+      />
+      <AdaptiveLearning 
+        userData={userData}
+        wordStats={userData.wordStats}
+        isDarkMode={isDarkMode}
+        onReviewWords={(words) => {
+          setLessonWords(words.map(word => ({ swedish: word, english: 'Review word' })));
+          setScreen('games');
+          setGame('multiple');
+        }}
+      />
+    </div>
+  );
   else if (screen === 'games') {
     if (!game) {
       content = <GamesMenu setGame={setGame} isDarkMode={isDarkMode} />;

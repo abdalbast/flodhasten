@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { componentStyles, designTokens, getThemeColors } from '../styles/designSystem';
-import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
+import { MdHome, MdAddCircle, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage, MdTrendingUp } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -62,7 +62,8 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
             { id: 'explore', icon: MdLocationOn, label: 'Explore' },
             { id: 'story', icon: MdBook, label: 'Stories' },
             { id: 'experiment-map', icon: MdMap, label: 'Experiment Map' },
-            { id: 'avatar-shop', icon: MdStore, label: 'Shop' }
+            { id: 'avatar-shop', icon: MdStore, label: 'Shop' },
+            { id: 'progress', icon: MdTrendingUp, label: 'Progress' }
           ].map(({ id, icon: Icon, label }) => (
             <button
               key={id}
