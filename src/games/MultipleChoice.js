@@ -53,8 +53,14 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
         }
       }, 900);
     } else {
-      setFeedback('❌ Try again!');
+      setFeedback('❌ Not quite right - try again!');
       if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'incorrect');
+      // Reset after a short delay to allow user to try again
+      setTimeout(() => {
+        setSelected(null);
+        setAnswerReveal(false);
+        setFeedback('');
+      }, 1500);
     }
   }
 
@@ -79,7 +85,7 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
             color = '#fff';
           }
           return (
-            <button key={i} onClick={()=>pick(opt)} disabled={!!selected} style={{background:bg,color,border:'none',borderRadius:8,padding:'0.7rem',fontWeight:'bold',fontSize:16,cursor:'pointer',boxShadow:'0 1px 4px #90caf9'}}>{opt}</button>
+            <button key={i} onClick={()=>pick(opt)} disabled={answerReveal} style={{background:bg,color,border:'none',borderRadius:8,padding:'0.7rem',fontWeight:'bold',fontSize:16,cursor:answerReveal?'not-allowed':'pointer',boxShadow:'0 1px 4px #90caf9'}}>{opt}</button>
           );
         })}
       </div>
