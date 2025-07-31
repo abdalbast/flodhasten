@@ -58,16 +58,25 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [showConfetti, setShowConfetti] = useState(false);
-  // Track which options are correct/incorrect for feedback
   const [answerReveal, setAnswerReveal] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [showContinue, setShowContinue] = useState(false);
+  
   if (!words.length) return <div style={{textAlign:'center',marginTop:'2rem'}}>No words to practice!</div>;
   const word = words[idx];
 
-  // Generate 4 options: 1 correct, 3 random
-  const options = shuffle([
-    word.english,
-    ...shuffle(words.filter(w=>w!==word)).slice(0,3).map(w=>w.english)
-  ]);
+  // Generate options only when word changes
+  React.useEffect(() => {
+    const newOptions = shuffle([
+      word.english,
+      ...shuffle(words.filter(w=>w!==word)).slice(0,3).map(w=>w.english)
+    ]);
+    setOptions(newOptions);
+    setSelected(null);
+    setFeedback('');
+    setAnswerReveal(false);
+    setShowContinue(false);
+  }, [idx, word, words]);
 
   // Handle answer
   function pick(opt) {
@@ -76,19 +85,7 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
     if (opt === word.english) {
       setFeedback('✅ Correct!');
       if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'correct');
-      setTimeout(() => {
-        setSelected(null);
-        setFeedback('');
-        setAnswerReveal(false);
-        setIdx((idx+1)%words.length);
-        if ((idx+1)%words.length === 0) {
-          setShowConfetti(true);
-          setTimeout(() => {
-            setShowConfetti(false);
-            if (typeof onLessonComplete === 'function') onLessonComplete();
-          }, 1500);
-        }
-      }, 900);
+      setShowContinue(true);
     } else {
       setFeedback('❌ Not quite right - try again!');
       if (onWordStatUpdate) onWordStatUpdate(word.swedish, word.english, 'incorrect');
@@ -97,6 +94,22 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
         setSelected(null);
         setAnswerReveal(false);
         setFeedback('');
+      }, 1500);
+    }
+  }
+
+  // Handle continue to next word
+  function continueToNext() {
+    setSelected(null);
+    setFeedback('');
+    setAnswerReveal(false);
+    setShowContinue(false);
+    setIdx((idx+1)%words.length);
+    if ((idx+1)%words.length === 0) {
+      setShowConfetti(true);
+      setTimeout(() => {
+        setShowConfetti(false);
+        if (typeof onLessonComplete === 'function') onLessonComplete();
       }, 1500);
     }
   }
@@ -122,11 +135,39 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
             color = '#fff';
           }
           return (
-            <button key={i} onClick={()=>pick(opt)} disabled={answerReveal} style={{background:bg,color,border:'none',borderRadius:8,padding:'0.7rem',fontWeight:'bold',fontSize:16,cursor:answerReveal?'not-allowed':'pointer',boxShadow:'0 1px 4px #90caf9'}}>{opt}</button>
+            <button key={`${idx}-${i}`} onClick={()=>pick(opt)} disabled={answerReveal} style={{background:bg,color,border:'none',borderRadius:8,padding:'0.7rem',fontWeight:'bold',fontSize:16,cursor:answerReveal?'not-allowed':'pointer',boxShadow:'0 1px 4px #90caf9'}}>{opt}</button>
           );
         })}
       </div>
       {feedback && <div style={{marginTop:12,fontWeight:'bold',color:feedback.includes('Correct')?'#388e3c':'#d32f2f'}}>{feedback}</div>}
+      {showContinue && (
+        <button 
+          onClick={continueToNext}
+          style={{
+            background:'#1976d2',
+            color:'#fff',
+            border:'none',
+            borderRadius:8,
+            padding:'0.8rem 1.5rem',
+            fontWeight:'bold',
+            fontSize:16,
+            cursor:'pointer',
+            marginTop:12,
+            boxShadow:'0 2px 6px rgba(0,0,0,0.1)',
+            transition:'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 12px rgba(25, 118, 210, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+          }}
+        >
+          Continue →
+        </button>
+      )}
       <div style={{marginTop:10,color:'#888'}}>Word {idx+1} of {words.length}</div>
       {showConfetti && <div style={{position:'absolute',top:0,left:0,right:0,fontSize:48,animation:'pop 1.5s'}}>
         <span role="img" aria-label="confetti">🎉🎊✨🎉🎊✨</span>
