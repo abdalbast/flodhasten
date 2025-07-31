@@ -1,5 +1,5 @@
 // Swedish TTS API Client
-const API_BASE_URL = process.env.REACT_APP_TTS_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_TTS_API_URL || 'https://flodhasten-tts-api-production.up.railway.app';
 
 class SwedishTTSApi {
   constructor() {
@@ -50,6 +50,7 @@ class SwedishTTSApi {
   // Play Swedish text using the API
   async playSwedish(text, service = 'auto') {
     try {
+      console.log('🎤 Attempting to use TTS API for:', text);
       const audioUrl = await this.generateAudio(text, service);
       const audio = new Audio(audioUrl);
       
@@ -64,10 +65,11 @@ class SwedishTTSApi {
       };
 
       await audio.play();
+      console.log('✅ TTS API audio played successfully');
       return audio;
 
     } catch (error) {
-      console.error('Failed to play Swedish audio:', error);
+      console.error('❌ TTS API failed:', error);
       throw error;
     }
   }

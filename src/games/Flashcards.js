@@ -26,8 +26,8 @@ async function playSwedish(word) {
           voice.lang === 'sv' ||
           voice.name.toLowerCase().includes('swedish') ||
           voice.name.toLowerCase().includes('sverige') ||
-          voice.name.toLowerCase().includes('anna') || // Common Swedish voice name
-          voice.name.toLowerCase().includes('alva')   // Another common Swedish voice
+          voice.name.toLowerCase().includes('anna') && voice.lang === 'sv-SE' || // Only Swedish Anna
+          voice.name.toLowerCase().includes('alva') && voice.lang === 'sv-SE'   // Only Swedish Alva
         );
         
         // If no Swedish voice, try any voice with 'sv' in the language code
@@ -48,9 +48,7 @@ async function playSwedish(word) {
         // If still no Swedish voice, try to find any European voice
         if (!swedishVoice) {
           swedishVoice = voices.find(voice => 
-            voice.lang.startsWith('en') || // English might work better than other languages
-            voice.lang.startsWith('de') || // German
-            voice.lang.startsWith('fr')    // French
+            voice.lang.startsWith('en') // English might work better than other languages
           );
         }
         
@@ -62,10 +60,10 @@ async function playSwedish(word) {
         
         if (swedishVoice) {
           utter.voice = swedishVoice;
-          console.log('Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
+          console.log('🎤 Using Swedish voice:', swedishVoice.name, swedishVoice.lang);
         } else {
-          console.log('No Swedish voice found. Using default voice.');
-          console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+          console.log('⚠️ No Swedish voice found. Using default voice.');
+          console.log('📋 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
         }
         
         window.speechSynthesis.speak(utter);
