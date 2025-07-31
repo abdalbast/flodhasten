@@ -117,10 +117,32 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 e.target.style.transform = 'translateY(-2px)';
               }}
             >
-              {showSettingsDropdown ? 
-                <MdClose style={{ fontSize: '28px', fontWeight: 'bold' }} /> :
-                <MdMenu style={{ fontSize: '28px', fontWeight: 'bold' }} />
-              }
+              <div style={{
+                position: 'relative',
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}>
+                <MdMenu style={{ 
+                  fontSize: '28px', 
+                  fontWeight: 'bold',
+                  position: 'absolute',
+                  opacity: showSettingsDropdown ? 0 : 1,
+                  transform: showSettingsDropdown ? 'rotate(-90deg) scale(0.8)' : 'rotate(0deg) scale(1)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                }} />
+                <MdClose style={{ 
+                  fontSize: '28px', 
+                  fontWeight: 'bold',
+                  position: 'absolute',
+                  opacity: showSettingsDropdown ? 1 : 0,
+                  transform: showSettingsDropdown ? 'rotate(0deg) scale(1)' : 'rotate(90deg) scale(0.8)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                }} />
+              </div>
             </button>
 
             {showSettingsDropdown && (
