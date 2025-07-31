@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -81,7 +81,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 color: textColor,
                 cursor: 'pointer',
                 padding: '8px 12px',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -92,9 +92,9 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                   : '0 4px 12px rgba(52, 152, 219, 0.15)',
                 fontWeight: 'bold',
                 fontSize: '14px',
-                minWidth: '40px',
-                width: '40px',
-                height: '40px'
+                minWidth: '48px',
+                width: '48px',
+                height: '48px'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'translateY(-2px)';
@@ -117,7 +117,10 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 e.target.style.transform = 'translateY(-2px)';
               }}
             >
-              <MdMenu style={{ fontSize: '24px', fontWeight: 'bold' }} />
+              {showSettingsDropdown ? 
+                <MdClose style={{ fontSize: '28px', fontWeight: 'bold' }} /> :
+                <MdMenu style={{ fontSize: '28px', fontWeight: 'bold' }} />
+              }
             </button>
 
             {showSettingsDropdown && (
@@ -128,7 +131,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 marginTop: '8px',
                 background: cardBackground,
                 border: `2px solid ${borderColor}`,
-                borderRadius: '16px',
+                borderRadius: '20px',
                 boxShadow: isDarkMode 
                   ? '0 12px 40px rgba(0,0,0,0.4)' 
                   : '0 12px 40px rgba(52, 152, 219, 0.2)',
