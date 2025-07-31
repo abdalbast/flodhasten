@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdMap, MdStore, MdLanguage } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage } from 'react-icons/md';
 
 function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -40,7 +40,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
           <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>
           <button className={currentScreen === 'story' ? 'active' : ''} onClick={() => setScreen('story')}><MdBook style={{verticalAlign:'middle',marginRight:4}} /> Stories</button>
-          <button className={currentScreen === 'experiment-map' ? 'active' : ''} onClick={() => setScreen('experiment-map')}><MdMap style={{verticalAlign:'middle',marginRight:4}} /> Experiment Map</button>
           <button className={currentScreen === 'avatar-shop' ? 'active' : ''} onClick={() => setScreen('avatar-shop')}><MdStore style={{verticalAlign:'middle',marginRight:4}} /> Shop</button>
         </div>
         

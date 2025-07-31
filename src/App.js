@@ -4,7 +4,6 @@ import Home from './components/Home';
 import WordList from './components/WordList';
 import Explore from './components/Explore';
 import StoryMode from './components/StoryMode';
-import ExperimentMap from './components/ExperimentMap';
 import AvatarShop from './components/AvatarShop';
 import IntroAnimation from './components/IntroAnimation';
 import Dialogue from './components/Dialogue';
@@ -613,9 +612,8 @@ function App() {
     />
   );
   else if (screen === 'list') content = <WordList words={words} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
-  else if (screen === 'explore') content = <Explore isDarkMode={isDarkMode} />;
+  else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
   else if (screen === 'story') content = <StoryMode isDarkMode={isDarkMode} />;
-  else if (screen === 'experiment-map') content = <ExperimentMap skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
   else if (screen === 'avatar-shop') content = <AvatarShop 
     userXP={userData.xp} 
     userLevel={userData.level} 
