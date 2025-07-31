@@ -62,21 +62,24 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
   const [options, setOptions] = useState([]);
   const [showContinue, setShowContinue] = useState(false);
   
+  // Generate options only when word index changes
+  React.useEffect(() => {
+    if (words.length > 0) {
+      const currentWord = words[idx];
+      const newOptions = shuffle([
+        currentWord.english,
+        ...shuffle(words.filter(w=>w!==currentWord)).slice(0,3).map(w=>w.english)
+      ]);
+      setOptions(newOptions);
+      setSelected(null);
+      setFeedback('');
+      setAnswerReveal(false);
+      setShowContinue(false);
+    }
+  }, [idx, words]);
+
   if (!words.length) return <div style={{textAlign:'center',marginTop:'2rem'}}>No words to practice!</div>;
   const word = words[idx];
-
-  // Generate options only when word changes
-  React.useEffect(() => {
-    const newOptions = shuffle([
-      word.english,
-      ...shuffle(words.filter(w=>w!==word)).slice(0,3).map(w=>w.english)
-    ]);
-    setOptions(newOptions);
-    setSelected(null);
-    setFeedback('');
-    setAnswerReveal(false);
-    setShowContinue(false);
-  }, [idx, word, words]);
 
   // Handle answer
   function pick(opt) {
