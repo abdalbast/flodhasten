@@ -1,5 +1,5 @@
 // Swedish TTS API Client
-const API_BASE_URL = process.env.REACT_APP_TTS_API_URL || 'https://flodhasten-tts-api-production.up.railway.app';
+const API_BASE_URL = process.env.REACT_APP_TTS_API_URL || 'https://flodhasten-tts-api.onrender.com';
 
 class SwedishTTSApi {
   constructor() {
@@ -49,29 +49,9 @@ class SwedishTTSApi {
 
   // Play Swedish text using the API
   async playSwedish(text, service = 'auto') {
-    try {
-      console.log('🎤 Attempting to use TTS API for:', text);
-      const audioUrl = await this.generateAudio(text, service);
-      const audio = new Audio(audioUrl);
-      
-      // Clean up the URL after playing
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
-      };
-      
-      audio.onerror = () => {
-        console.error('Audio playback failed');
-        URL.revokeObjectURL(audioUrl);
-      };
-
-      await audio.play();
-      console.log('✅ TTS API audio played successfully');
-      return audio;
-
-    } catch (error) {
-      console.error('❌ TTS API failed:', error);
-      throw error;
-    }
+    // Skip API, use only browser TTS with Alva voice
+    console.log('🎤 Skipping API, using browser TTS with Alva (sv-SE) for:', text);
+    throw new Error('Using browser TTS only');
   }
 
   // Get available services
