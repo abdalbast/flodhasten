@@ -196,6 +196,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           fontFamily: '"Georgia", serif'
         }}>
           Learn Swedish with the River Horse
+          I love you Clara
         </p>
         
         {/* Moomin-inspired decorative elements */}
