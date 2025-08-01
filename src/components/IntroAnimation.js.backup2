@@ -1,98 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 function IntroAnimation({ onComplete, isDarkMode }) {
   const [showSkip, setShowSkip] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const videoRef = useRef(null);
 
-  useEffect(() => {
-    // Test video accessibility
-    const testVideo = async () => {
-      try {
-        const response = await fetch('/flodhasten/intro-video.mp4', { method: 'HEAD' });
-        if (!response.ok) {
-          console.error('Video file not accessible:', response.status, response.statusText);
-          setError('Video file not accessible');
-          setTimeout(() => onComplete(), 2000);
-          return;
-        }
-        console.log('Video file is accessible');
-      } catch (err) {
-        console.error('Error testing video:', err);
-        setError('Network error');
-        setTimeout(() => onComplete(), 2000);
-      }
-    };
-    
-    testVideo();
-  }, [onComplete]);
-
   const handlePlay = () => {
-    console.log('Video started playing');
     setIsLoading(false);
     setShowSkip(true);
   };
 
   const handleEnded = () => {
-    console.log('Video ended');
     onComplete();
   };
 
   const handleSkip = () => {
-    console.log('Video skipped');
     if (videoRef.current) {
       videoRef.current.pause();
     }
     onComplete();
   };
 
-  const handleError = (e) => {
-    console.error('Video error:', e);
-    setError('Video failed to load');
-    setTimeout(() => onComplete(), 2000);
+  const handleError = () => {
+    console.log('Video failed to load, completing intro');
+    onComplete();
   };
-
-  const handleLoadStart = () => {
-    console.log('Video load started');
-  };
-
-  const handleCanPlay = () => {
-    console.log('Video can play');
-  };
-
-  const handleLoadedData = () => {
-    console.log('Video data loaded');
-  };
-
-  if (error) {
-    return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        background: '#000000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        flexDirection: 'column'
-      }}>
-        <div style={{
-          color: '#ffffff',
-          fontSize: '18px',
-          fontFamily: '"Georgia", serif',
-          textAlign: 'center'
-        }}>
-          {error}
-          <br />
-          <small>Continuing to app...</small>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{
@@ -127,14 +59,10 @@ function IntroAnimation({ onComplete, isDarkMode }) {
           onPlay={handlePlay}
           onEnded={handleEnded}
           onError={handleError}
-          onLoadStart={handleLoadStart}
-          onCanPlay={handleCanPlay}
-          onLoadedData={handleLoadedData}
           controls={false}
           autoPlay
           muted
           playsInline
-          preload="auto"
         >
           <source src="/flodhasten/intro-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -183,18 +111,6 @@ function IntroAnimation({ onComplete, isDarkMode }) {
           Loading Flodhästen Intro...
         </div>
       )}
-
-      {/* Debug Info */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        left: '20px',
-        color: '#ffffff',
-        fontSize: '12px',
-        opacity: 0.7
-      }}>
-        Video Path: /flodhasten/intro-video.mp4
-      </div>
 
       {/* Decorative Elements */}
       <div style={{
