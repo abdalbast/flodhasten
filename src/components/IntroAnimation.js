@@ -64,7 +64,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
           muted
           playsInline
         >
-          <source src="/intro-video.mp4" type="video/mp4" />
+          <source src="/flodhasten/intro-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
