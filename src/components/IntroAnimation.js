@@ -4,6 +4,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
   const [showSkip, setShowSkip] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOutro, setIsOutro] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -14,19 +15,29 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         if (!response.ok) {
           console.error('Video file not accessible:', response.status, response.statusText);
           setError('Video file not accessible');
-          setTimeout(() => onComplete(), 2000);
+          setTimeout(() => startOutro(), 2000);
           return;
         }
         console.log('Video file is accessible');
       } catch (err) {
         console.error('Error testing video:', err);
         setError('Network error');
-        setTimeout(() => onComplete(), 2000);
+        setTimeout(() => startOutro(), 2000);
       }
     };
     
     testVideo();
-  }, [onComplete]);
+  }, []);
+
+  const startOutro = () => {
+    console.log('Starting outro transition');
+    setIsOutro(true);
+    // Wait for outro animation to complete before calling onComplete
+    setTimeout(() => {
+      console.log('Outro complete, calling onComplete');
+      onComplete();
+    }, 1500); // Match the CSS transition duration
+  };
 
   const handlePlay = () => {
     console.log('Video started playing');
@@ -36,7 +47,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
 
   const handleEnded = () => {
     console.log('Video ended');
-    onComplete();
+    startOutro();
   };
 
   const handleSkip = () => {
@@ -44,13 +55,13 @@ function IntroAnimation({ onComplete, isDarkMode }) {
     if (videoRef.current) {
       videoRef.current.pause();
     }
-    onComplete();
+    startOutro();
   };
 
   const handleError = (e) => {
     console.error('Video error:', e);
     setError('Video failed to load');
-    setTimeout(() => onComplete(), 2000);
+    setTimeout(() => startOutro(), 2000);
   };
 
   const handleLoadStart = () => {
@@ -78,7 +89,9 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 9999,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        opacity: isOutro ? 0 : 1,
+        transition: 'opacity 1.5s ease-in-out'
       }}>
         <div style={{
           color: '#ffffff',
@@ -106,7 +119,10 @@ function IntroAnimation({ onComplete, isDarkMode }) {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 9999,
-      flexDirection: 'column'
+      flexDirection: 'column',
+      opacity: isOutro ? 0 : 1,
+      transform: isOutro ? 'scale(1.1)' : 'scale(1)',
+      transition: 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)'
     }}>
       {/* Video Container */}
       <div style={{
@@ -115,7 +131,9 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         maxHeight: '80vh',
         borderRadius: '20px',
         overflow: 'hidden',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.5)'
+        boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+        transform: isOutro ? 'scale(0.9)' : 'scale(1)',
+        transition: 'transform 1.5s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         <video
           ref={videoRef}
@@ -141,7 +159,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         </video>
         
         {/* Skip Button */}
-        {showSkip && (
+        {showSkip && !isOutro && (
           <button
             onClick={handleSkip}
             style={{
@@ -172,15 +190,36 @@ function IntroAnimation({ onComplete, isDarkMode }) {
       </div>
 
       {/* Loading Text */}
-      {isLoading && (
+      {isLoading && !isOutro && (
         <div style={{
           marginTop: '20px',
           color: '#ffffff',
           fontSize: '18px',
           fontFamily: '"Georgia", serif',
-          textAlign: 'center'
+          textAlign: 'center',
+          opacity: isOutro ? 0 : 1,
+          transform: isOutro ? 'translateY(20px)' : 'translateY(0)',
+          transition: 'all 0.8s ease-out'
         }}>
           Loading Flodhästen Intro...
+        </div>
+      )}
+
+      {/* Outro Text */}
+      {isOutro && (
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: '#ffffff',
+          fontSize: '24px',
+          fontFamily: '"Georgia", serif',
+          textAlign: 'center',
+          opacity: isOutro ? 1 : 0,
+          animation: 'fadeInUp 1s ease-out'
+        }}>
+          Welcome to Flodhästen
         </div>
       )}
 
@@ -191,7 +230,9 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         left: '20px',
         color: '#ffffff',
         fontSize: '12px',
-        opacity: 0.7
+        opacity: 0.7,
+        opacity: isOutro ? 0 : 0.7,
+        transition: 'opacity 0.5s ease'
       }}>
         Video Path: /flodhasten/intro-video.mp4
       </div>
@@ -205,8 +246,9 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         height: '60px',
         background: '#3498db',
         borderRadius: '50%',
-        opacity: 0.3,
-        animation: 'float 3s ease-in-out infinite'
+        opacity: isOutro ? 0 : 0.3,
+        animation: 'float 3s ease-in-out infinite',
+        transition: 'opacity 0.8s ease'
       }} />
       <div style={{
         position: 'absolute',
@@ -216,8 +258,9 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         height: '40px',
         background: '#27ae60',
         borderRadius: '50%',
-        opacity: 0.3,
-        animation: 'float 4s ease-in-out infinite 1s'
+        opacity: isOutro ? 0 : 0.3,
+        animation: 'float 4s ease-in-out infinite 1s',
+        transition: 'opacity 0.8s ease'
       }} />
 
       {/* CSS Animations */}
@@ -226,6 +269,17 @@ function IntroAnimation({ onComplete, isDarkMode }) {
           @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
+          }
+          
+          @keyframes fadeInUp {
+            0% { 
+              opacity: 0; 
+              transform: translateX(-50%) translateY(30px); 
+            }
+            100% { 
+              opacity: 1; 
+              transform: translateX(-50%) translateY(0); 
+            }
           }
         `}
       </style>
