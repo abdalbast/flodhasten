@@ -563,7 +563,8 @@ function StoryMode({ isDarkMode }) {
             >
               <MdVolumeUp style={{ 
                 fontSize: '24px',
-                animation: isPlaying ? 'pulse 1s infinite' : 'none'
+                animation: isPlaying ? 'pulse 1s infinite' : 'none',
+                opacity: isPlaying ? 0.5 : 1
               }} />
             </button>
           </div>
@@ -854,17 +855,6 @@ function StoryMode({ isDarkMode }) {
         </div>
       )}
     </div>
-
-    {/* CSS Animations */}
-    <style>
-      {`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-      `}
-    </style>
-  </div>
   );
 }
 
