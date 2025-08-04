@@ -185,445 +185,388 @@ function WordList({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, i
   }
 
   return (
-    <div style={{
-      padding: '2rem',
-      maxWidth: '1200px',
-      margin: '0 auto',
-      minHeight: '80vh'
-    }}>
+    <div style={{ maxWidth: 400, margin: '2rem auto', background: '#fffde7', padding: '1.5rem', borderRadius: 16, boxShadow: '0 2px 8px #ffe082' }}>
+      <h2 style={{ color: '#fbc02d' }}><FaBookOpen style={{verticalAlign:'middle',marginRight:6}}/>Saved Words</h2>
+      
       {/* Add Word Section */}
-      <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
-        padding: '2rem',
-        marginBottom: '2rem',
-        borderRadius: '20px'
-      }}>
-        <h2 style={{
-          color: isDarkMode ? '#fff' : '#333',
-          marginBottom: '1.5rem',
-          fontSize: '2rem',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
-          Add New Word
-        </h2>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '1rem',
-          marginBottom: '1.5rem'
-        }}>
-          <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: isDarkMode ? '#ccc' : '#666',
-              fontSize: '0.9rem',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
-              Swedish Word
-            </label>
-            <input
-              type="text"
-              value={newSwedish}
-              onChange={e => setNewSwedish(e.target.value)}
-              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                borderRadius: '12px',
-                border: 'none',
-                fontSize: '1rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                color: isDarkMode ? '#fff' : '#333',
-                background: 'transparent'
-              }}
-              placeholder="Enter Swedish word..."
-            />
-          </div>
-          
-          <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: isDarkMode ? '#ccc' : '#666',
-              fontSize: '0.9rem',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
-              English Translation
-            </label>
-            <input 
-              type="text" 
-              value={newEnglish} 
-              onChange={e => setNewEnglish(e.target.value)} 
-              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                borderRadius: '12px',
-                border: 'none',
-                fontSize: '1rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                color: isDarkMode ? '#fff' : '#333',
-                background: 'transparent'
-              }}
-              placeholder="Enter English translation..."
-            />
-          </div>
-        </div>
-        
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap'
-        }}>
-          <button
-            onClick={handleAddWord}
-            className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
+      <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#e0f7fa', borderRadius: 12, border: '2px solid #b2ebf2' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <h3 style={{ color: '#2193b0', margin: 0 }}><MdAddCircle style={{verticalAlign:'middle',marginRight:6}}/>Add New Word</h3>
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
             style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '12px',
-              border: 'none',
+              background: '#2193b0',
               color: '#fff',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              background: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}
-          >
-            Add Word
-          </button>
-          
-          <button
-            onClick={handleImportFile}
-            className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '12px',
               border: 'none',
-              color: isDarkMode ? '#ccc' : '#666',
+              borderRadius: 8,
+              padding: '0.5rem 1rem',
               cursor: 'pointer',
               fontWeight: 'bold',
-              fontSize: '1rem',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+              fontSize: 14,
+              transition: 'all 0.2s ease',
+              transform: 'translateY(0)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
             }}
           >
-            Import Words
+            {showAddForm ? 'Cancel' : 'Add Word'}
           </button>
         </div>
-      </div>
-
-      {/* Words List */}
-      <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
-        padding: '2rem',
-        borderRadius: '20px'
-      }}>
-        <h2 style={{
-          color: isDarkMode ? '#fff' : '#333',
-          marginBottom: '1.5rem',
-          fontSize: '2rem',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
-          Your Words ({words.length})
-        </h2>
         
-        {words.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '3rem',
-            color: isDarkMode ? '#ccc' : '#666',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-          }}>
-            <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>No words added yet.</p>
-            <p style={{ fontSize: '0.9rem' }}>Add your first word above!</p>
-          </div>
-        ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '1rem'
-          }}>
-            {words.map((w, i) => {
-              const isSkillWord = i < skillWords.length;
-              return (
-                <div
-                  key={i}
-                  className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`}
-                  style={{
-                    padding: '1.5rem',
-                    borderRadius: '16px',
-                    position: 'relative',
-                    border: isSkillWord 
-                      ? '1px solid rgba(76, 175, 80, 0.3)' 
-                      : '1px solid rgba(255, 193, 7, 0.3)',
-                    background: isSkillWord 
-                      ? 'rgba(76, 175, 80, 0.05)' 
-                      : 'rgba(255, 193, 7, 0.05)'
-                  }}
-                >
-                  {isSkillWord && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '0.75rem',
-                      right: '0.75rem',
-                      background: '#4CAF50',
-                      color: '#fff',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '12px',
-                      fontSize: '0.7rem',
-                      fontWeight: 'bold'
-                    }}>
-                      Skill
-                    </div>
-                  )}
-                  
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '1rem'
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{
-                        fontSize: '1.3rem',
-                        fontWeight: 'bold',
-                        color: isDarkMode ? '#fff' : '#333',
-                        marginBottom: '0.5rem',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                      }}>
-                        {w.swedish}
-                      </div>
-                      <div style={{
-                        fontSize: '1rem',
-                        color: isDarkMode ? '#ccc' : '#666',
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                      }}>
-                        {w.english}
-                      </div>
-                      {w.kurdish && (
-                        <div style={{
-                          fontSize: '0.9rem',
-                          color: isDarkMode ? '#aaa' : '#888',
-                          marginTop: '0.25rem',
-                          fontFamily: 'Arial, sans-serif'
-                        }}>
-                          {w.kurdish}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div style={{
-                      display: 'flex',
-                      gap: '0.5rem',
-                      alignItems: 'center'
-                    }}>
-                      <button
-                        onClick={() => playSwedish(w.swedish)}
-                        className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                        style={{
-                          padding: '0.5rem',
-                          borderRadius: '50%',
-                          border: 'none',
-                          color: '#2193b0',
-                          cursor: 'pointer',
-                          fontSize: '1.2rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <MdVolumeUp />
-                      </button>
-                      
-                      {!isSkillWord && (
-                        <>
-                          <button
-                            onClick={() => startEdit(i)}
-                            className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                            style={{
-                              padding: '0.5rem',
-                              borderRadius: '50%',
-                              border: 'none',
-                              color: '#FF9800',
-                              cursor: 'pointer',
-                              fontSize: '1rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={() => onDelete(i)}
-                            className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                            style={{
-                              padding: '0.5rem',
-                              borderRadius: '50%',
-                              border: 'none',
-                              color: '#F44336',
-                              cursor: 'pointer',
-                              fontSize: '1rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}
-                          >
-                            <FaTrash />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Word Stats */}
-                  <div style={{
-                    display: 'flex',
-                    gap: '1rem',
-                    fontSize: '0.8rem',
-                    color: isDarkMode ? '#aaa' : '#888',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                  }}>
-                    <span>Correct: {w.stats?.correct || 0}</span>
-                    <span>Incorrect: {w.stats?.incorrect || 0}</span>
-                    {w.stats?.lastPracticed && (
-                      <span>Last: {new Date(w.stats.lastPracticed).toLocaleDateString()}</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        {showAddForm && (
+          <form onSubmit={handleAddWord} style={{ marginTop: '1rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>Swedish</label>
+              <input 
+                value={newSwedish} 
+                onChange={e => setNewSwedish(e.target.value)} 
+                style={{ 
+                  width: '100%', 
+                  padding: 8, 
+                  borderRadius: 8, 
+                  border: '1px solid #b2ebf2',
+                  fontSize: 14
+                }}
+                placeholder="Enter Swedish word..."
+              />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>English</label>
+              <input 
+                value={newEnglish} 
+                onChange={e => setNewEnglish(e.target.value)} 
+                style={{ 
+                  width: '100%', 
+                  padding: 8, 
+                  borderRadius: 8, 
+                  border: '1px solid #b2ebf2',
+                  fontSize: 14
+                }}
+                placeholder="Enter English translation..."
+              />
+            </div>
+            <button 
+              type="submit" 
+              style={{ 
+                width: '100%', 
+                background: '#2193b0', 
+                color: '#fff', 
+                border: 'none', 
+                borderRadius: 8, 
+                padding: 10, 
+                fontWeight: 'bold', 
+                fontSize: 16, 
+                cursor: 'pointer',
+                transition:'all 0.2s ease',
+                transform:'translateY(0)',
+                boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+              }}
+            >
+              Add Word
+            </button>
+            {addMessage && <div style={{ color: '#388e3c', marginTop: 10, textAlign: 'center', fontWeight: 'bold' }}>{addMessage}</div>}
+          </form>
         )}
       </div>
 
-      {/* Edit Modal */}
-      {editIdx !== null && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '1rem'
-        }}>
-          <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
-            padding: '2rem',
-            borderRadius: '20px',
-            maxWidth: '400px',
-            width: '100%'
-          }}>
-            <h3 style={{
-              color: isDarkMode ? '#fff' : '#333',
-              marginBottom: '1.5rem',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
-              Edit Word
-            </h3>
-            
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '0.5rem',
-                color: isDarkMode ? '#ccc' : '#666',
-                fontSize: '0.9rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      {/* Import file input */}
+      <div style={{marginBottom:12}}>
+        <input type="file" accept=".csv,.txt" onChange={handleImportFile} style={{marginBottom:4}} />
+        <div style={{fontSize:12,color:'#888'}}>Import .csv (Swedish,English) or .txt (Swedish - English)</div>
+        <button type="button" onClick={handleTranslateAll} disabled={translatingAll} style={{
+          marginTop:6,
+          marginBottom:4,
+          background:'#2193b0',
+          color:'#fff',
+          border:'none',
+          borderRadius:8,
+          padding:'0.4rem 1.1rem',
+          fontWeight:'bold',
+          fontSize:14,
+          cursor:translatingAll?'not-allowed':'pointer',
+          transition:'all 0.2s ease',
+          transform:'translateY(0)',
+          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+        }}
+        onMouseEnter={(e) => {
+          if (!translatingAll) {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+        }}
+        onMouseDown={(e) => {
+          if (!translatingAll) {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+          }
+        }}
+        onMouseUp={(e) => {
+          if (!translatingAll) {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+          }
+        }}
+        >
+          {translatingAll ? <FaSpinner className="spin" style={{fontSize:16,marginRight:6}}/> : null}
+          Translate All Unknown
+        </button>
+        {importMsg && <div style={{fontSize:13,color:'#388e3c',marginTop:2}}>{importMsg}</div>}
+      </div>
+      {words.length === 0 ? (
+        <div style={{ color: '#aaa', textAlign: 'center' }}>No words yet. Add some!</div>
+      ) : (
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {words.map((w, i) => {
+            const isSkillWord = i < skillWords.length;
+            return (
+              <li key={i} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                margin: '0.7rem 0', 
+                background: isSkillWord ? '#e8f5e8' : '#fffde7', 
+                borderRadius: 8, 
+                padding: '0.5rem 0.7rem',
+                border: isSkillWord ? '1px solid #4caf50' : '1px solid #ffeb3b'
               }}>
-                Swedish Word
-              </label>
-              <input
-                type="text"
-                value={editSwedish}
-                onChange={e=>setEditSwedish(e.target.value)}
-                className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  borderRadius: '12px',
-                  border: 'none',
-                  fontSize: '1rem',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                  color: isDarkMode ? '#fff' : '#333',
-                  background: 'transparent'
-                }}
-              />
-            </div>
-            
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '0.5rem',
-                color: isDarkMode ? '#ccc' : '#666',
-                fontSize: '0.9rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-              }}>
-                English Translation
-              </label>
-              <input
-                type="text"
-                value={editEnglish}
-                onChange={e=>setEditEnglish(e.target.value)}
-                className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  borderRadius: '12px',
-                  border: 'none',
-                  fontSize: '1rem',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                  color: isDarkMode ? '#fff' : '#333',
-                  background: 'transparent'
-                }}
-              />
-            </div>
-            
-            <div style={{
-              display: 'flex',
-              gap: '1rem'
-            }}>
-              <button
-                onClick={saveEdit}
-                className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  borderRadius: '12px',
-                  border: 'none',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                  background: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                }}
-              >
-                Save
-              </button>
-              <button
-                onClick={cancelEdit}
-                className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  borderRadius: '12px',
-                  border: 'none',
-                  color: isDarkMode ? '#ccc' : '#666',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+                {editIdx === i ? (
+                  <span style={{ flex: 1, display: 'flex', gap: 6 }}>
+                    <input value={editSwedish} onChange={e=>setEditSwedish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
+                    <span style={{ color: '#888' }}>–</span>
+                    <input value={editEnglish} onChange={e=>setEditEnglish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
+                  </span>
+                ) : (
+                  <span>
+                    <b style={{ color: '#2193b0' }}>{w.swedish}</b>
+                    <button type="button" aria-label={`Play ${w.swedish}`} onClick={()=>playSwedish(w.swedish)} style={{background:'none',border:'none',color:'#2193b0',cursor:'pointer',fontSize:20,verticalAlign:'middle',marginLeft:4}}><MdVolumeUp /></button>
+                    <span style={{ color: '#888' }}>–</span> <span style={{ color: '#333' }}>{w.english}</span>
+                    {isSkillWord && (
+                      <span style={{ 
+                        background: '#4caf50', 
+                        color: '#fff', 
+                        padding: '0.2rem 0.5rem', 
+                        borderRadius: '12px', 
+                        fontSize: '0.7rem', 
+                        marginLeft: '0.5rem',
+                        fontWeight: 'bold'
+                      }}>
+                        Skill
+                      </span>
+                    )}
+                    {w.english === '(unknown)' && (
+                      <button type="button" onClick={()=>handleTranslate(i, w.swedish)} disabled={translatingIdx===i} style={{
+                        marginLeft:8,
+                        background:'#2193b0',
+                        color:'#fff',
+                        border:'none',
+                        borderRadius:8,
+                        padding:'0.2rem 0.7rem',
+                        fontSize:13,
+                        cursor:'pointer',
+                        verticalAlign:'middle',
+                        transition:'all 0.2s ease',
+                        transform:'translateY(0)',
+                        boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                      }}
+                      onMouseDown={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }
+                      }}
+                      onMouseUp={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }
+                      }}
+                      >
+                        {translatingIdx===i ? <FaSpinner className="spin" style={{fontSize:16}}/> : 'Translate'}
+                      </button>
+                    )}
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                      <span>✔️ {w.stats?.correct || 0} </span>
+                      <span>❌ {w.stats?.incorrect || 0} </span>
+                      <span>🕒 {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
+                    </div>
+                  </span>
+                )}
+                {editIdx === i ? (
+                  <span style={{ display: 'flex', gap: 4 }}>
+                    <button onClick={saveEdit} style={{ 
+                      background: '#388e3c', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: 8, 
+                      padding: '0.3rem 0.7rem', 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
+                      transition:'all 0.2s ease',
+                      transform:'translateY(0)',
+                      boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                    }}
+                    onMouseDown={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                    }}
+                    onMouseUp={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
+                    }}
+                    >
+                      Save
+                    </button>
+                    <button onClick={cancelEdit} style={{ 
+                      background: '#f44336', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: 8, 
+                      padding: '0.3rem 0.7rem', 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
+                      transition:'all 0.2s ease',
+                      transform:'translateY(0)',
+                      boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                    }}
+                    onMouseDown={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                    }}
+                    onMouseUp={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                    }}
+                    >
+                      Cancel
+                    </button>
+                  </span>
+                ) : (
+                  <span style={{ display: 'flex', gap: 4 }}>
+                    {!isSkillWord && (
+                      <>
+                        <button onClick={() => startEdit(i)} style={{ 
+                          background: '#2193b0', 
+                          color: '#fff', 
+                          border: 'none', 
+                          borderRadius: 8, 
+                          padding: '0.3rem 0.7rem', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          transition:'all 0.2s ease',
+                          transform:'translateY(0)',
+                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                        }}
+                        onMouseDown={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseUp={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => onDelete(i)} style={{ 
+                          background: '#f44336', 
+                          color: '#fff', 
+                          border: 'none', 
+                          borderRadius: 8, 
+                          padding: '0.3rem 0.7rem', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          transition:'all 0.2s ease',
+                          transform:'translateY(0)',
+                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                        }}
+                        onMouseDown={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseUp={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                        }}
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );

@@ -42,74 +42,26 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
   const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
 
   return (
-    <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`} style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      background: isDarkMode 
-        ? 'rgba(0, 0, 0, 0.3)' 
-        : 'rgba(255, 255, 255, 0.8)',
-      borderBottom: isDarkMode 
-        ? '1px solid rgba(255, 255, 255, 0.1)' 
-        : '1px solid rgba(0, 0, 0, 0.1)',
-      padding: '1rem 0',
-      marginBottom: '1rem'
-    }}>
+    <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`}>
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0 1.5rem',
+        padding: '0 1rem',
         flexWrap: 'wrap',
-        gap: '0.5rem',
-        maxWidth: '1200px',
-        margin: '0 auto'
+        gap: '0.5rem'
       }}>
         <div style={{
           display: 'flex',
           gap: '0.5rem',
           flexWrap: 'wrap'
         }}>
-          {[
-            { screen: 'home', icon: <MdHome />, label: 'Home' },
-            { screen: 'list', icon: <MdList />, label: 'Word List' },
-            { screen: 'games', icon: <MdGames />, label: 'Games' },
-            { screen: 'explore', icon: <MdLocationOn />, label: 'Explore' },
-            { screen: 'story', icon: <MdBook />, label: 'Stories' },
-            { screen: 'avatar-shop', icon: <MdStore />, label: 'Shop' }
-          ].map(({ screen, icon, label }) => (
-            <button 
-              key={screen}
-              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''} ${currentScreen === screen ? 'active' : ''}`}
-              onClick={() => setScreen(screen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem 1rem',
-                borderRadius: '12px',
-                border: 'none',
-                color: currentScreen === screen 
-                  ? (isDarkMode ? '#fff' : '#2193b0')
-                  : (isDarkMode ? '#ccc' : '#666'),
-                cursor: 'pointer',
-                fontWeight: '500',
-                fontSize: '14px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                background: currentScreen === screen 
-                  ? (isDarkMode ? 'rgba(52, 152, 219, 0.3)' : 'rgba(52, 152, 219, 0.15)')
-                  : 'transparent',
-                border: currentScreen === screen 
-                  ? `1px solid ${isDarkMode ? 'rgba(52, 152, 219, 0.5)' : 'rgba(52, 152, 219, 0.3)'}`
-                  : '1px solid transparent'
-              }}
-            >
-              {icon}
-              {label}
-            </button>
-          ))}
+          <button className={currentScreen === 'home' ? 'active' : ''} onClick={() => setScreen('home')}><MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home</button>
+          <button className={currentScreen === 'list' ? 'active' : ''} onClick={() => setScreen('list')}><MdList style={{verticalAlign:'middle',marginRight:4}} /> Word List</button>
+          <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
+          <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>
+          <button className={currentScreen === 'story' ? 'active' : ''} onClick={() => setScreen('story')}><MdBook style={{verticalAlign:'middle',marginRight:4}} /> Stories</button>
+          <button className={currentScreen === 'avatar-shop' ? 'active' : ''} onClick={() => setScreen('avatar-shop')}><MdStore style={{verticalAlign:'middle',marginRight:4}} /> Shop</button>
         </div>
         
         <div style={{
@@ -121,34 +73,61 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
-              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
               style={{
+                background: isDarkMode 
+                  ? 'linear-gradient(135deg, #3d3d3d 0%, #4d4d4d 50%, #3d3d3d 100%)' 
+                  : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)',
+                border: `2px solid ${borderColor}`,
                 color: textColor,
                 cursor: 'pointer',
-                padding: '0.75rem',
-                borderRadius: '12px',
+                padding: '8px 12px',
+                borderRadius: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                transition: 'all 0.3s ease',
+                transform: 'translateY(0)',
+                boxShadow: isDarkMode 
+                  ? '0 4px 12px rgba(0,0,0,0.3)' 
+                  : '0 4px 12px rgba(52, 152, 219, 0.15)',
                 fontWeight: 'bold',
-                fontSize: '16px',
+                fontSize: '14px',
                 minWidth: '48px',
                 width: '48px',
-                height: '48px',
-                border: 'none'
+                height: '48px'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = isDarkMode 
+                  ? '0 6px 20px rgba(0,0,0,0.4)' 
+                  : '0 6px 20px rgba(52, 152, 219, 0.25)';
+                e.target.style.borderColor = moominBlue;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = isDarkMode 
+                  ? '0 4px 12px rgba(0,0,0,0.3)' 
+                  : '0 4px 12px rgba(52, 152, 219, 0.15)';
+                e.target.style.borderColor = borderColor;
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateY(0)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
               }}
             >
               <div style={{
                 position: 'relative',
-                width: '24px',
-                height: '24px',
+                width: '28px',
+                height: '28px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
               }}>
                 <MdMenu style={{ 
-                  fontSize: '24px', 
+                  fontSize: '28px', 
                   fontWeight: 'bold',
                   position: 'absolute',
                   opacity: showSettingsDropdown ? 0 : 1,
@@ -156,7 +135,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                 }} />
                 <MdClose style={{ 
-                  fontSize: '24px', 
+                  fontSize: '28px', 
                   fontWeight: 'bold',
                   position: 'absolute',
                   opacity: showSettingsDropdown ? 1 : 0,
@@ -167,34 +146,47 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
             </button>
 
             {showSettingsDropdown && (
-              <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
+              <div style={{
                 position: 'absolute',
                 top: '100%',
                 right: '0',
                 marginTop: '8px',
+                background: cardBackground,
+                border: `2px solid ${borderColor}`,
                 borderRadius: '20px',
+                boxShadow: isDarkMode 
+                  ? '0 12px 40px rgba(0,0,0,0.4)' 
+                  : '0 12px 40px rgba(52, 152, 219, 0.2)',
                 zIndex: 1000,
-                minWidth: '220px',
+                minWidth: '200px',
                 overflow: 'hidden',
                 animation: 'dropdownSlide 0.3s ease-out'
               }}>
                 {/* Intro Button */}
                 <button
                   onClick={handleIntroClick}
-                  className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
                   style={{
                     width: '100%',
                     padding: '16px 20px',
+                    background: 'none',
                     border: 'none',
                     color: textColor,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
+                    transition: 'all 0.2s ease',
+                    borderBottom: `1px solid ${borderColor}`,
                     fontSize: '14px',
-                    fontWeight: '500',
-                    borderRadius: '0',
-                    background: 'transparent'
+                    fontWeight: '500'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                    e.target.style.color = moominBlue;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'none';
+                    e.target.style.color = textColor;
                   }}
                 >
                   <MdPlayArrow style={{ fontSize: '18px', color: moominGreen }} />
@@ -204,22 +196,28 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 {/* Dark Mode Toggle */}
                 <button
                   onClick={handleDarkModeToggle}
-                  className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
                   style={{
                     width: '100%',
                     padding: '16px 20px',
+                    background: 'none',
                     border: 'none',
                     color: textColor,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
+                    transition: 'all 0.2s ease',
+                    borderBottom: `1px solid ${borderColor}`,
                     fontSize: '14px',
-                    fontWeight: '500',
-                    borderRadius: '0',
-                    background: 'transparent',
-                    borderTop: `1px solid ${borderColor}`,
-                    borderBottom: `1px solid ${borderColor}`
+                    fontWeight: '500'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                    e.target.style.color = moominBlue;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'none';
+                    e.target.style.color = textColor;
                   }}
                 >
                   {isDarkMode ? 
@@ -232,7 +230,8 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 {/* Language Section */}
                 <div style={{
                   padding: '12px 20px',
-                  background: isDarkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
+                  borderBottom: `1px solid ${borderColor}`,
+                  background: isDarkMode ? '#444444' : '#f0f8ff'
                 }}>
                   <div style={{
                     display: 'flex',
@@ -251,21 +250,27 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                     <button
                       key={language.code}
                       onClick={() => handleLanguageChange(language.code)}
-                      className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
+                        background: 'none',
                         border: 'none',
                         color: textColor,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
+                        transition: 'all 0.2s ease',
                         borderRadius: '8px',
                         marginBottom: '4px',
                         fontSize: '13px',
-                        justifyContent: 'space-between',
-                        background: 'transparent'
+                        justifyContent: 'space-between'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = isDarkMode ? '#666666' : '#e8f4f8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'none';
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -281,7 +286,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                           }} 
                         />
                         <span style={{ 
-                          fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                          fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '"Georgia", serif'
                         }}>
                           {language.name}
                         </span>
@@ -353,6 +358,11 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
               opacity: 1; 
               transform: translateY(0) scale(1);
             }
+          }
+          
+          @keyframes gentleGlow {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
           }
         `}
       </style>

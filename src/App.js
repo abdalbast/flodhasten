@@ -664,125 +664,55 @@ function App() {
     <div style={{ 
       minHeight: '100vh', 
       background: isDarkMode 
-        ? 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)' 
-        : 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)',
+        ? 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%)' 
+        : 'linear-gradient(180deg, #e0f7fa 0%, #fff 100%)',
       position: 'relative',
       color: isDarkMode ? '#ffffff' : '#000000',
-      overflow: 'hidden',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      overflow: 'hidden'
     }}>
-      {/* Liquid Glass Background Elements */}
+      {/* Subtle river-themed background elements */}
       <div style={{
         position: 'fixed',
-        top: 0,
+        bottom: 0,
         left: 0,
         right: 0,
-        bottom: 0,
+        height: '30%',
         background: isDarkMode 
-          ? 'radial-gradient(circle at 20% 80%, rgba(52, 152, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(233, 30, 99, 0.1) 0%, transparent 50%)'
-          : 'radial-gradient(circle at 20% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(233, 30, 99, 0.05) 0%, transparent 50%)',
+          ? 'linear-gradient(180deg, transparent 0%, rgba(33, 147, 176, 0.05) 50%, rgba(33, 147, 176, 0.02) 100%)' 
+          : 'linear-gradient(180deg, transparent 0%, rgba(33, 147, 176, 0.03) 50%, rgba(33, 147, 176, 0.01) 100%)',
         pointerEvents: 'none',
         zIndex: 0
       }} />
       
-      {/* Floating Glass Orbs */}
       <div style={{
         position: 'fixed',
-        top: '15%',
+        bottom: '5%',
         left: '10%',
-        width: '120px',
-        height: '120px',
-        background: isDarkMode 
-          ? 'rgba(52, 152, 219, 0.1)' 
-          : 'rgba(52, 152, 219, 0.08)',
+        width: '40px',
+        height: '40px',
+        background: isDarkMode ? 'rgba(33, 147, 176, 0.1)' : 'rgba(33, 147, 176, 0.05)',
         borderRadius: '50%',
-        filter: 'blur(40px)',
         animation: 'float 8s ease-in-out infinite',
         pointerEvents: 'none',
         zIndex: 0
       }} />
       <div style={{
         position: 'fixed',
-        bottom: '20%',
-        right: '15%',
-        width: '80px',
-        height: '80px',
-        background: isDarkMode 
-          ? 'rgba(233, 30, 99, 0.1)' 
-          : 'rgba(233, 30, 99, 0.08)',
+        bottom: '15%',
+        right: '20%',
+        width: '25px',
+        height: '25px',
+        background: isDarkMode ? 'rgba(33, 147, 176, 0.08)' : 'rgba(33, 147, 176, 0.04)',
         borderRadius: '50%',
-        filter: 'blur(30px)',
         animation: 'float 10s ease-in-out infinite 2s',
         pointerEvents: 'none',
         zIndex: 0
       }} />
       
-      {/* Liquid Glass CSS */}
       <style>{`
         @keyframes float {
-          0%, 100% { 
-            transform: translateY(0px) rotate(0deg) scale(1);
-            opacity: 0.6;
-          }
-          50% { 
-            transform: translateY(-20px) rotate(2deg) scale(1.1);
-            opacity: 0.8;
-          }
-        }
-        
-        @keyframes gentleGlow {
-          0%, 100% { 
-            opacity: 0.4;
-            transform: scale(1);
-          }
-          50% { 
-            opacity: 0.7;
-            transform: scale(1.05);
-          }
-        }
-        
-        .liquid-glass {
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .liquid-glass-dark {
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          background: rgba(0, 0, 0, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        .glass-button {
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          background: rgba(255, 255, 255, 0.15);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .glass-button:hover {
-          background: rgba(255, 255, 255, 0.25);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .glass-button-dark {
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          background: rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .glass-button-dark:hover {
-          background: rgba(0, 0, 0, 0.4);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(1deg); }
         }
       `}</style>
       
@@ -790,60 +720,41 @@ function App() {
       {showDialogue && selectedSkill && (
         <Dialogue 
           dialogue={selectedSkill.dialogue}
-          onClose={handleCloseDialogue}
           onStartGames={handleStartGames}
+          onClose={handleCloseDialogue}
           isDarkMode={isDarkMode}
         />
       )}
+      <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
+      {content}
       {showSkillComplete && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: isDarkMode ? '#2d2d2d' : '#fff',
-            padding: '2rem',
-            borderRadius: '20px',
-            textAlign: 'center',
-            maxWidth: '400px',
-            margin: '1rem'
-          }}>
-            <h2 style={{ color: isDarkMode ? '#fff' : '#333', marginBottom: '1rem' }}>🎉 Skill Complete!</h2>
-            <p style={{ color: isDarkMode ? '#ccc' : '#666', marginBottom: '1.5rem' }}>Great job! You've completed this skill.</p>
-            <button onClick={() => setShowSkillComplete(false)} style={{
-              background: '#2193b0',
-              color: '#fff',
-              border: 'none',
-              padding: '0.8rem 1.5rem',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              fontWeight: 'bold'
+        <>
+          <style>{`
+            @keyframes skillCompletePop {
+              0% { opacity: 0; transform: scale(0.7); }
+              20% { opacity: 1; transform: scale(1.1); }
+              60% { opacity: 1; transform: scale(1); }
+              100% { opacity: 0; transform: scale(0.9); }
+            }
+          `}</style>
+          <div style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,display:'flex',justifyContent:'center',alignItems:'flex-start',pointerEvents:'none'}}>
+            <div style={{
+              marginTop:60,
+              padding:'1.2rem 2.5rem',
+              background:'#81c784',
+              color:'#fff',
+              borderRadius:16,
+              boxShadow:'0 4px 16px #388e3c88',
+              fontSize:28,
+              fontWeight:'bold',
+              letterSpacing:1.5,
+              animation:'skillCompletePop 2.5s cubic-bezier(.23,1.12,.62,.99)'
             }}>
-              Continue
-            </button>
+              🎉 Skill Complete!
+            </div>
           </div>
-        </div>
+        </>
       )}
-      <Navigation 
-        currentScreen={screen} 
-        setScreen={setScreen} 
-        isDarkMode={isDarkMode} 
-        onToggleDarkMode={toggleDarkMode}
-        onToggleLanguage={toggleLanguage}
-        currentLanguage={currentLanguage}
-        onPlayIntro={handlePlayIntro}
-      />
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        {content}
-      </div>
     </div>
   );
 }
