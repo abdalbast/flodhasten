@@ -401,6 +401,10 @@ function App() {
   const [userData, setUserData] = useState(getInitialUserData());
   const [showSkillComplete, setShowSkillComplete] = useState(false);
   const [lessonWords, setLessonWords] = useState([]);
+  const [customWords, setCustomWords] = useState(() => {
+    const saved = localStorage.getItem('customWords');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('isDarkMode');
     return saved ? JSON.parse(saved) : false;
@@ -418,7 +422,10 @@ function App() {
   // Get the selected skill and its words based on current language
   const currentSkills = SKILLS[currentLanguage] || SKILLS.en;
   const selectedSkill = currentSkills.find(s => s.id === selectedSkillId);
-  const words = selectedSkill ? selectedSkill.words.map(w => ({ ...w, stats: { correct: 0, incorrect: 0, lastPracticed: null } })) : [];
+  const skillWords = selectedSkill ? selectedSkill.words.map(w => ({ ...w, stats: { correct: 0, incorrect: 0, lastPracticed: null } })) : [];
+  
+  // Combine skill words with custom words
+  const words = [...skillWords, ...customWords];
 
   // Word of the Day logic (from selected skill)
   const getWordOfTheDay = () => {
@@ -440,6 +447,9 @@ function App() {
   useEffect(() => {
     localStorage.setItem('userData', JSON.stringify(userData));
   }, [userData]);
+  useEffect(() => {
+    localStorage.setItem('customWords', JSON.stringify(customWords));
+  }, [customWords]);
   useEffect(() => {
     localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
@@ -529,17 +539,26 @@ function App() {
 
   // Add/edit/delete/import handlers (per skill)
   const handleAdd = (word) => {
-    // Not implemented: add word to skill (could be added if needed)
-    setScreen('list');
+    setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
   };
   const handleDelete = (idx) => {
-    // Not implemented: delete word from skill (could be added if needed)
+    // Only allow deletion of custom words (not skill words)
+    if (idx >= skillWords.length) {
+      const customIdx = idx - skillWords.length;
+      setCustomWords(prev => prev.filter((_, i) => i !== customIdx));
+    }
   };
   const handleEdit = (idx, newWord) => {
-    // Not implemented: edit word in skill (could be added if needed)
+    // Only allow editing of custom words (not skill words)
+    if (idx >= skillWords.length) {
+      const customIdx = idx - skillWords.length;
+      setCustomWords(prev => prev.map((word, i) => 
+        i === customIdx ? { ...newWord, stats: word.stats } : word
+      ));
+    }
   };
   const handleImportWords = (importedWords) => {
-    // Not implemented: import words to skill (could be added if needed)
+    setCustomWords(prev => [...prev, ...importedWords]);
   };
 
   // When a game is completed (user returns to GamesMenu), mark skill as complete
@@ -611,7 +630,7 @@ function App() {
       }}
     />
   );
-  else if (screen === 'list') content = <WordList words={words} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
+  else if (screen === 'list') content = <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
   else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
   else if (screen === 'story') content = <StoryMode isDarkMode={isDarkMode} />;
   else if (screen === 'avatar-shop') content = <AvatarShop 

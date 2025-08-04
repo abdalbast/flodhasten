@@ -98,7 +98,7 @@ function parseWordFile(text, ext) {
 }
 
 // List of saved Swedish words and their English meanings, with edit/delete and add functionality
-function WordList({ words, onDelete, onEdit, onImportWords, onAdd }) {
+function WordList({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, isDarkMode }) {
   const [editIdx, setEditIdx] = useState(null);
   const [editSwedish, setEditSwedish] = useState('');
   const [editEnglish, setEditEnglish] = useState('');
@@ -387,192 +387,229 @@ function WordList({ words, onDelete, onEdit, onImportWords, onAdd }) {
         <div style={{ color: '#aaa', textAlign: 'center' }}>No words yet. Add some!</div>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
-          {words.map((w, i) => (
-            <li key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0.7rem 0', background: '#fffde7', borderRadius: 8, padding: '0.5rem 0.7rem' }}>
-              {editIdx === i ? (
-                <span style={{ flex: 1, display: 'flex', gap: 6 }}>
-                  <input value={editSwedish} onChange={e=>setEditSwedish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
-                  <span style={{ color: '#888' }}>–</span>
-                  <input value={editEnglish} onChange={e=>setEditEnglish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
-                </span>
-              ) : (
-                <span>
-                  <b style={{ color: '#2193b0' }}>{w.swedish}</b>
-                  <button type="button" aria-label={`Play ${w.swedish}`} onClick={()=>playSwedish(w.swedish)} style={{background:'none',border:'none',color:'#2193b0',cursor:'pointer',fontSize:20,verticalAlign:'middle',marginLeft:4}}><MdVolumeUp /></button>
-                  <span style={{ color: '#888' }}>–</span> <span style={{ color: '#333' }}>{w.english}</span>
-                  {w.english === '(unknown)' && (
-                    <button type="button" onClick={()=>handleTranslate(i, w.swedish)} disabled={translatingIdx===i} style={{
-                      marginLeft:8,
-                      background:'#2193b0',
-                      color:'#fff',
-                      border:'none',
-                      borderRadius:8,
-                      padding:'0.2rem 0.7rem',
-                      fontSize:13,
-                      cursor:'pointer',
-                      verticalAlign:'middle',
+          {words.map((w, i) => {
+            const isSkillWord = i < skillWords.length;
+            return (
+              <li key={i} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                margin: '0.7rem 0', 
+                background: isSkillWord ? '#e8f5e8' : '#fffde7', 
+                borderRadius: 8, 
+                padding: '0.5rem 0.7rem',
+                border: isSkillWord ? '1px solid #4caf50' : '1px solid #ffeb3b'
+              }}>
+                {editIdx === i ? (
+                  <span style={{ flex: 1, display: 'flex', gap: 6 }}>
+                    <input value={editSwedish} onChange={e=>setEditSwedish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
+                    <span style={{ color: '#888' }}>–</span>
+                    <input value={editEnglish} onChange={e=>setEditEnglish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
+                  </span>
+                ) : (
+                  <span>
+                    <b style={{ color: '#2193b0' }}>{w.swedish}</b>
+                    <button type="button" aria-label={`Play ${w.swedish}`} onClick={()=>playSwedish(w.swedish)} style={{background:'none',border:'none',color:'#2193b0',cursor:'pointer',fontSize:20,verticalAlign:'middle',marginLeft:4}}><MdVolumeUp /></button>
+                    <span style={{ color: '#888' }}>–</span> <span style={{ color: '#333' }}>{w.english}</span>
+                    {isSkillWord && (
+                      <span style={{ 
+                        background: '#4caf50', 
+                        color: '#fff', 
+                        padding: '0.2rem 0.5rem', 
+                        borderRadius: '12px', 
+                        fontSize: '0.7rem', 
+                        marginLeft: '0.5rem',
+                        fontWeight: 'bold'
+                      }}>
+                        Skill
+                      </span>
+                    )}
+                    {w.english === '(unknown)' && (
+                      <button type="button" onClick={()=>handleTranslate(i, w.swedish)} disabled={translatingIdx===i} style={{
+                        marginLeft:8,
+                        background:'#2193b0',
+                        color:'#fff',
+                        border:'none',
+                        borderRadius:8,
+                        padding:'0.2rem 0.7rem',
+                        fontSize:13,
+                        cursor:'pointer',
+                        verticalAlign:'middle',
+                        transition:'all 0.2s ease',
+                        transform:'translateY(0)',
+                        boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                      }}
+                      onMouseDown={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }
+                      }}
+                      onMouseUp={(e) => {
+                        if (translatingIdx !== i) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }
+                      }}
+                      >
+                        {translatingIdx===i ? <FaSpinner className="spin" style={{fontSize:16}}/> : 'Translate'}
+                      </button>
+                    )}
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                      <span>✔️ {w.stats?.correct || 0} </span>
+                      <span>❌ {w.stats?.incorrect || 0} </span>
+                      <span>🕒 {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
+                    </div>
+                  </span>
+                )}
+                {editIdx === i ? (
+                  <span style={{ display: 'flex', gap: 4 }}>
+                    <button onClick={saveEdit} style={{ 
+                      background: '#388e3c', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: 8, 
+                      padding: '0.3rem 0.7rem', 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
                       transition:'all 0.2s ease',
                       transform:'translateY(0)',
                       boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
                     }}
                     onMouseEnter={(e) => {
-                      if (translatingIdx !== i) {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                      }
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.transform = 'translateY(0)';
                       e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
                     }}
                     onMouseDown={(e) => {
-                      if (translatingIdx !== i) {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                      }
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
                     }}
                     onMouseUp={(e) => {
-                      if (translatingIdx !== i) {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                      }
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
                     }}
                     >
-                      {translatingIdx===i ? <FaSpinner className="spin" style={{fontSize:16}}/> : 'Translate'}
+                      Save
                     </button>
-                  )}
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-                    <span>✔️ {w.stats?.correct || 0} </span>
-                    <span>❌ {w.stats?.incorrect || 0} </span>
-                    <span>🕒 {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
-                  </div>
-                </span>
-              )}
-              {editIdx === i ? (
-                <span style={{ display: 'flex', gap: 4 }}>
-                  <button onClick={saveEdit} style={{ 
-                    background: '#388e3c', 
-                    color: '#fff', 
-                    border: 'none', 
-                    borderRadius: 8, 
-                    padding: '0.3rem 0.7rem', 
-                    cursor: 'pointer', 
-                    fontWeight: 'bold',
-                    transition:'all 0.2s ease',
-                    transform:'translateY(0)',
-                    boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                  }}
-                  onMouseDown={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                  }}
-                  onMouseUp={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
-                  }}
-                  >Save</button>
-                  <button onClick={cancelEdit} style={{ 
-                    background: '#aaa', 
-                    color: '#fff', 
-                    border: 'none', 
-                    borderRadius: 8, 
-                    padding: '0.3rem 0.7rem', 
-                    cursor: 'pointer', 
-                    fontWeight: 'bold',
-                    transition:'all 0.2s ease',
-                    transform:'translateY(0)',
-                    boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(170, 170, 170, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                  }}
-                  onMouseDown={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                  }}
-                  onMouseUp={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(170, 170, 170, 0.3)';
-                  }}
-                  >Cancel</button>
-                </span>
-              ) : (
-                <span style={{ display: 'flex', gap: 4 }}>
-                  <button onClick={() => startEdit(i)} style={{ 
-                    background: '#1976d2', 
-                    color: '#fff', 
-                    border: 'none', 
-                    borderRadius: 8, 
-                    padding: '0.3rem 0.7rem', 
-                    cursor: 'pointer', 
-                    fontWeight: 'bold',
-                    transition:'all 0.2s ease',
-                    transform:'translateY(0)',
-                    boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(25, 118, 210, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                  }}
-                  onMouseDown={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                  }}
-                  onMouseUp={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(25, 118, 210, 0.3)';
-                  }}
-                  ><FaEdit style={{verticalAlign:'middle',marginRight:3}}/>Edit</button>
-                  <button onClick={() => onDelete(i)} style={{ 
-                    background: '#f44336', 
-                    color: '#fff', 
-                    border: 'none', 
-                    borderRadius: 8, 
-                    padding: '0.3rem 0.7rem', 
-                    cursor: 'pointer', 
-                    fontWeight: 'bold',
-                    transition:'all 0.2s ease',
-                    transform:'translateY(0)',
-                    boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                  }}
-                  onMouseDown={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                  }}
-                  onMouseUp={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                  }}
-                  ><FaTrash style={{verticalAlign:'middle',marginRight:3}}/>Delete</button>
-                </span>
-              )}
-            </li>
-          ))}
+                    <button onClick={cancelEdit} style={{ 
+                      background: '#f44336', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: 8, 
+                      padding: '0.3rem 0.7rem', 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
+                      transition:'all 0.2s ease',
+                      transform:'translateY(0)',
+                      boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                    }}
+                    onMouseDown={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                    }}
+                    onMouseUp={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                    }}
+                    >
+                      Cancel
+                    </button>
+                  </span>
+                ) : (
+                  <span style={{ display: 'flex', gap: 4 }}>
+                    {!isSkillWord && (
+                      <>
+                        <button onClick={() => startEdit(i)} style={{ 
+                          background: '#2193b0', 
+                          color: '#fff', 
+                          border: 'none', 
+                          borderRadius: 8, 
+                          padding: '0.3rem 0.7rem', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          transition:'all 0.2s ease',
+                          transform:'translateY(0)',
+                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                        }}
+                        onMouseDown={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseUp={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+                        }}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => onDelete(i)} style={{ 
+                          background: '#f44336', 
+                          color: '#fff', 
+                          border: 'none', 
+                          borderRadius: 8, 
+                          padding: '0.3rem 0.7rem', 
+                          cursor: 'pointer', 
+                          fontWeight: 'bold',
+                          transition:'all 0.2s ease',
+                          transform:'translateY(0)',
+                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+                        }}
+                        onMouseDown={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseUp={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
+                        }}
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

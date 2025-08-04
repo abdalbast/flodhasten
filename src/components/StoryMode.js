@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { MdVolumeUp } from 'react-icons/md';
+import ttsApi from '../utils/ttsApi';
 
 const STORIES = [
   {
@@ -8,7 +10,7 @@ const STORIES = [
     description: 'Learn basic greetings and polite expressions',
     story: [
       {
-        text: 'Hej!',
+        text: 'Kvinnan läser en tidning.',
         translation: 'Hello!',
         vocabulary: ['hej'],
         image: '👋'
@@ -397,6 +399,7 @@ function StoryMode({ isDarkMode }) {
   const [selectedStory, setSelectedStory] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [completedStories, setCompletedStories] = useState(() => {
     const saved = localStorage.getItem('completedStories');
     return saved ? JSON.parse(saved) : [];
@@ -416,12 +419,14 @@ function StoryMode({ isDarkMode }) {
     setSelectedStory(null);
     setCurrentPage(0);
     setShowTranslation(false);
+    setIsPlaying(false);
   };
 
   const nextPage = () => {
     if (currentPage < selectedStory.story.length - 1) {
       setCurrentPage(currentPage + 1);
       setShowTranslation(false);
+      setIsPlaying(false);
     } else {
       handleStoryComplete(selectedStory.id);
       resetStory();
@@ -432,6 +437,18 @@ function StoryMode({ isDarkMode }) {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
       setShowTranslation(false);
+      setIsPlaying(false);
+    }
+  };
+
+  const playSwedishText = async (text) => {
+    try {
+      setIsPlaying(true);
+      await ttsApi.playSwedish(text);
+    } catch (error) {
+      console.error('Failed to play Swedish text:', error);
+    } finally {
+      setIsPlaying(false);
     }
   };
 
@@ -490,15 +507,65 @@ function StoryMode({ isDarkMode }) {
             {currentStoryPage.image}
           </div>
 
-          {/* Swedish Text */}
+          {/* Swedish Text with Play Button */}
           <div style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: isDarkMode ? '#fff' : '#333',
-            marginBottom: '1rem',
-            lineHeight: '1.4'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            marginBottom: '1rem'
           }}>
-            {currentStoryPage.text}
+            <div style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: isDarkMode ? '#fff' : '#333',
+              lineHeight: '1.4'
+            }}>
+              {currentStoryPage.text}
+            </div>
+            
+            {/* Play Button */}
+            <button
+              onClick={() => playSwedishText(currentStoryPage.text)}
+              disabled={isPlaying}
+              style={{
+                background: isPlaying 
+                  ? (isDarkMode ? '#666' : '#ccc')
+                  : (isDarkMode ? '#2193b0' : '#4CAF50'),
+                color: '#fff',
+                border: 'none',
+                borderRadius: '50%',
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: isPlaying ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: isDarkMode 
+                  ? '0 2px 8px rgba(0,0,0,0.3)' 
+                  : '0 2px 8px rgba(0,0,0,0.2)'
+              }}
+              onMouseEnter={(e) => {
+                if (!isPlaying) {
+                  e.target.style.transform = 'scale(1.1)';
+                  e.target.style.boxShadow = isDarkMode 
+                    ? '0 4px 12px rgba(0,0,0,0.4)' 
+                    : '0 4px 12px rgba(0,0,0,0.3)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = isDarkMode 
+                  ? '0 2px 8px rgba(0,0,0,0.3)' 
+                  : '0 2px 8px rgba(0,0,0,0.2)';
+              }}
+            >
+              <MdVolumeUp style={{ 
+                fontSize: '24px',
+                animation: isPlaying ? 'pulse 1s infinite' : 'none'
+              }} />
+            </button>
           </div>
 
           {/* Translation Toggle */}
@@ -787,6 +854,17 @@ function StoryMode({ isDarkMode }) {
         </div>
       )}
     </div>
+
+    {/* CSS Animations */}
+    <style>
+      {`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}
+    </style>
+  </div>
   );
 }
 
