@@ -47,10 +47,24 @@ class SwedishTTSApi {
     }
   }
 
-  // Play Swedish text using the API
+  // Play Swedish text using browser TTS as primary, API as fallback
   async playSwedish(text, service = 'auto') {
+    console.log('🎤 Playing Swedish:', text);
+
+    // Try browser TTS first (primary source)
     try {
-      console.log('🎤 Attempting to use TTS API for:', text);
+      const browserResult = await this.playSwedishBrowser(text);
+      if (browserResult) {
+        console.log('✅ Browser TTS used successfully');
+        return browserResult;
+      }
+    } catch (error) {
+      console.log('⚠️ Browser TTS failed, trying API fallback:', error.message);
+    }
+
+    // Fallback to API if browser TTS fails
+    try {
+      console.log('🔄 Using TTS API as fallback for:', text);
       const audioUrl = await this.generateAudio(text, service);
       const audio = new Audio(audioUrl);
       
@@ -65,13 +79,71 @@ class SwedishTTSApi {
       };
 
       await audio.play();
-      console.log('✅ TTS API audio played successfully');
+      console.log('✅ TTS API fallback audio played successfully');
       return audio;
 
     } catch (error) {
-      console.error('❌ TTS API failed:', error);
+      console.error('❌ Both browser TTS and API failed:', error);
       throw error;
     }
+  }
+
+  // Browser TTS implementation (primary source)
+  async playSwedishBrowser(text) {
+    return new Promise((resolve, reject) => {
+      if (!('speechSynthesis' in window)) {
+        reject(new Error('Speech synthesis not supported'));
+        return;
+      }
+
+      // Stop any current speech
+      window.speechSynthesis.cancel();
+      
+      const speakWithSwedishVoice = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        
+        // Only use Alva (sv-SE) voice as requested
+        let swedishVoice = voices.find(voice => 
+          voice.name.toLowerCase().includes('alva') && voice.lang === 'sv-SE'
+        );
+        
+        const utter = new window.SpeechSynthesisUtterance(text);
+        utter.lang = 'sv-SE';
+        utter.rate = 0.8; // Slightly faster for better flow
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+        
+        if (swedishVoice) {
+          utter.voice = swedishVoice;
+          console.log('🎤 Using Alva (sv-SE) voice:', swedishVoice.name, swedishVoice.lang);
+        } else {
+          console.log('⚠️ Alva (sv-SE) voice not found. Not playing audio.');
+          reject(new Error('Alva (sv-SE) voice not available'));
+          return;
+        }
+        
+        utter.onend = () => {
+          console.log('✅ Browser TTS completed');
+          resolve(true);
+        };
+        
+        utter.onerror = (event) => {
+          console.error('❌ Browser TTS error:', event.error);
+          reject(new Error(event.error));
+        };
+        
+        window.speechSynthesis.speak(utter);
+      };
+      
+      // If voices are already loaded
+      if (window.speechSynthesis.getVoices().length > 0) {
+        speakWithSwedishVoice();
+      } else {
+        // Wait for voices to load
+        window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
+      }
+    });
   }
 
   // Get available services

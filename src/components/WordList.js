@@ -4,57 +4,13 @@ import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 import ttsApi from '../utils/ttsApi';
 
-// Play Swedish word with TTS API
+// Play Swedish word with TTS API (browser TTS primary, API fallback)
 async function playSwedish(word) {
   try {
-    // First try the API
+    // Use the updated TTS API that prioritizes browser TTS
     await ttsApi.playSwedish(word);
   } catch (error) {
-    console.log('TTS API failed, falling back to browser TTS:', error.message);
-    
-    // Fallback to browser TTS
-    if ('speechSynthesis' in window) {
-      // Stop any current speech
-      window.speechSynthesis.cancel();
-      
-      // Wait for voices to load
-      const speakWithSwedishVoice = () => {
-        const voices = window.speechSynthesis.getVoices();
-        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-        
-        // Only use Alva (sv-SE) voice
-        let swedishVoice = voices.find(voice => 
-          voice.name.toLowerCase().includes('alva') && voice.lang === 'sv-SE'
-        );
-        
-        const utter = new window.SpeechSynthesisUtterance(word);
-        utter.lang = 'sv-SE';
-        utter.rate = 0.6; // Slower for better pronunciation
-        utter.pitch = 1.0;
-        utter.volume = 1.0;
-        
-        if (swedishVoice) {
-          utter.voice = swedishVoice;
-          console.log('🎤 Using Alva (sv-SE) voice:', swedishVoice.name, swedishVoice.lang);
-        } else {
-          console.log('⚠️ Alva (sv-SE) voice not found. Not playing audio.');
-          console.log('📋 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-          return; // Don't play audio if Alva is not available
-        }
-        
-        window.speechSynthesis.speak(utter);
-      };
-      
-      // If voices are already loaded
-      if (window.speechSynthesis.getVoices().length > 0) {
-        speakWithSwedishVoice();
-      } else {
-        // Wait for voices to load
-        window.speechSynthesis.onvoiceschanged = speakWithSwedishVoice;
-      }
-    } else {
-      console.log('Speech synthesis not supported in this browser');
-    }
+    console.error('TTS failed:', error.message);
   }
 }
 
