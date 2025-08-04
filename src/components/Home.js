@@ -4,6 +4,7 @@ import { GiDress } from 'react-icons/gi';
 import { BsPersonFill, BsPersonHeart, BsPersonBoundingBox } from 'react-icons/bs';
 import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import LessonCircles from './LessonCircles';
+import { MdVolumeUp } from 'react-icons/md';
 
 // Home screen with welcome, app description, and progress tracker
 function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 0, progress = { gamesPlayed: 0, streak: 1 }, wordOfTheDay, onStartLesson, isDarkMode, onResetProgress, userData, currentLanguage }) {
@@ -68,108 +69,67 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
   const moominOrange = '#e67e22';
   const moominPink = '#e91e63';
 
+  const playSwedish = (word) => {
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'sv-SE';
+    speechSynthesis.speak(utterance);
+  };
+
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      {/* Title and subtitle at the very top - Moomin-inspired */}
-      <div style={{
+    <div style={{
+      padding: '2rem',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      minHeight: '80vh'
+    }}>
+      {/* Header Section with Liquid Glass */}
+      <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
         textAlign: 'center',
-        marginBottom: '2rem',
-        padding: '2.5rem',
-        background: isDarkMode 
-          ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)' 
-          : 'linear-gradient(135deg, #e8f4f8 0%, #f8f9fa 50%, #e8f4f8 100%)',
-        borderRadius: '25px',
-        boxShadow: isDarkMode 
-          ? '0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)' 
-          : '0 12px 40px rgba(52, 152, 219, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
-        border: isDarkMode 
-          ? '1px solid rgba(255,255,255,0.1)' 
-          : '1px solid rgba(52, 152, 219, 0.2)',
+        padding: '3rem 2rem',
+        marginBottom: '3rem',
+        borderRadius: '24px',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Decorative background elements - Moomin-inspired */}
+        {/* Background decorative elements */}
         <div style={{
           position: 'absolute',
-          top: '-50%',
-          left: '-50%',
-          width: '200%',
-          height: '200%',
-          background: isDarkMode 
-            ? 'radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%)' 
-            : 'radial-gradient(circle, rgba(52, 152, 219, 0.05) 0%, transparent 70%)',
-          animation: 'float 8s ease-in-out infinite'
+          top: '20%',
+          left: '10%',
+          width: '60px',
+          height: '60px',
+          background: isDarkMode ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.05)',
+          borderRadius: '50%',
+          filter: 'blur(20px)',
+          animation: 'gentleGlow 4s ease-in-out infinite'
         }} />
-        
-        {/* User Avatar and Level Display */}
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '1rem',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: moominBlue,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '3rem',
-            color: '#fff',
-            border: '4px solid #fff',
-            boxShadow: '0 6px 20px rgba(52, 152, 219, 0.4)'
-          }}>
-            {userData?.currentAvatar === 'snufkin' ? <FaHatCowboy /> : 
-             userData?.currentAvatar === 'snorkmaiden' ? <GiDress /> : 
-             userData?.currentAvatar === 'little-my' ? <BsPersonHeart /> : 
-             userData?.currentAvatar === 'hemulen' ? <FaUserTie /> : 
-             userData?.currentAvatar === 'groke' ? <WiMoonWaningCrescent6 /> : 
-             userData?.currentAvatar === 'moominmamma' ? <BsPersonFill /> : 
-             userData?.currentAvatar === 'moominpappa' ? <FaUserTie /> : 
-             userData?.currentAvatar === 'ninny' ? <WiMoonWaningCrescent6 /> : 
-             userData?.currentAvatar === 'sniff' ? <BsPersonBoundingBox /> : <BsPersonFill />}
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            <h3 style={{ 
-              margin: '0', 
-              color: moominYellow, 
-              fontSize: '1.2rem',
-              fontFamily: '"Georgia", serif'
-            }}>
-              Level {userData?.level || 1}
-            </h3>
-            <p style={{ 
-              margin: '0', 
-              color: isDarkMode ? '#bdc3c7' : '#7f8c8d', 
-              fontSize: '0.9rem',
-              fontStyle: 'italic'
-            }}>
-              {userData?.xp || 0} XP
-            </p>
-          </div>
-        </div>
-        
-        <h1 style={{ 
-          color: moominBlue, 
-          fontSize: '4rem', 
+          position: 'absolute',
+          bottom: '20%',
+          right: '10%',
+          width: '40px',
+          height: '40px',
+          background: isDarkMode ? 'rgba(233, 30, 99, 0.1)' : 'rgba(233, 30, 99, 0.05)',
+          borderRadius: '50%',
+          filter: 'blur(15px)',
+          animation: 'gentleGlow 6s ease-in-out infinite 2s'
+        }} />
+
+        <h1 style={{
+          color: moominBlue,
+          fontSize: '4rem',
           fontWeight: 'bold',
           margin: '0',
-          textShadow: isDarkMode 
-            ? '0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.3)' 
+          textShadow: isDarkMode
+            ? '0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.3)'
             : '0 4px 8px rgba(0,0,0,0.1), 0 0 20px rgba(52, 152, 219, 0.2)',
           letterSpacing: '3px',
           position: 'relative',
           zIndex: 1,
-          fontFamily: '"Georgia", serif'
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         }}>
           Flodhästen
         </h1>
-        
         <p style={{
           color: moominPink,
           fontSize: '1.1rem',
@@ -177,298 +137,313 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           fontStyle: 'italic',
           position: 'relative',
           zIndex: 1,
-          fontFamily: '"Georgia", serif',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           fontWeight: 'bold',
-          textShadow: isDarkMode 
-            ? '0 2px 4px rgba(0,0,0,0.3)' 
+          textShadow: isDarkMode
+            ? '0 2px 4px rgba(0,0,0,0.3)'
             : '0 2px 4px rgba(233, 30, 99, 0.2)'
         }}>
-          
+          I love you Clara
         </p>
-        
         <p style={{
-          color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-          fontSize: '1.3rem',
-          margin: '0.8rem 0 0 0',
-          fontStyle: 'italic',
+          color: isDarkMode ? '#ccc' : '#666',
+          fontSize: '1.2rem',
+          margin: '1rem 0 0 0',
           position: 'relative',
           zIndex: 1,
-          fontFamily: '"Georgia", serif'
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         }}>
           Learn Swedish with the River Horse
-      
         </p>
-        
-        {/* Moomin-inspired decorative elements */}
-        <div style={{
-          position: 'absolute',
-          top: '20px',
-          right: '30px',
-          width: '40px',
-          height: '40px',
-          background: moominYellow,
-          borderRadius: '50%',
-          animation: 'gentleGlow 3s ease-in-out infinite'
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '30px',
-          left: '40px',
-          width: '25px',
-          height: '25px',
-          background: moominGreen,
-          borderRadius: '50%',
-          animation: 'gentleGlow 4s ease-in-out infinite 1s'
-        }} />
       </div>
-      
-      <LessonCircles skills={skills} progress={skillProgress} onSelectSkill={handleLessonSelection} isDarkMode={isDarkMode} />
-      
-      {/* Lesson Content Area - This is where we scroll to */}
-      <div ref={lessonContentRef} style={{ marginTop: '2rem' }}>
-        {selectedSkill && (
+
+      {/* User Avatar Section */}
+      <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1.5rem 2rem',
+        marginBottom: '2rem',
+        borderRadius: '20px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{
-            background: cardBackground,
-            borderRadius: '20px',
-            padding: '2rem',
-            boxShadow: isDarkMode 
-              ? '0 8px 25px rgba(0,0,0,0.3)' 
-              : '0 8px 25px rgba(52, 152, 219, 0.15)',
-            border: `2px solid ${borderColor}`,
-            marginBottom: '2rem'
-          }}>
-            <h2 style={{
-              color: moominBlue,
-              margin: '0 0 1.5rem 0',
-              fontSize: '2rem',
-              fontFamily: '"Georgia", serif',
-              textAlign: 'center'
-            }}>
-              {currentLanguage === 'ku' ? selectedSkill.name : selectedSkill.name}
-            </h2>
-            
-            {/* Words Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1rem',
-              marginBottom: '2rem'
-            }}>
-              {selectedSkill.words.map((word, index) => (
-                <div key={index} style={{
-                  background: backgroundColor,
-                  padding: '1rem',
-                  borderRadius: '15px',
-                  border: `2px solid ${borderColor}`,
-                  textAlign: 'center',
-                  transition: 'all 0.3s ease'
-                }}>
-                  <div style={{
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                    color: textColor,
-                    marginBottom: '0.5rem',
-                    fontFamily: '"Georgia", serif'
-                  }}>
-                    {word.swedish}
-                  </div>
-                  <div style={{
-                    fontSize: '1rem',
-                    color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-                    fontStyle: 'italic'
-                  }}>
-                    {currentLanguage === 'ku' ? word.kurdish : 
-                     currentLanguage === 'ku-lat' ? word.kurdish : 
-                     word.english}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Start Lesson Button */}
-            <div style={{ textAlign: 'center' }}>
-              <button
-                onClick={onStartLesson}
-                style={{
-                  background: moominBlue,
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '15px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.2rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: '"Georgia", serif',
-                  boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(52, 152, 219, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(52, 152, 219, 0.3)';
-                }}
-              >
-                Start Lesson
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {wordOfTheDay && (
-        <div style={{
-          margin:'2rem auto',
-          padding:'1.5rem',
-          background: wordOfDayBg,
-          borderRadius: '20px',
-          boxShadow: `0 8px 25px ${wordOfDayBorder}`,
-          maxWidth: '400px',
-          border: `2px solid ${wordOfDayBorder}`,
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: '-10px',
-            right: '-10px',
-            width: '30px',
-            height: '30px',
-            background: moominYellow,
+            width: '60px',
+            height: '60px',
             borderRadius: '50%',
-            animation: 'gentleGlow 2s ease-in-out infinite'
-          }} />
+            background: isDarkMode ? 'rgba(52, 152, 219, 0.3)' : 'rgba(52, 152, 219, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '2rem',
+            border: '2px solid rgba(255, 255, 255, 0.2)'
+          }}>
+            {userData.currentAvatar}
+          </div>
+          <div>
+            <h3 style={{ 
+              color: isDarkMode ? '#fff' : '#333', 
+              margin: '0 0 0.25rem 0',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              Level {userData.level}
+            </h3>
+            <p style={{ 
+              color: isDarkMode ? '#ccc' : '#666', 
+              margin: 0,
+              fontSize: '0.9rem',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              {userData.xp} XP • {userData.coins} Coins
+            </p>
+          </div>
+        </div>
+        <button 
+          onClick={onResetProgress}
+          className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
+          style={{
+            padding: '0.5rem 1rem',
+            borderRadius: '12px',
+            border: 'none',
+            color: isDarkMode ? '#ccc' : '#666',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }}
+        >
+          Reset Progress
+        </button>
+      </div>
+
+      {/* Word of the Day */}
+      {wordOfTheDay && (
+        <div className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
+          padding: '2rem',
+          marginBottom: '2rem',
+          borderRadius: '20px',
+          textAlign: 'center'
+        }}>
           <h3 style={{ 
-            margin: '0 0 1rem 0', 
-            color: isDarkMode ? '#f5f5f5' : '#2c3e50',
-            fontFamily: '"Georgia", serif'
+            color: isDarkMode ? '#fff' : '#333', 
+            marginBottom: '1rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
           }}>
             Word of the Day
           </h3>
           <div style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: isDarkMode ? '#f5f5f5' : '#2c3e50',
-            marginBottom: '0.5rem',
-            fontFamily: '"Georgia", serif'
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '1rem',
+            marginBottom: '1rem'
           }}>
-            {wordOfTheDay.swedish}
+            <span style={{ 
+              fontSize: '2rem', 
+              fontWeight: 'bold',
+              color: moominBlue,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              {wordOfTheDay.swedish}
+            </span>
+            <button
+              onClick={() => playSwedish(wordOfTheDay.swedish)}
+              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: moominBlue,
+                cursor: 'pointer',
+                fontSize: '1.5rem',
+                padding: '0.5rem',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <MdVolumeUp />
+            </button>
           </div>
-          <div style={{
-            fontSize: '1rem',
-            color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-            fontStyle: 'italic'
+          <p style={{ 
+            color: isDarkMode ? '#ccc' : '#666',
+            fontSize: '1.1rem',
+            margin: 0,
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
           }}>
-            {currentLanguage === 'ku' ? wordOfTheDay.kurdish : 
-             currentLanguage === 'ku-lat' ? wordOfTheDay.kurdish : 
-             wordOfTheDay.english}
-          </div>
+            {wordOfTheDay.english}
+          </p>
+          {wordOfTheDay.kurdish && (
+            <p style={{ 
+              color: isDarkMode ? '#aaa' : '#888',
+              fontSize: '1rem',
+              margin: '0.5rem 0 0 0',
+              fontFamily: 'Arial, sans-serif'
+            }}>
+              {wordOfTheDay.kurdish}
+            </p>
+          )}
         </div>
       )}
 
-      {/* Progress Summary */}
+      {/* Skills Grid */}
       <div style={{
-        margin: '2rem auto',
-        padding: '1.5rem',
-        background: cardBackground,
-        borderRadius: '20px',
-        boxShadow: isDarkMode 
-          ? '0 8px 25px rgba(0,0,0,0.3)' 
-          : '0 8px 25px rgba(52, 152, 219, 0.15)',
-        border: `2px solid ${borderColor}`,
-        maxWidth: '500px'
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2rem'
       }}>
-        <h3 style={{ 
-          margin: '0 0 1rem 0', 
-          color: moominBlue,
-          fontFamily: '"Georgia", serif'
-        }}>
-          Your Progress
-        </h3>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-          gap: '1rem'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: moominGreen,
-              marginBottom: '0.5rem'
+        {skills.map((skill) => (
+          <div
+            key={skill.id}
+            className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`}
+            style={{
+              padding: '2rem',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+            onClick={() => handleLessonSelection(skill.id)}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+            }}
+          >
+            {/* Skill completion indicator */}
+            {skillProgress[skill.id]?.completed && (
+              <div style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: '#4CAF50',
+                color: '#fff',
+                padding: '0.3rem 0.8rem',
+                borderRadius: '20px',
+                fontSize: '0.8rem',
+                fontWeight: 'bold'
+              }}>
+                ✓ Complete
+              </div>
+            )}
+
+            <h3 style={{
+              color: isDarkMode ? '#fff' : '#333',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
             }}>
-              {numWords}
-            </div>
-            <div style={{
+              {skill.name}
+            </h3>
+            
+            <p style={{
+              color: isDarkMode ? '#ccc' : '#666',
+              marginBottom: '1.5rem',
               fontSize: '0.9rem',
-              color: isDarkMode ? '#bdc3c7' : '#7f8c8d'
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
             }}>
-              Words Learned
-            </div>
+              {skill.words.length} words to learn
+            </p>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartLesson();
+              }}
+              className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
+              style={{
+                width: '100%',
+                padding: '1rem',
+                borderRadius: '12px',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                background: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+              }}
+            >
+              Start Lesson
+            </button>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: moominYellow,
-              marginBottom: '0.5rem'
-            }}>
-              {progress.gamesPlayed}
-            </div>
-            <div style={{
-              fontSize: '0.9rem',
-              color: isDarkMode ? '#bdc3c7' : '#7f8c8d'
-            }}>
-              Games Played
-            </div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: moominOrange,
-              marginBottom: '0.5rem'
-            }}>
-              {progress.streak}
-            </div>
-            <div style={{
-              fontSize: '0.9rem',
-              color: isDarkMode ? '#bdc3c7' : '#7f8c8d'
-            }}>
-              Day Streak
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Reset Progress Button */}
-      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <button
-          onClick={onResetProgress}
-          style={{
-            background: resetButtonBg,
-            color: '#fff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '0.8rem 1.5rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            fontFamily: '"Georgia", serif'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = resetButtonHoverBg;
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = resetButtonBg;
-          }}
-        >
-          <FaRedo style={{ marginRight: '0.5rem' }} />
-          Reset Progress
-        </button>
-      </div>
+      {/* Lesson Content */}
+      {selectedSkill && (
+        <div ref={lessonContentRef} className={`liquid-glass ${isDarkMode ? 'liquid-glass-dark' : ''}`} style={{
+          padding: '2rem',
+          borderRadius: '20px',
+          marginTop: '2rem'
+        }}>
+          <h2 style={{
+            color: isDarkMode ? '#fff' : '#333',
+            marginBottom: '1.5rem',
+            fontSize: '2rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }}>
+            {selectedSkill.name}
+          </h2>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1rem',
+            marginBottom: '2rem'
+          }}>
+            {selectedSkill.words.map((word, index) => (
+              <div
+                key={index}
+                className={`glass-button ${isDarkMode ? 'glass-button-dark' : ''}`}
+                style={{
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onClick={() => playSwedish(word.swedish)}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                  color: moominBlue,
+                  marginBottom: '0.5rem',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                }}>
+                  {word.swedish}
+                </div>
+                <div style={{
+                  color: isDarkMode ? '#ccc' : '#666',
+                  fontSize: '0.9rem',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                }}>
+                  {word.english}
+                </div>
+                {word.kurdish && (
+                  <div style={{
+                    color: isDarkMode ? '#aaa' : '#888',
+                    fontSize: '0.8rem',
+                    marginTop: '0.25rem',
+                    fontFamily: 'Arial, sans-serif'
+                  }}>
+                    {word.kurdish}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
