@@ -6,9 +6,9 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
 
   const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'ku', name: 'کوردی', flag: '🇮🇶' },
-    { code: 'ku-lat', name: 'Sorani', flag: '🇹🇷' }
+    { code: 'en', name: 'English', flag: '/united_kingdom_flag.png' },
+    { code: 'ku', name: 'کوردی', flag: '/kurdish_flag.png' },
+    { code: 'ku-lat', name: 'Sorani', flag: '/kurdish_flag.png' }
   ];
 
   const getCurrentLanguageInfo = () => {
@@ -274,7 +274,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '16px' }}>{language.flag}</span>
+                        <img src={language.flag} alt={language.name} style={{ width: '24px', height: '16px' }} />
                         <span style={{ 
                           fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '"Georgia", serif'
                         }}>
