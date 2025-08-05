@@ -144,7 +144,7 @@ const Confetti = React.memo(() => (
 ));
 
 // Multiple Choice game: pick correct English meaning for Swedish word
-function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
+function MultipleChoice({ words, onWordStatUpdate, onLessonComplete, isDarkMode, onGamePlayed, onPerfectScore }) {
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState('');
@@ -172,24 +172,52 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete }) {
   }, [idx, words, currentWord]);
 
   // Memoize handlers to prevent unnecessary re-renders
-  const handleOptionClick = useCallback((opt) => {
-    setSelected(opt);
-    setAnswerReveal(true);
-    if (opt === currentWord.english) {
-      setFeedback('✅ Correct!');
-      if (onWordStatUpdate) onWordStatUpdate(currentWord.swedish, currentWord.english, 'correct');
-      setShowContinue(true);
-    } else {
-      setFeedback('❌ Not quite right - try again!');
-      if (onWordStatUpdate) onWordStatUpdate(currentWord.swedish, currentWord.english, 'incorrect');
-      // Reset after a short delay to allow user to try again
+  const handleOptionClick = useCallback((option) => {
+    if (selected !== null) return; // Already answered
+    
+    setSelected(option);
+    const isCorrect = option === currentWord.english;
+    
+    // Update word stats
+    if (onWordStatUpdate) {
+      onWordStatUpdate(currentWord.swedish, currentWord.english, isCorrect ? 'correct' : 'incorrect');
+    }
+    
+    // Check if this was the last word
+    if (idx === words.length - 1) {
+      // Calculate score
+      const correctAnswers = words.filter((_, i) => {
+        const word = words[i];
+        return word.english === selected;
+      }).length;
+      
+      const score = Math.round((correctAnswers / words.length) * 100);
+      
+      // Track game completion for achievements
+      if (onGamePlayed) {
+        onGamePlayed();
+      }
+      
+      // Track perfect score for achievements
+      if (score === 100 && onPerfectScore) {
+        onPerfectScore();
+      }
+      
+      // Show completion message
       setTimeout(() => {
+        alert(`Game completed! Score: ${score}%`);
+        if (onLessonComplete) {
+          onLessonComplete();
+        }
+      }, 1000);
+    } else {
+      // Move to next word after a short delay
+      setTimeout(() => {
+        setIdx(prev => prev + 1);
         setSelected(null);
-        setAnswerReveal(false);
-        setFeedback('');
       }, 1500);
     }
-  }, [currentWord, onWordStatUpdate]);
+  }, [idx, selected, currentWord, words, onWordStatUpdate, onLessonComplete, onGamePlayed, onPerfectScore]);
 
   const handleContinue = useCallback(() => {
     setSelected(null);

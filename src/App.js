@@ -7,6 +7,9 @@ import IntroAnimation from './components/IntroAnimation';
 import Onboarding from './components/Onboarding';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
+import Achievements from './components/Achievements';
+import AchievementNotification from './components/AchievementNotification';
+import { getNewlyUnlockedAchievements } from './data/achievements';
 
 // Lazy load components for code splitting
 const StoryMode = React.lazy(() => import('./components/StoryMode'));
@@ -445,6 +448,28 @@ function App() {
   });
   const [showDialogue, setShowDialogue] = useState(false);
 
+  // Achievement system state
+  const [userStats, setUserStats] = useState(() => {
+    const saved = localStorage.getItem('userStats');
+    return saved ? JSON.parse(saved) : {
+      lessons_completed: 0,
+      words_learned: 0,
+      games_played: 0,
+      perfect_scores: 0,
+      streak_days: 0,
+      pronunciations_used: 0,
+      custom_words_added: 0,
+      dark_mode_used: 0,
+      languages_tried: 1
+    };
+  });
+  const [unlockedAchievements, setUnlockedAchievements] = useState(() => {
+    const saved = localStorage.getItem('unlockedAchievements');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showAchievementNotification, setShowAchievementNotification] = useState(false);
+  const [currentAchievement, setCurrentAchievement] = useState(null);
+
   // Memoized calculations
   const currentSkills = useMemo(() => SKILLS[currentLanguage] || SKILLS.en, [currentLanguage]);
   const selectedSkill = useMemo(() => currentSkills.find(s => s.id === selectedSkillId), [currentSkills, selectedSkillId]);
@@ -468,10 +493,48 @@ function App() {
     []
   );
 
-  // Save skill progress to localStorage whenever it changes - debounced
+  // Achievement tracking functions
+  const updateUserStats = useCallback((updates) => {
+    setUserStats(prev => {
+      const newStats = { ...prev, ...updates };
+      debouncedSaveToStorage('userStats', newStats);
+      return newStats;
+    });
+  }, [debouncedSaveToStorage]);
+
+  const checkAndUnlockAchievements = useCallback((previousStats, currentStats) => {
+    const newlyUnlocked = getNewlyUnlockedAchievements(previousStats, currentStats);
+    
+    if (newlyUnlocked.length > 0) {
+      const achievement = newlyUnlocked[0]; // Show first achievement
+      setCurrentAchievement(achievement);
+      setShowAchievementNotification(true);
+      
+      // Add rewards
+      setUserData(prev => ({
+        ...prev,
+        xp: prev.xp + achievement.xpReward,
+        coins: prev.coins + achievement.coinsReward
+      }));
+      
+      // Update unlocked achievements
+      setUnlockedAchievements(prev => {
+        const newUnlocked = [...prev, ...newlyUnlocked.map(a => a.id)];
+        debouncedSaveToStorage('unlockedAchievements', newUnlocked);
+        return newUnlocked;
+      });
+    }
+  }, [debouncedSaveToStorage]);
+
+  // Save userStats to localStorage whenever it changes
   useEffect(() => {
-    debouncedSaveToStorage('skillProgress', skillProgress);
-  }, [skillProgress, debouncedSaveToStorage]);
+    debouncedSaveToStorage('userStats', userStats);
+  }, [userStats, debouncedSaveToStorage]);
+
+  // Save unlockedAchievements to localStorage whenever it changes
+  useEffect(() => {
+    debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
+  }, [unlockedAchievements, debouncedSaveToStorage]);
   
   useEffect(() => {
     debouncedSaveToStorage('progress', progress);
@@ -562,18 +625,30 @@ function App() {
       [skillId]: { completed: true, completedAt: new Date().toISOString() }
     }));
     
+    // Track lesson completion for achievements
+    const previousStats = userStats;
+    const newStats = { ...userStats, lessons_completed: userStats.lessons_completed + 1 };
+    updateUserStats({ lessons_completed: userStats.lessons_completed + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
+    
     // Add XP for completing a skill
     addXP(50);
     
     // Show completion dialog
     setShowSkillComplete(true);
     setTimeout(() => setShowSkillComplete(false), 3000);
-  }, [addXP]);
+  }, [addXP, userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Handle adding a word - memoized
   const handleAdd = useCallback((word) => {
     setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
-  }, []);
+    
+    // Track custom word addition for achievements
+    const previousStats = userStats;
+    const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
+    updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Handle deleting a word - memoized
   const handleDelete = useCallback((idx) => {
@@ -615,12 +690,26 @@ function App() {
   // Toggle dark mode - memoized
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prev => !prev);
-  }, []);
+    
+    // Track dark mode usage for achievements
+    if (!userStats.dark_mode_used) {
+      const previousStats = userStats;
+      const newStats = { ...userStats, dark_mode_used: 1 };
+      updateUserStats({ dark_mode_used: 1 });
+      checkAndUnlockAchievements(previousStats, newStats);
+    }
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Toggle language - memoized
   const toggleLanguage = useCallback((languageCode) => {
     setCurrentLanguage(languageCode);
-  }, []);
+    
+    // Track language exploration for achievements
+    const previousStats = userStats;
+    const newStats = { ...userStats, languages_tried: Math.max(userStats.languages_tried, 2) };
+    updateUserStats({ languages_tried: Math.max(userStats.languages_tried, 2) });
+    checkAndUnlockAchievements(previousStats, newStats);
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Handle intro complete - memoized
   const handleIntroComplete = useCallback(() => {
@@ -649,6 +738,12 @@ function App() {
     setShowDialogue(false);
   }, []);
 
+  // Handle achievement notification close
+  const handleAchievementNotificationClose = useCallback(() => {
+    setShowAchievementNotification(false);
+    setCurrentAchievement(null);
+  }, []);
+
   // Render the current screen
   let content;
   if (screen === 'home') content = (
@@ -675,6 +770,7 @@ function App() {
   );
   else if (screen === 'list') content = <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
   else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
+  else if (screen === 'achievements') content = <Achievements userStats={userStats} unlockedAchievements={unlockedAchievements} isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
     <StoryMode isDarkMode={isDarkMode} />
   </Suspense>;
@@ -754,6 +850,15 @@ function App() {
         <main style={{ paddingTop: '60px' }}>
           {content}
         </main>
+        
+        {/* Achievement Notification */}
+        {showAchievementNotification && currentAchievement && (
+          <AchievementNotification
+            achievement={currentAchievement}
+            onClose={handleAchievementNotificationClose}
+            isDarkMode={isDarkMode}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );
