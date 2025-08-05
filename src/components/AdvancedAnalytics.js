@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { FaChartLine, FaChartBar, FaChartPie, FaTrendingUp, FaTrendingDown, FaMinus, FaLightbulb, FaTarget, FaClock, FaTrophy, FaStar, FaCheck, FaTimes, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaChartLine, FaChartBar, FaChartPie, FaTrendingUp, FaTrendingDown, FaMinus, FaLightbulb, FaBullseye, FaClock, FaTrophy, FaStar, FaCheck, FaTimes, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { 
   ANALYTICS_CATEGORIES, 
   ANALYTICS_DATA, 
@@ -41,7 +41,7 @@ const AdvancedAnalytics = React.memo(({ userStats, isDarkMode }) => {
     { id: 'performance', name: 'Performance', icon: <FaChartLine />, feature: analyticsCategories[1] },
     { id: 'patterns', name: 'Patterns', icon: <FaChartPie />, feature: analyticsCategories[2] },
     { id: 'insights', name: 'Insights', icon: <FaLightbulb />, feature: analyticsCategories[3] },
-    { id: 'comparisons', name: 'Comparisons', icon: <FaTarget />, feature: analyticsCategories[4] }
+    { id: 'comparisons', name: 'Comparisons', icon: <FaBullseye />, feature: analyticsCategories[4] }
   ];
 
   const periods = [
@@ -769,7 +769,7 @@ const AdvancedAnalytics = React.memo(({ userStats, isDarkMode }) => {
                   fontFamily: '"Georgia", serif'
                 }}
               >
-                <FaTarget style={{ color: accentColor }} />
+                <FaBullseye style={{ color: accentColor }} />
                 {recommendation}
               </div>
             ))}
