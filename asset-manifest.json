@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/flodhasten/static/css/main.dad20fa1.css",
-    "main.js": "/flodhasten/static/js/main.858ea536.js",
+    "main.css": "/flodhasten/static/css/main.0be9b5b5.css",
+    "main.js": "/flodhasten/static/js/main.af6381c2.js",
     "static/js/685.1ed5ceb4.chunk.js": "/flodhasten/static/js/685.1ed5ceb4.chunk.js",
     "service-worker.js": "/flodhasten/service-worker.js",
     "index.html": "/flodhasten/index.html"
   },
   "entrypoints": [
-    "static/css/main.dad20fa1.css",
-    "static/js/main.858ea536.js"
+    "static/css/main.0be9b5b5.css",
+    "static/js/main.af6381c2.js"
   ]
 }
