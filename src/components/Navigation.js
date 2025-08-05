@@ -64,50 +64,21 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
         flexWrap: 'wrap',
         gap: '0.5rem'
       }}>
-        {/* Left side - Home button always visible */}
+        {/* Left side - All navigation buttons visible by default */}
         <div style={{
           display: 'flex',
           gap: '0.5rem',
           flexWrap: 'wrap'
         }}>
+          {/* Home button - always visible */}
           <button 
             className={currentScreen === 'home' ? 'active' : ''} 
             onClick={() => setScreen('home')}
-            style={{
-              background: currentScreen === 'home' ? '#2193b0' : '#fff',
-              color: currentScreen === 'home' ? '#fff' : '#2193b0',
-              border: 'none',
-              borderRadius: '20px',
-              padding: '0.7rem 1.2rem',
-              margin: '0 0.2rem',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-              transition: 'all 0.2s ease',
-              cursor: 'pointer',
-              transform: 'translateY(0)'
-            }}
-            onMouseEnter={(e) => {
-              if (currentScreen !== 'home') {
-                e.target.style.background = '#2193b0';
-                e.target.style.color = '#fff';
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (currentScreen !== 'home') {
-                e.target.style.background = '#fff';
-                e.target.style.color = '#2193b0';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
-              }
-            }}
           >
             <MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home
           </button>
           
-          {/* Other navigation buttons - hidden on small screens */}
+          {/* Other navigation buttons - visible by default, hidden on small screens via CSS */}
           <div className="nav-buttons-desktop">
             {navigationItems.map(({ screen, icon, label }) => (
               <button 
@@ -432,27 +403,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
           onClick={() => setShowSettingsDropdown(false)}
         />
       )}
-
-      {/* CSS animations */}
-      <style>
-        {`
-          @keyframes dropdownSlide {
-            0% { 
-              opacity: 0; 
-              transform: translateY(-10px) scale(0.95);
-            }
-            100% { 
-              opacity: 1; 
-              transform: translateY(0) scale(1);
-            }
-          }
-          
-          @keyframes gentleGlow {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-          }
-        `}
-      </style>
     </nav>
   );
 }

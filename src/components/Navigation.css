@@ -73,14 +73,14 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
-/* Desktop navigation buttons - hidden on small screens */
+/* Desktop navigation buttons - visible by default */
 .nav-buttons-desktop {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-/* Mobile navigation items in dropdown */
+/* Mobile navigation items in dropdown - hidden by default */
 .nav-items-mobile {
   display: none;
 }
