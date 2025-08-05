@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
 import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
@@ -14,45 +14,6 @@ async function playSwedish(word) {
   }
 }
 
-// Parse CSV or TXT file into word objects - memoized for performance
-const parseWordFile = React.useMemo(() => (text, ext) => {
-  const words = [];
-  if (ext === 'csv') {
-    // Accept header: Swedish,English or just Swedish
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    const header = lines[0].toLowerCase();
-    const isTwoCol = header.includes('english') && header.includes('swedish');
-    for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(',');
-      if (isTwoCol) {
-        // Swedish,English
-        const [swedish, english] = cols;
-        if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-        else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-      } else {
-        // Single column: just Swedish
-        const swedish = cols[0];
-        if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-      }
-    }
-  } else {
-    // TXT: lines like 'häst - horse' or just 'häst'
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    for (const line of lines) {
-      if (line.includes(' - ')) {
-        const [swedish, english] = line.split(' - ');
-        if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-        else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-      } else {
-        // Just Swedish
-        const swedish = line.trim();
-        if (swedish) words.push({ swedish, english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-      }
-    }
-  }
-  return words;
-}, []);
-
 // List of saved Swedish words and their English meanings, with edit/delete and add functionality
 const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, isDarkMode }) => {
   const [editIdx, setEditIdx] = useState(null);
@@ -67,6 +28,45 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
   const [newSwedish, setNewSwedish] = useState('');
   const [newEnglish, setNewEnglish] = useState('');
   const [addMessage, setAddMessage] = useState('');
+
+  // Parse CSV or TXT file into word objects - memoized for performance
+  const parseWordFile = useCallback((text, ext) => {
+    const words = [];
+    if (ext === 'csv') {
+      // Accept header: Swedish,English or just Swedish
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      const header = lines[0].toLowerCase();
+      const isTwoCol = header.includes('english') && header.includes('swedish');
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        if (isTwoCol) {
+          // Swedish,English
+          const [swedish, english] = cols;
+          if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+        } else {
+          // Single column: just Swedish
+          const swedish = cols[0];
+          if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+        }
+      }
+    } else {
+      // TXT: lines like 'häst - horse' or just 'häst'
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      for (const line of lines) {
+        if (line.includes(' - ')) {
+          const [swedish, english] = line.split(' - ');
+          if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+        } else {
+          // Just Swedish
+          const swedish = line.trim();
+          if (swedish) words.push({ swedish, english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+        }
+      }
+    }
+    return words;
+  }, []);
 
   // Handle adding a new word
   const handleAddWord = (e) => {
