@@ -1,13 +1,23 @@
 {
   "files": {
-    "main.css": "/flodhasten/static/css/main.0be9b5b5.css",
-    "main.js": "/flodhasten/static/js/main.5455d527.js",
+    "main.css": "/flodhasten/static/css/main.35b498cc.css",
+    "main.js": "/flodhasten/static/js/main.01acf12b.js",
+    "static/js/424.4d175930.chunk.js": "/flodhasten/static/js/424.4d175930.chunk.js",
+    "static/js/241.e6225f5d.chunk.js": "/flodhasten/static/js/241.e6225f5d.chunk.js",
+    "static/js/50.a775c14c.chunk.js": "/flodhasten/static/js/50.a775c14c.chunk.js",
+    "static/js/705.6bcf9a56.chunk.js": "/flodhasten/static/js/705.6bcf9a56.chunk.js",
+    "static/js/12.b8332acd.chunk.js": "/flodhasten/static/js/12.b8332acd.chunk.js",
+    "static/js/270.17e0d622.chunk.js": "/flodhasten/static/js/270.17e0d622.chunk.js",
+    "static/js/467.325997b8.chunk.js": "/flodhasten/static/js/467.325997b8.chunk.js",
+    "static/js/182.076217b8.chunk.js": "/flodhasten/static/js/182.076217b8.chunk.js",
+    "static/js/570.46def19c.chunk.js": "/flodhasten/static/js/570.46def19c.chunk.js",
+    "static/js/780.7384f77d.chunk.js": "/flodhasten/static/js/780.7384f77d.chunk.js",
     "static/js/685.1ed5ceb4.chunk.js": "/flodhasten/static/js/685.1ed5ceb4.chunk.js",
     "service-worker.js": "/flodhasten/service-worker.js",
     "index.html": "/flodhasten/index.html"
   },
   "entrypoints": [
-    "static/css/main.0be9b5b5.css",
-    "static/js/main.5455d527.js"
+    "static/css/main.35b498cc.css",
+    "static/js/main.01acf12b.js"
   ]
 }
