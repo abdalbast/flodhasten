@@ -6,6 +6,7 @@ import Explore from './components/Explore';
 import StoryMode from './components/StoryMode';
 import AvatarShop from './components/AvatarShop';
 import IntroAnimation from './components/IntroAnimation';
+import Onboarding from './components/Onboarding';
 import Dialogue from './components/Dialogue';
 import GamesMenu from './games/GamesMenu';
 import Flashcards from './games/Flashcards';
@@ -417,6 +418,10 @@ function App() {
     const hasSeenIntro = localStorage.getItem('hasSeenIntro');
     return !hasSeenIntro;
   });
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    return !hasSeenOnboarding;
+  });
   const [showDialogue, setShowDialogue] = useState(false);
 
   // Get the selected skill and its words based on current language
@@ -594,6 +599,11 @@ function App() {
     setShowIntro(true);
   };
 
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('hasSeenOnboarding', 'true');
+    setShowOnboarding(false);
+  };
+
   // Handle dialogue completion and start games
   const handleStartGames = () => {
     setShowDialogue(false);
@@ -716,6 +726,7 @@ function App() {
         }
       `}</style>
       
+      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} isDarkMode={isDarkMode} />}
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} isDarkMode={isDarkMode} />}
       {showDialogue && selectedSkill && (
         <Dialogue 

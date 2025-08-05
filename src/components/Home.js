@@ -446,31 +446,68 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
         </div>
       </div>
 
-      {/* Reset Progress Button */}
+      {/* Reset Progress and Erase Buttons */}
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <button
-          onClick={onResetProgress}
-          style={{
-            background: resetButtonBg,
-            color: '#fff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '0.8rem 1.5rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            fontFamily: '"Georgia", serif'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = resetButtonHoverBg;
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = resetButtonBg;
-          }}
-        >
-          <FaRedo style={{ marginRight: '0.5rem' }} />
-          Reset Progress
-        </button>
+        <div style={{
+          display: 'flex',
+          gap: '1rem',
+          justifyContent: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={onResetProgress}
+            style={{
+              background: resetButtonBg,
+              color: '#fff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '0.8rem 1.5rem',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontFamily: '"Georgia", serif'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = resetButtonHoverBg;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = resetButtonBg;
+            }}
+          >
+            <FaRedo style={{ marginRight: '0.5rem' }} />
+            Reset Progress
+          </button>
+          
+          <button
+            onClick={() => {
+              if (window.confirm('Are you sure you want to erase everything? This will completely reset the app as if you\'re using it for the first time.')) {
+                // Clear all localStorage
+                localStorage.clear();
+                // Reload the page to start fresh
+                window.location.reload();
+              }
+            }}
+            style={{
+              background: '#e74c3c',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '0.8rem 1.5rem',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontFamily: '"Georgia", serif'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = '#c0392b';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = '#e74c3c';
+            }}
+          >
+            🗑️ Erase All
+          </button>
+        </div>
       </div>
     </div>
   );
