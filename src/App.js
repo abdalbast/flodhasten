@@ -408,7 +408,11 @@ function App() {
   });
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('isDarkMode');
-    return saved ? JSON.parse(saved) : false;
+    if (saved !== null) {
+      return JSON.parse(saved);
+    }
+    // Detect system dark mode preference
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     const saved = localStorage.getItem('currentLanguage');
@@ -461,6 +465,25 @@ function App() {
   useEffect(() => {
     localStorage.setItem('currentLanguage', currentLanguage);
   }, [currentLanguage]);
+
+  // Listen for system dark mode changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleSystemThemeChange = (e) => {
+      const saved = localStorage.getItem('isDarkMode');
+      // Only update if user hasn't manually set a preference
+      if (saved === null) {
+        setIsDarkMode(e.matches);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    
+    return () => {
+      mediaQuery.removeEventListener('change', handleSystemThemeChange);
+    };
+  }, []);
 
   // Add XP to user
   const addXP = (amount) => {
