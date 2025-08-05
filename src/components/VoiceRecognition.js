@@ -99,11 +99,49 @@ const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDark
   // Play native pronunciation
   const playNativePronunciation = useCallback(() => {
     if (currentWord) {
-      // Use the existing TTS system
-      const utterance = new SpeechSynthesisUtterance(currentWord.word);
-      utterance.lang = 'sv-SE';
-      utterance.rate = 0.8; // Slightly slower for clarity
-      speechSynthesis.speak(utterance);
+      // Get available voices
+      const voices = speechSynthesis.getVoices();
+      
+      // Find Alva (sv-SE) voice specifically
+      let selectedVoice = null;
+      
+      // First priority: Alva (sv-SE)
+      selectedVoice = voices.find(voice => 
+        voice.name === 'Alva' && voice.lang === 'sv-SE'
+      );
+      
+      // Second priority: Any sv-SE voice (but not Alva)
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => 
+          voice.lang === 'sv-SE' && voice.name !== 'Alva'
+        );
+      }
+      
+      // Third priority: Nordic voices (sv-FI, sv-NO, da-DK, nb-NO)
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => 
+          ['sv-FI', 'sv-NO', 'da-DK', 'nb-NO'].includes(voice.lang)
+        );
+      }
+      
+      // Last resort: English voice (but we prefer no audio over wrong language)
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => 
+          voice.lang.startsWith('en')
+        );
+      }
+      
+      // Only play if we have a Swedish or Nordic voice
+      if (selectedVoice && (selectedVoice.lang === 'sv-SE' || selectedVoice.lang.startsWith('sv') || selectedVoice.lang.startsWith('da') || selectedVoice.lang.startsWith('nb'))) {
+        const utterance = new SpeechSynthesisUtterance(currentWord.word);
+        utterance.voice = selectedVoice;
+        utterance.rate = 0.8; // Slightly slower for clarity
+        utterance.lang = selectedVoice.lang;
+        speechSynthesis.speak(utterance);
+      } else {
+        // If no suitable Swedish voice is available, don't play anything
+        console.log('No suitable Swedish voice available. Alva (sv-SE) not found.');
+      }
     }
   }, [currentWord]);
 

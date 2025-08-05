@@ -299,7 +299,7 @@ export const ACHIEVEMENTS = {
 
 ### **Text-to-Speech**
 - **Browser TTS**: SpeechSynthesis API
-- **Swedish Voice**: Alva (sv-SE) voice preference
+- **Swedish Voice**: Alva (sv-SE) voice preference only
 - **Custom API**: Fallback TTS service
 - **Rate Control**: Adjustable speech speed
 

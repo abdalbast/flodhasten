@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { FaMicrophone, FaTrophy, FaFlag, FaStar, FaChartLine, FaCog, FaPlay, FaVolumeUp } from 'react-icons/fa';
-import { MdTarget, MdEmojiEvents } from 'react-icons/md';
+import { MdFlag, MdEmojiEvents } from 'react-icons/md';
 import Achievements from './Achievements';
 import DailyChallenges from './DailyChallenges';
 import VoiceRecognition from './VoiceRecognition';
@@ -84,7 +84,7 @@ const TestingHub = React.memo(({ userStats, unlockedAchievements, dailyChallenge
   const tabs = [
     { id: 'overview', name: 'Overview', icon: <FaCog /> },
     { id: 'achievements', name: 'Achievements', icon: <MdEmojiEvents /> },
-    { id: 'challenges', name: 'Daily Challenges', icon: <MdTarget /> },
+    { id: 'challenges', name: 'Daily Challenges', icon: <MdFlag /> },
     { id: 'voice', name: 'Voice Recognition', icon: <FaMicrophone /> },
     { id: 'stats', name: 'Statistics', icon: <FaChartLine /> }
   ];
@@ -267,7 +267,7 @@ const TestingHub = React.memo(({ userStats, unlockedAchievements, dailyChallenge
                   gap: '1rem',
                   marginBottom: '1rem'
                 }}>
-                  <MdTarget style={{ fontSize: '2rem', color: '#27ae60' }} />
+                  <MdFlag style={{ fontSize: '2rem', color: '#27ae60' }} />
                   <h3 style={{
                     margin: '0',
                     fontFamily: '"Georgia", serif'
