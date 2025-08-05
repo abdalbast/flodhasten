@@ -12,6 +12,7 @@ import AchievementNotification from './components/AchievementNotification';
 import DailyChallenges from './components/DailyChallenges';
 import VoiceRecognition from './components/VoiceRecognition';
 import TestingHub from './components/TestingHub';
+import CulturalIntegration from './components/CulturalIntegration';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 
@@ -466,9 +467,11 @@ function App() {
       dark_mode_used: 0,
       languages_tried: 1,
       pronunciation_attempts: 0,
-      en_pronunciations: 0,
-      ku_pronunciations: 0,
-      ku_lat_pronunciations: 0
+      excellent_pronunciations: 0,
+      good_pronunciations: 0,
+      fair_pronunciations: 0,
+      needs_improvement_pronunciations: 0,
+      cultural_lessons_completed: 0
     };
   });
   const [unlockedAchievements, setUnlockedAchievements] = useState(() => {
@@ -486,6 +489,12 @@ function App() {
   const [currentChallenge, setCurrentChallenge] = useState(null);
   const [challengeProgress, setChallengeProgress] = useState({});
   const [showChallengeComplete, setShowChallengeComplete] = useState(false);
+
+  // Cultural Integration state
+  const [culturalProgress, setCulturalProgress] = useState(() => {
+    const saved = localStorage.getItem('culturalProgress');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   // Voice Recognition state
   const [isListening, setIsListening] = useState(false);
@@ -548,6 +557,25 @@ function App() {
       });
     }
   }, [debouncedSaveToStorage]);
+
+  // Save states to localStorage
+  useEffect(() => {
+    debouncedSaveToStorage('userStats', userStats);
+    debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
+    debouncedSaveToStorage('culturalProgress', culturalProgress);
+  }, [userStats, unlockedAchievements, culturalProgress, debouncedSaveToStorage]);
+
+  // Handle cultural lesson completion
+  const handleCulturalLessonComplete = useCallback((lessonId, score) => {
+    setCulturalProgress(prev => {
+      const newProgress = { ...prev, [lessonId]: { score, completedAt: new Date().toISOString() } };
+      debouncedSaveToStorage('culturalProgress', newProgress);
+      return newProgress;
+    });
+    
+    // Update user stats for cultural lessons
+    updateUserStats({ cultural_lessons_completed: (userStats.cultural_lessons_completed || 0) + 1 });
+  }, [userStats.cultural_lessons_completed, updateUserStats, debouncedSaveToStorage]);
 
   // Save userStats to localStorage whenever it changes
   useEffect(() => {
@@ -909,6 +937,7 @@ function App() {
   else if (screen === 'challenges') content = <DailyChallenges challenges={dailyChallenges} userStats={userStats} onChallengeComplete={checkAndCompleteChallenges} isDarkMode={isDarkMode} />;
   else if (screen === 'voice-recognition') content = <VoiceRecognition userStats={userStats} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
   else if (screen === 'testing-hub') content = <TestingHub userStats={userStats} unlockedAchievements={unlockedAchievements} dailyChallenges={dailyChallenges} onChallengeComplete={checkAndCompleteChallenges} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
+  else if (screen === 'cultural-integration') content = <CulturalIntegration userProgress={culturalProgress} onLessonComplete={handleCulturalLessonComplete} isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
     <StoryMode isDarkMode={isDarkMode} />
   </Suspense>;
