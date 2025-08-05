@@ -73,9 +73,37 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
-@media (max-width: 600px) {
+/* Desktop navigation buttons - hidden on small screens */
+.nav-buttons-desktop {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Mobile navigation items in dropdown */
+.nav-items-mobile {
+  display: none;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 872px) {
+  .nav-buttons-desktop {
+    display: none !important;
+  }
+  
+  .nav-items-mobile {
+    display: block !important;
+  }
+  
   .nav-bar button {
     font-size: 0.95rem;
     padding: 0.6rem 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-bar button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.6rem;
   }
 } 

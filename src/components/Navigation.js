@@ -30,6 +30,11 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
     setShowSettingsDropdown(false);
   };
 
+  const handleNavigationClick = (screen) => {
+    setScreen(screen);
+    setShowSettingsDropdown(false);
+  };
+
   // Moomin-inspired colour palette
   const moominBlue = '#3498db';
   const moominGreen = '#27ae60';
@@ -41,6 +46,14 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
   const cardBackground = isDarkMode ? '#3d3d3d' : '#ffffff';
   const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
 
+  const navigationItems = [
+    { screen: 'list', icon: <MdList />, label: 'Word List' },
+    { screen: 'games', icon: <MdGames />, label: 'Games' },
+    { screen: 'explore', icon: <MdLocationOn />, label: 'Explore' },
+    { screen: 'story', icon: <MdBook />, label: 'Stories' },
+    { screen: 'avatar-shop', icon: <MdStore />, label: 'Shop' }
+  ];
+
   return (
     <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`}>
       <div style={{
@@ -51,25 +64,69 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
         flexWrap: 'wrap',
         gap: '0.5rem'
       }}>
+        {/* Left side - Home button always visible */}
         <div style={{
           display: 'flex',
           gap: '0.5rem',
           flexWrap: 'wrap'
         }}>
-          <button className={currentScreen === 'home' ? 'active' : ''} onClick={() => setScreen('home')}><MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home</button>
-          <button className={currentScreen === 'list' ? 'active' : ''} onClick={() => setScreen('list')}><MdList style={{verticalAlign:'middle',marginRight:4}} /> Word List</button>
-          <button className={currentScreen === 'games' ? 'active' : ''} onClick={() => setScreen('games')}><MdGames style={{verticalAlign:'middle',marginRight:4}} /> Games</button>
-          <button className={currentScreen === 'explore' ? 'active' : ''} onClick={() => setScreen('explore')}><MdLocationOn style={{verticalAlign:'middle',marginRight:4}} /> Explore</button>
-          <button className={currentScreen === 'story' ? 'active' : ''} onClick={() => setScreen('story')}><MdBook style={{verticalAlign:'middle',marginRight:4}} /> Stories</button>
-          <button className={currentScreen === 'avatar-shop' ? 'active' : ''} onClick={() => setScreen('avatar-shop')}><MdStore style={{verticalAlign:'middle',marginRight:4}} /> Shop</button>
+          <button 
+            className={currentScreen === 'home' ? 'active' : ''} 
+            onClick={() => setScreen('home')}
+            style={{
+              background: currentScreen === 'home' ? '#2193b0' : '#fff',
+              color: currentScreen === 'home' ? '#fff' : '#2193b0',
+              border: 'none',
+              borderRadius: '20px',
+              padding: '0.7rem 1.2rem',
+              margin: '0 0.2rem',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              transform: 'translateY(0)'
+            }}
+            onMouseEnter={(e) => {
+              if (currentScreen !== 'home') {
+                e.target.style.background = '#2193b0';
+                e.target.style.color = '#fff';
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentScreen !== 'home') {
+                e.target.style.background = '#fff';
+                e.target.style.color = '#2193b0';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
+              }
+            }}
+          >
+            <MdHome style={{verticalAlign:'middle',marginRight:4}} /> Home
+          </button>
+          
+          {/* Other navigation buttons - hidden on small screens */}
+          <div className="nav-buttons-desktop">
+            {navigationItems.map(({ screen, icon, label }) => (
+              <button 
+                key={screen}
+                className={currentScreen === screen ? 'active' : ''} 
+                onClick={() => setScreen(screen)}
+              >
+                {icon} {label}
+              </button>
+            ))}
+          </div>
         </div>
         
+        {/* Right side - Settings dropdown */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '0.5rem'
         }}>
-          {/* Settings Dropdown */}
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
@@ -162,6 +219,59 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                 overflow: 'hidden',
                 animation: 'dropdownSlide 0.3s ease-out'
               }}>
+                {/* Navigation items for small screens */}
+                <div className="nav-items-mobile">
+                  {navigationItems.map(({ screen, icon, label }) => (
+                    <button
+                      key={screen}
+                      onClick={() => handleNavigationClick(screen)}
+                      style={{
+                        width: '100%',
+                        padding: '16px 20px',
+                        background: 'none',
+                        border: 'none',
+                        color: textColor,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        transition: 'all 0.2s ease',
+                        borderBottom: `1px solid ${borderColor}`,
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                        e.target.style.color = moominBlue;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'none';
+                        e.target.style.color = textColor;
+                      }}
+                    >
+                      {icon}
+                      <span>{label}</span>
+                      {currentScreen === screen && (
+                        <span style={{ 
+                          color: moominGreen,
+                          fontSize: '16px',
+                          fontWeight: 'bold',
+                          marginLeft: 'auto'
+                        }}>
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <div style={{
+                  height: '1px',
+                  background: borderColor,
+                  margin: '8px 0'
+                }} />
+
                 {/* Intro Button */}
                 <button
                   onClick={handleIntroClick}
@@ -227,10 +337,9 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                   <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
 
-                {/* Language Section */}
+                {/* Language Selection */}
                 <div style={{
                   padding: '12px 20px',
-                  borderBottom: `1px solid ${borderColor}`,
                   background: isDarkMode ? '#444444' : '#f0f8ff'
                 }}>
                   <div style={{
@@ -267,7 +376,7 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                         justifyContent: 'space-between'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.background = isDarkMode ? '#666666' : '#e8f4f8';
+                        e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.background = 'none';
@@ -303,28 +412,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
                     </button>
                   ))}
                 </div>
-
-                {/* Decorative elements */}
-                <div style={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '8px',
-                  width: '8px',
-                  height: '8px',
-                  background: moominYellow,
-                  borderRadius: '50%',
-                  animation: 'gentleGlow 2s ease-in-out infinite'
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  bottom: '8px',
-                  left: '8px',
-                  width: '6px',
-                  height: '6px',
-                  background: moominGreen,
-                  borderRadius: '50%',
-                  animation: 'gentleGlow 3s ease-in-out infinite 1s'
-                }} />
               </div>
             )}
           </div>
