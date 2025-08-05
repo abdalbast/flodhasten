@@ -148,7 +148,8 @@ function Onboarding({ onComplete, isDarkMode }) {
           width: '200px',
           height: '200px',
           marginBottom: '3rem',
-          animation: showGreeting ? 'bounceIn 0.8s ease-out 0.3s both' : 'none'
+          animation: showGreeting ? 'bounceIn 0.8s ease-out 0.3s both' : 'none',
+          position: 'relative'
         }}>
           <img
             src={process.env.PUBLIC_URL + '/animated_hippo.gif'}
@@ -157,7 +158,11 @@ function Onboarding({ onComplete, isDarkMode }) {
               width: '100%',
               height: '100%',
               objectFit: 'contain',
-              filter: isDarkMode ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))' : 'drop-shadow(0 8px 16px rgba(52, 152, 219, 0.3))'
+              filter: isDarkMode 
+                ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.4)) brightness(1.1) contrast(1.2)' 
+                : 'drop-shadow(0 8px 16px rgba(52, 152, 219, 0.3)) brightness(1.1) contrast(1.2)',
+              mixBlendMode: 'multiply',
+              backgroundColor: 'transparent'
             }}
           />
         </div>
