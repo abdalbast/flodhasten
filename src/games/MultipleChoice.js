@@ -193,12 +193,12 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete, isDarkMode,
       
       const score = Math.round((correctAnswers / words.length) * 100);
       
-      // Track game completion for achievements
+      // Track game completion for achievements and challenges
       if (onGamePlayed) {
         onGamePlayed();
       }
       
-      // Track perfect score for achievements
+      // Track perfect score for achievements and challenges
       if (score === 100 && onPerfectScore) {
         onPerfectScore();
       }

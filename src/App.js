@@ -9,7 +9,9 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import Achievements from './components/Achievements';
 import AchievementNotification from './components/AchievementNotification';
+import DailyChallenges from './components/DailyChallenges';
 import { getNewlyUnlockedAchievements } from './data/achievements';
+import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 
 // Lazy load components for code splitting
 const StoryMode = React.lazy(() => import('./components/StoryMode'));
@@ -470,6 +472,15 @@ function App() {
   const [showAchievementNotification, setShowAchievementNotification] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState(null);
 
+  // Daily Challenges state
+  const [dailyChallenges, setDailyChallenges] = useState(() => {
+    const saved = localStorage.getItem('dailyChallenges');
+    return saved ? JSON.parse(saved) : getDailyChallenges();
+  });
+  const [currentChallenge, setCurrentChallenge] = useState(null);
+  const [challengeProgress, setChallengeProgress] = useState({});
+  const [showChallengeComplete, setShowChallengeComplete] = useState(false);
+
   // Memoized calculations
   const currentSkills = useMemo(() => SKILLS[currentLanguage] || SKILLS.en, [currentLanguage]);
   const selectedSkill = useMemo(() => currentSkills.find(s => s.id === selectedSkillId), [currentSkills, selectedSkillId]);
@@ -535,6 +546,75 @@ function App() {
   useEffect(() => {
     debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
   }, [unlockedAchievements, debouncedSaveToStorage]);
+
+  // Daily Challenges tracking functions
+  const updateChallengeProgress = useCallback((updates) => {
+    setChallengeProgress(prev => {
+      const newProgress = { ...prev, ...updates };
+      debouncedSaveToStorage('challengeProgress', newProgress);
+      return newProgress;
+    });
+  }, [debouncedSaveToStorage]);
+
+  const checkAndCompleteChallenges = useCallback(() => {
+    const newlyCompleted = [];
+    
+    dailyChallenges.forEach(challenge => {
+      if (!challengeProgress[challenge.id]?.completed && checkChallengeCompletion(challenge, userStats)) {
+        newlyCompleted.push(challenge);
+        
+        // Update challenge progress
+        updateChallengeProgress({
+          [challenge.id]: { 
+            completed: true, 
+            completedAt: new Date().toISOString() 
+          }
+        });
+        
+        // Add rewards
+        setUserData(prev => ({
+          ...prev,
+          xp: prev.xp + challenge.xpReward,
+          coins: prev.coins + challenge.coinsReward
+        }));
+      }
+    });
+    
+    if (newlyCompleted.length > 0) {
+      setCurrentChallenge(newlyCompleted[0]);
+      setShowChallengeComplete(true);
+      setTimeout(() => setShowChallengeComplete(false), 3000);
+    }
+  }, [dailyChallenges, challengeProgress, userStats, updateChallengeProgress]);
+
+  // Check for challenge completion whenever userStats changes
+  useEffect(() => {
+    checkAndCompleteChallenges();
+  }, [userStats, checkAndCompleteChallenges]);
+
+  // Save dailyChallenges to localStorage whenever it changes
+  useEffect(() => {
+    debouncedSaveToStorage('dailyChallenges', dailyChallenges);
+  }, [dailyChallenges, debouncedSaveToStorage]);
+
+  // Save challengeProgress to localStorage whenever it changes
+  useEffect(() => {
+    debouncedSaveToStorage('challengeProgress', challengeProgress);
+  }, [challengeProgress, debouncedSaveToStorage]);
+
+  // Generate new daily challenges at midnight
+  useEffect(() => {
+    const now = new Date();
+    const lastChallengeDate = localStorage.getItem('lastChallengeDate');
+    const today = now.toDateString();
+    
+    if (lastChallengeDate !== today) {
+      const newChallenges = getDailyChallenges(userData.level || 1);
+      setDailyChallenges(newChallenges);
+      setChallengeProgress({});
+      localStorage.setItem('lastChallengeDate', today);
+    }
+  }, [userData.level]);
   
   useEffect(() => {
     debouncedSaveToStorage('progress', progress);
@@ -625,7 +705,7 @@ function App() {
       [skillId]: { completed: true, completedAt: new Date().toISOString() }
     }));
     
-    // Track lesson completion for achievements
+    // Track lesson completion for achievements and challenges
     const previousStats = userStats;
     const newStats = { ...userStats, lessons_completed: userStats.lessons_completed + 1 };
     updateUserStats({ lessons_completed: userStats.lessons_completed + 1 });
@@ -643,10 +723,34 @@ function App() {
   const handleAdd = useCallback((word) => {
     setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
     
-    // Track custom word addition for achievements
+    // Track custom word addition for achievements and challenges
     const previousStats = userStats;
     const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
     updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
+
+  // Track game completion for challenges
+  const handleGamePlayed = useCallback(() => {
+    const previousStats = userStats;
+    const newStats = { ...userStats, games_played: userStats.games_played + 1 };
+    updateUserStats({ games_played: userStats.games_played + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
+
+  // Track perfect score for challenges
+  const handlePerfectScore = useCallback(() => {
+    const previousStats = userStats;
+    const newStats = { ...userStats, perfect_scores: userStats.perfect_scores + 1 };
+    updateUserStats({ perfect_scores: userStats.perfect_scores + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
+
+  // Track pronunciation usage for challenges
+  const handlePronunciationUsed = useCallback(() => {
+    const previousStats = userStats;
+    const newStats = { ...userStats, pronunciations_used: userStats.pronunciations_used + 1 };
+    updateUserStats({ pronunciations_used: userStats.pronunciations_used + 1 });
     checkAndUnlockAchievements(previousStats, newStats);
   }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
@@ -771,6 +875,7 @@ function App() {
   else if (screen === 'list') content = <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
   else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
   else if (screen === 'achievements') content = <Achievements userStats={userStats} unlockedAchievements={unlockedAchievements} isDarkMode={isDarkMode} />;
+  else if (screen === 'challenges') content = <DailyChallenges challenges={dailyChallenges} userStats={userStats} onChallengeComplete={checkAndCompleteChallenges} isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
     <StoryMode isDarkMode={isDarkMode} />
   </Suspense>;
@@ -858,6 +963,66 @@ function App() {
             onClose={handleAchievementNotificationClose}
             isDarkMode={isDarkMode}
           />
+        )}
+        
+        {/* Challenge Completion Notification */}
+        {showChallengeComplete && currentChallenge && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 10000,
+            background: isDarkMode ? '#2c3e50' : '#f8f9fa',
+            border: '3px solid #27ae60',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            boxShadow: '0 10px 40px rgba(39, 174, 96, 0.3)',
+            maxWidth: '400px',
+            animation: 'slideIn 0.5s ease-out'
+          }}>
+            <div style={{
+              textAlign: 'center',
+              color: isDarkMode ? '#f5f5f5' : '#2c3e50'
+            }}>
+              <div style={{
+                fontSize: '3rem',
+                marginBottom: '1rem',
+                animation: 'trophyBounce 0.6s ease-out'
+              }}>
+                🎯
+              </div>
+              <h3 style={{
+                margin: '0 0 0.5rem 0',
+                fontSize: '1.3rem',
+                fontFamily: '"Georgia", serif',
+                color: '#27ae60'
+              }}>
+                Challenge Complete!
+              </h3>
+              <h4 style={{
+                margin: '0 0 0.5rem 0',
+                fontSize: '1.1rem',
+                fontFamily: '"Georgia", serif'
+              }}>
+                {currentChallenge.title}
+              </h4>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginTop: '1rem',
+                fontFamily: '"Georgia", serif'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#f39c12' }}>
+                  <span>⭐</span>
+                  <span>+{currentChallenge.xpReward} XP</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#f1c40f' }}>
+                  <span>🪙</span>
+                  <span>+{currentChallenge.coinsReward} Coins</span>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </ErrorBoundary>

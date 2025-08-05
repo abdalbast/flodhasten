@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose, MdEmojiEvents } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose, MdEmojiEvents, MdTarget } from 'react-icons/md';
 
 const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -52,7 +52,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { screen: 'explore', icon: <MdLocationOn />, label: 'Explore' },
     { screen: 'story', icon: <MdBook />, label: 'Stories' },
     { screen: 'avatar-shop', icon: <MdStore />, label: 'Shop' },
-    { screen: 'achievements', icon: <MdEmojiEvents />, label: 'Achievements' }
+    { screen: 'achievements', icon: <MdEmojiEvents />, label: 'Achievements' },
+    { screen: 'daily-challenges', icon: <MdTarget />, label: 'Daily Challenges' }
   ];
 
   const mobileNavItems = [
@@ -61,7 +62,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { screen: 'games', icon: <MdGames /> },
     { screen: 'explore', icon: <MdLocationOn /> },
     { screen: 'story', icon: <MdBook /> },
-    { screen: 'achievements', icon: <MdEmojiEvents /> }
+    { screen: 'achievements', icon: <MdEmojiEvents /> },
+    { screen: 'daily-challenges', icon: <MdTarget /> }
   ];
 
   return (
