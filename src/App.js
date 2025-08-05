@@ -10,6 +10,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Achievements from './components/Achievements';
 import AchievementNotification from './components/AchievementNotification';
 import DailyChallenges from './components/DailyChallenges';
+import VoiceRecognition from './components/VoiceRecognition';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 
@@ -462,7 +463,11 @@ function App() {
       pronunciations_used: 0,
       custom_words_added: 0,
       dark_mode_used: 0,
-      languages_tried: 1
+      languages_tried: 1,
+      pronunciation_attempts: 0,
+      en_pronunciations: 0,
+      ku_pronunciations: 0,
+      ku_lat_pronunciations: 0
     };
   });
   const [unlockedAchievements, setUnlockedAchievements] = useState(() => {
@@ -480,6 +485,12 @@ function App() {
   const [currentChallenge, setCurrentChallenge] = useState(null);
   const [challengeProgress, setChallengeProgress] = useState({});
   const [showChallengeComplete, setShowChallengeComplete] = useState(false);
+
+  // Voice Recognition state
+  const [isListening, setIsListening] = useState(false);
+  const [recognizedText, setRecognizedText] = useState('');
+  const [pronunciationAttempts, setPronunciationAttempts] = useState({});
+  const [pronunciationSuccesses, setPronunciationSuccesses] = useState({});
 
   // Memoized calculations
   const currentSkills = useMemo(() => SKILLS[currentLanguage] || SKILLS.en, [currentLanguage]);
@@ -754,6 +765,25 @@ function App() {
     checkAndUnlockAchievements(previousStats, newStats);
   }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
+  // Track pronunciation attempts for voice recognition
+  const handlePronunciationAttempt = useCallback((result) => {
+    const previousStats = userStats;
+    const newStats = { 
+      ...userStats, 
+      pronunciation_attempts: userStats.pronunciation_attempts + 1,
+      [`${result.level}_pronunciations`]: (userStats[`${result.level}_pronunciations`] || 0) + 1
+    };
+    updateUserStats(newStats);
+    checkAndUnlockAchievements(previousStats, newStats);
+    
+    // Track for challenges
+    if (result.score >= 70) {
+      const challengeStats = { ...userStats, pronunciations_used: userStats.pronunciations_used + 1 };
+      updateUserStats({ pronunciations_used: userStats.pronunciations_used + 1 });
+      checkAndUnlockAchievements(previousStats, challengeStats);
+    }
+  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
+
   // Handle deleting a word - memoized
   const handleDelete = useCallback((idx) => {
     setCustomWords(prev => prev.filter((_, i) => i !== idx));
@@ -876,6 +906,7 @@ function App() {
   else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
   else if (screen === 'achievements') content = <Achievements userStats={userStats} unlockedAchievements={unlockedAchievements} isDarkMode={isDarkMode} />;
   else if (screen === 'challenges') content = <DailyChallenges challenges={dailyChallenges} userStats={userStats} onChallengeComplete={checkAndCompleteChallenges} isDarkMode={isDarkMode} />;
+  else if (screen === 'voice-recognition') content = <VoiceRecognition userStats={userStats} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
     <StoryMode isDarkMode={isDarkMode} />
   </Suspense>;
