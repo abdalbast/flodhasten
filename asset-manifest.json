@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/flodhasten/static/css/main.9e8e9efa.css",
-    "main.js": "/flodhasten/static/js/main.58d2ffc3.js",
+    "main.css": "/flodhasten/static/css/main.30f0a34c.css",
+    "main.js": "/flodhasten/static/js/main.9ab046de.js",
     "static/js/424.4d175930.chunk.js": "/flodhasten/static/js/424.4d175930.chunk.js",
     "static/js/241.e6225f5d.chunk.js": "/flodhasten/static/js/241.e6225f5d.chunk.js",
     "static/js/50.a775c14c.chunk.js": "/flodhasten/static/js/50.a775c14c.chunk.js",
@@ -17,7 +17,7 @@
     "index.html": "/flodhasten/index.html"
   },
   "entrypoints": [
-    "static/css/main.9e8e9efa.css",
-    "static/js/main.58d2ffc3.js"
+    "static/css/main.30f0a34c.css",
+    "static/js/main.9ab046de.js"
   ]
 }
