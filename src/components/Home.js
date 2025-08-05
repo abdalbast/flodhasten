@@ -76,12 +76,17 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div style={{ 
+      textAlign: 'center', 
+      padding: 'clamp(1rem, 4vw, 2rem)',
+      maxWidth: '100%',
+      overflow: 'hidden'
+    }}>
       {/* Title and subtitle at the very top - Moomin-inspired */}
       <div style={{
         textAlign: 'center',
         marginBottom: '2rem',
-        padding: '2.5rem',
+        padding: 'clamp(1.5rem, 6vw, 2.5rem)',
         background: isDarkMode 
           ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)' 
           : 'linear-gradient(135deg, #e8f4f8 0%, #f8f9fa 50%, #e8f4f8 100%)',
@@ -93,7 +98,8 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           ? '1px solid rgba(255,255,255,0.1)' 
           : '1px solid rgba(52, 152, 219, 0.2)',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        maxWidth: '100%'
       }}>
         {/* Decorative background elements - Moomin-inspired */}
         <div style={{
@@ -163,28 +169,34 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
         
         <h1 style={{ 
           color: moominBlue, 
-          fontSize: '4rem', 
+          fontSize: 'clamp(2rem, 8vw, 4rem)', 
           fontWeight: 'bold',
           margin: '0',
           textShadow: isDarkMode 
             ? '0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.3)' 
             : '0 4px 8px rgba(0,0,0,0.1), 0 0 20px rgba(52, 152, 219, 0.2)',
-          letterSpacing: '3px',
+          letterSpacing: 'clamp(1px, 2vw, 3px)',
           position: 'relative',
           zIndex: 1,
-          fontFamily: '"Georgia", serif'
+          fontFamily: '"Georgia", serif',
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          lineHeight: '1.2'
         }}>
           Flodhästen
         </h1>
         
         <p style={{
           color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-          fontSize: '1.3rem',
+          fontSize: 'clamp(1rem, 4vw, 1.3rem)',
           margin: '0.8rem 0 0 0',
           fontStyle: 'italic',
           position: 'relative',
           zIndex: 1,
-          fontFamily: '"Georgia", serif'
+          fontFamily: '"Georgia", serif',
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          lineHeight: '1.3'
         }}>
           Learn Swedish with the River Horse
         </p>
