@@ -162,13 +162,13 @@ function Onboarding({ onComplete, isDarkMode }) {
               height: '100%',
               objectFit: 'contain',
               filter: isDarkMode 
-                ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.4)) brightness(1.3) contrast(1.5) saturate(1.6) hue-rotate(0deg)' 
+                ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.4)) brightness(1.8) contrast(1.2) saturate(1.3)' 
                 : 'drop-shadow(0 8px 16px rgba(52, 152, 219, 0.3)) brightness(1.3) contrast(1.5) saturate(1.6) hue-rotate(0deg)',
-              mixBlendMode: 'multiply',
+              mixBlendMode: isDarkMode ? 'screen' : 'multiply',
               backgroundColor: 'transparent',
               imageRendering: 'pixelated',
-              WebkitMask: 'linear-gradient(45deg, transparent 30%, rgba(0,0,0,0.1) 50%, transparent 70%)',
-              mask: 'linear-gradient(45deg, transparent 30%, rgba(0,0,0,0.1) 50%, transparent 70%)'
+              WebkitMask: isDarkMode ? 'none' : 'linear-gradient(45deg, transparent 30%, rgba(0,0,0,0.1) 50%, transparent 70%)',
+              mask: isDarkMode ? 'none' : 'linear-gradient(45deg, transparent 30%, rgba(0,0,0,0.1) 50%, transparent 70%)'
             }}
           />
         </div>
