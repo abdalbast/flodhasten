@@ -412,7 +412,163 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
               <div className="nav-icon">{icon}</div>
             </button>
           ))}
+          
+          {/* Mobile Settings Button */}
+          <button
+            onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
+            className={showSettingsDropdown ? 'active' : ''}
+          >
+            <div className="nav-icon">
+              <MdMenu />
+            </div>
+          </button>
         </div>
+
+        {/* Mobile Settings Dropdown */}
+        {showSettingsDropdown && (
+          <div className={`mobile-settings-dropdown ${isDarkMode ? 'dark' : ''}`}>
+            {/* Intro Button */}
+            <button
+              onClick={handleIntroClick}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                background: 'none',
+                border: 'none',
+                color: textColor,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                transition: 'all 0.2s ease',
+                borderBottom: `1px solid ${borderColor}`,
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                e.target.style.color = moominBlue;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'none';
+                e.target.style.color = textColor;
+              }}
+            >
+              <MdPlayArrow style={{ fontSize: '18px', color: moominGreen }} />
+              <span>Play Intro</span>
+            </button>
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={handleDarkModeToggle}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                background: 'none',
+                border: 'none',
+                color: textColor,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                transition: 'all 0.2s ease',
+                borderBottom: `1px solid ${borderColor}`,
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                e.target.style.color = moominBlue;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'none';
+                e.target.style.color = textColor;
+              }}
+            >
+              {isDarkMode ? 
+                <MdLightMode style={{ fontSize: '18px', color: moominYellow }} /> : 
+                <MdDarkMode style={{ fontSize: '18px', color: moominOrange }} />
+              }
+              <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+            </button>
+
+            {/* Language Selection */}
+            <div style={{
+              padding: '8px 16px',
+              background: isDarkMode ? '#444444' : '#f0f8ff'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '8px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                color: moominBlue
+              }}>
+                <MdLanguage style={{ fontSize: '18px' }} />
+                <span>Language</span>
+              </div>
+              
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => handleLanguageChange(language.code)}
+                  style={{
+                    width: '100%',
+                    padding: '6px 8px',
+                    background: 'none',
+                    border: 'none',
+                    color: textColor,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s ease',
+                    borderRadius: '6px',
+                    marginBottom: '2px',
+                    fontSize: '12px',
+                    justifyContent: 'space-between'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? '#555555' : '#f8f9fa';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'none';
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <img 
+                      src={language.flag} 
+                      alt={language.name} 
+                      style={{ 
+                        width: '20px', 
+                        height: '14px',
+                        objectFit: 'cover',
+                        borderRadius: '2px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                      }} 
+                    />
+                    <span style={{ 
+                      fontFamily: language.code === 'ku' ? 'Arial, sans-serif' : '"Georgia", serif'
+                    }}>
+                      {language.name}
+                    </span>
+                  </div>
+                  {currentLanguage === language.code && (
+                    <span style={{ 
+                      color: moominGreen,
+                      fontSize: '14px',
+                      fontWeight: 'bold'
+                    }}>
+                      ✓
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Click outside to close dropdown */}
