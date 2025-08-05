@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics } from 'react-icons/md';
 
 const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -57,7 +57,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { screen: 'voice-recognition', icon: <MdMic />, label: 'Voice Recognition' },
     { screen: 'testing-hub', icon: <MdScience />, label: 'Testing Hub' },
     { screen: 'cultural-integration', icon: <MdPublic />, label: 'Cultural Integration' },
-    { screen: 'social-features', icon: <MdPeople />, label: 'Social Features' }
+    { screen: 'social-features', icon: <MdPeople />, label: 'Social Features' },
+    { screen: 'advanced-analytics', icon: <MdAnalytics />, label: 'Advanced Analytics' }
   ];
 
   const mobileNavItems = [
@@ -71,7 +72,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { screen: 'voice-recognition', icon: <MdMic /> },
     { screen: 'testing-hub', icon: <MdScience /> },
     { screen: 'cultural-integration', icon: <MdPublic /> },
-    { screen: 'social-features', icon: <MdPeople /> }
+    { screen: 'social-features', icon: <MdPeople /> },
+    { screen: 'advanced-analytics', icon: <MdAnalytics /> }
   ];
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { FaUsers, FaTrophy, FaUserFriends, FaTarget, FaCrown, FaMedal, FaArrowUp, FaArrowDown, FaMinus, FaPlus, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaUsers, FaTrophy, FaUserFriends, FaBullseye, FaCrown, FaMedal, FaArrowUp, FaArrowDown, FaMinus, FaPlus, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { 
   SOCIAL_FEATURES, 
   MOCK_USERS, 
@@ -45,7 +45,7 @@ const SocialFeatures = React.memo(({ userStats, isDarkMode }) => {
     { id: 'study-groups', name: 'Study Groups', icon: <FaUsers />, feature: socialFeatures[0] },
     { id: 'leaderboards', name: 'Leaderboards', icon: <FaTrophy />, feature: socialFeatures[1] },
     { id: 'friends', name: 'Friends', icon: <FaUserFriends />, feature: socialFeatures[2] },
-    { id: 'challenges', name: 'Group Challenges', icon: <FaTarget />, feature: socialFeatures[3] }
+    { id: 'challenges', name: 'Group Challenges', icon: <FaBullseye />, feature: socialFeatures[3] }
   ];
 
   // Get rank icon and color
@@ -706,7 +706,7 @@ const SocialFeatures = React.memo(({ userStats, isDarkMode }) => {
                         justifyContent: 'center',
                         fontSize: '1.2rem'
                       }}>
-                        <FaTarget />
+                        <FaBullseye />
                       </div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{
