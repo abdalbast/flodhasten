@@ -13,6 +13,7 @@ import DailyChallenges from './components/DailyChallenges';
 import VoiceRecognition from './components/VoiceRecognition';
 import TestingHub from './components/TestingHub';
 import CulturalIntegration from './components/CulturalIntegration';
+import SocialFeatures from './components/SocialFeatures';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 
@@ -938,6 +939,7 @@ function App() {
   else if (screen === 'voice-recognition') content = <VoiceRecognition userStats={userStats} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
   else if (screen === 'testing-hub') content = <TestingHub userStats={userStats} unlockedAchievements={unlockedAchievements} dailyChallenges={dailyChallenges} onChallengeComplete={checkAndCompleteChallenges} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
   else if (screen === 'cultural-integration') content = <CulturalIntegration userProgress={culturalProgress} onLessonComplete={handleCulturalLessonComplete} isDarkMode={isDarkMode} />;
+  else if (screen === 'social-features') content = <SocialFeatures userStats={userStats} isDarkMode={isDarkMode} />;
   else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
     <StoryMode isDarkMode={isDarkMode} />
   </Suspense>;
