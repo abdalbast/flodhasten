@@ -5,9 +5,10 @@ import { BsPersonFill, BsPersonHeart, BsPersonBoundingBox } from 'react-icons/bs
 import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import LessonCircles from './LessonCircles';
 import { MdVolumeUp } from 'react-icons/md';
+import './Home.css';
 
 // Home screen with welcome, app description, and progress tracker
-function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 0, progress = { gamesPlayed: 0, streak: 1 }, wordOfTheDay, onStartLesson, isDarkMode, onResetProgress, userData, currentLanguage }) {
+const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 0, progress = { gamesPlayed: 0, streak: 1 }, wordOfTheDay, onStartLesson, isDarkMode, onResetProgress, userData, currentLanguage }) => {
   // Add CSS animation for floating effect
   React.useEffect(() => {
     const style = document.createElement('style');
@@ -76,31 +77,9 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
   };
 
   return (
-    <div style={{ 
-      textAlign: 'center', 
-      padding: 'clamp(1rem, 4vw, 2rem)',
-      maxWidth: '100%',
-      overflow: 'hidden'
-    }}>
+    <div className="home-container">
       {/* Title and subtitle at the very top - Moomin-inspired */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '2rem',
-        padding: 'clamp(1.5rem, 6vw, 2.5rem)',
-        background: isDarkMode 
-          ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)' 
-          : 'linear-gradient(135deg, #e8f4f8 0%, #f8f9fa 50%, #e8f4f8 100%)',
-        borderRadius: '25px',
-        boxShadow: isDarkMode 
-          ? '0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)' 
-          : '0 12px 40px rgba(52, 152, 219, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
-        border: isDarkMode 
-          ? '1px solid rgba(255,255,255,0.1)' 
-          : '1px solid rgba(52, 152, 219, 0.2)',
-        position: 'relative',
-        overflow: 'hidden',
-        maxWidth: '100%'
-      }}>
+      <div className={`title-container ${isDarkMode ? 'dark' : 'light'}`}>
         {/* Decorative background elements - Moomin-inspired */}
         <div style={{
           position: 'absolute',
@@ -167,37 +146,11 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
           </div>
         </div>
         
-        <h1 style={{ 
-          color: moominBlue, 
-          fontSize: 'clamp(2rem, 8vw, 4rem)', 
-          fontWeight: 'bold',
-          margin: '0',
-          textShadow: isDarkMode 
-            ? '0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.3)' 
-            : '0 4px 8px rgba(0,0,0,0.1), 0 0 20px rgba(52, 152, 219, 0.2)',
-          letterSpacing: 'clamp(1px, 2vw, 3px)',
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: '"Georgia", serif',
-          wordBreak: 'break-word',
-          overflowWrap: 'break-word',
-          lineHeight: '1.2'
-        }}>
+        <h1 className="main-title">
           Flodhästen
         </h1>
         
-        <p style={{
-          color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-          fontSize: 'clamp(1rem, 4vw, 1.3rem)',
-          margin: '0.8rem 0 0 0',
-          fontStyle: 'italic',
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: '"Georgia", serif',
-          wordBreak: 'break-word',
-          overflowWrap: 'break-word',
-          lineHeight: '1.3'
-        }}>
+        <p className="subtitle">
           Learn Swedish with the River Horse
         </p>
         
@@ -291,27 +244,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
             <div style={{ textAlign: 'center' }}>
               <button
                 onClick={onStartLesson}
-                style={{
-                  background: moominBlue,
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '15px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.2rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: '"Georgia", serif',
-                  boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(52, 152, 219, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(52, 152, 219, 0.3)';
-                }}
+                className="start-lesson-button"
               >
                 Start Lesson
               </button>
@@ -456,23 +389,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
         }}>
           <button
             onClick={onResetProgress}
-            style={{
-              background: resetButtonBg,
-              color: '#fff',
-              border: 'none',
-              borderRadius: '10px',
-              padding: '0.8rem 1.5rem',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              fontFamily: '"Georgia", serif'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = resetButtonHoverBg;
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = resetButtonBg;
-            }}
+            className="reset-progress-button"
           >
             <FaRedo style={{ marginRight: '0.5rem' }} />
             Reset Progress
@@ -487,23 +404,7 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
                 window.location.reload();
               }
             }}
-            style={{
-              background: '#e74c3c',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '10px',
-              padding: '0.8rem 1.5rem',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              fontFamily: '"Georgia", serif'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = '#c0392b';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = '#e74c3c';
-            }}
+            className="erase-all-button"
           >
             🗑️ Erase All
           </button>
@@ -511,6 +412,6 @@ function Home({ skills, skillProgress, onSelectSkill, selectedSkill, numWords = 
       </div>
     </div>
   );
-}
+});
 
 export default Home; 

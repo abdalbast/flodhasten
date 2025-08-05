@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
 import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
@@ -14,8 +14,8 @@ async function playSwedish(word) {
   }
 }
 
-// Parse CSV or TXT file into word objects
-function parseWordFile(text, ext) {
+// Parse CSV or TXT file into word objects - memoized for performance
+const parseWordFile = React.useMemo(() => (text, ext) => {
   const words = [];
   if (ext === 'csv') {
     // Accept header: Swedish,English or just Swedish
@@ -51,10 +51,10 @@ function parseWordFile(text, ext) {
     }
   }
   return words;
-}
+}, []);
 
 // List of saved Swedish words and their English meanings, with edit/delete and add functionality
-function WordList({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, isDarkMode }) {
+const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, isDarkMode }) => {
   const [editIdx, setEditIdx] = useState(null);
   const [editSwedish, setEditSwedish] = useState('');
   const [editEnglish, setEditEnglish] = useState('');
@@ -570,6 +570,6 @@ function WordList({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, i
       )}
     </div>
   );
-}
+});
 
 export default WordList; 

@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './Navigation.css';
 import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdPlayArrow, MdStore, MdLanguage, MdMenu, MdClose } from 'react-icons/md';
 
-function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) {
+const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage, onPlayIntro }) => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
 
-  const languages = [
+  const languages = useMemo(() => [
     { code: 'en', name: 'English', flag: process.env.PUBLIC_URL + '/united_kingdom_flag.png' },
     { code: 'ku', name: 'کوردی', flag: process.env.PUBLIC_URL + '/kurdish_flag.png' },
     { code: 'ku-lat', name: 'Sorani', flag: process.env.PUBLIC_URL + '/kurdish_flag.png' }
-  ];
+  ], []);
 
-  const getCurrentLanguageInfo = () => {
+  const getCurrentLanguageInfo = useMemo(() => {
     return languages.find(lang => lang.code === currentLanguage) || languages[0];
-  };
+  }, [languages, currentLanguage]);
 
   const handleLanguageChange = (languageCode) => {
     onToggleLanguage(languageCode);
@@ -587,6 +587,6 @@ function Navigation({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, on
       )}
     </>
   );
-}
+});
 
 export default Navigation; 

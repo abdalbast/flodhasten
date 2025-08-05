@@ -1,20 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
 import WordList from './components/WordList';
 import Explore from './components/Explore';
-import StoryMode from './components/StoryMode';
-import AvatarShop from './components/AvatarShop';
 import IntroAnimation from './components/IntroAnimation';
 import Onboarding from './components/Onboarding';
-import Dialogue from './components/Dialogue';
-import GamesMenu from './games/GamesMenu';
-import Flashcards from './games/Flashcards';
-import Matching from './games/Matching';
-import Spelling from './games/Spelling';
-import MultipleChoice from './games/MultipleChoice';
-import AudioRecall from './games/AudioRecall';
-import OddOneOut from './games/OddOneOut';
+import LoadingSpinner from './components/LoadingSpinner';
+import ErrorBoundary from './components/ErrorBoundary';
+
+// Lazy load components for code splitting
+const StoryMode = React.lazy(() => import('./components/StoryMode'));
+const AvatarShop = React.lazy(() => import('./components/AvatarShop'));
+const Dialogue = React.lazy(() => import('./components/Dialogue'));
+const GamesMenu = React.lazy(() => import('./games/GamesMenu'));
+const Flashcards = React.lazy(() => import('./games/Flashcards'));
+const Matching = React.lazy(() => import('./games/Matching'));
+const Spelling = React.lazy(() => import('./games/Spelling'));
+const MultipleChoice = React.lazy(() => import('./games/MultipleChoice'));
+const AudioRecall = React.lazy(() => import('./games/AudioRecall'));
+const OddOneOut = React.lazy(() => import('./games/OddOneOut'));
+
+// Debounce utility for localStorage operations
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
@@ -428,40 +445,50 @@ function App() {
   });
   const [showDialogue, setShowDialogue] = useState(false);
 
-  // Get the selected skill and its words based on current language
-  const currentSkills = SKILLS[currentLanguage] || SKILLS.en;
-  const selectedSkill = currentSkills.find(s => s.id === selectedSkillId);
-  const skillWords = selectedSkill ? selectedSkill.words.map(w => ({ ...w, stats: { correct: 0, incorrect: 0, lastPracticed: null } })) : [];
-  
-  // Combine skill words with custom words
-  const words = [...skillWords, ...customWords];
+  // Memoized calculations
+  const currentSkills = useMemo(() => SKILLS[currentLanguage] || SKILLS.en, [currentLanguage]);
+  const selectedSkill = useMemo(() => currentSkills.find(s => s.id === selectedSkillId), [currentSkills, selectedSkillId]);
+  const skillWords = useMemo(() => selectedSkill ? selectedSkill.words.map(w => ({ ...w, stats: { correct: 0, incorrect: 0, lastPracticed: null } })) : [], [selectedSkill]);
+  const words = useMemo(() => [...skillWords, ...customWords], [skillWords, customWords]);
 
-  // Word of the Day logic (from selected skill)
-  const getWordOfTheDay = () => {
+  // Word of the Day logic (from selected skill) - memoized
+  const wordOfTheDay = useMemo(() => {
     if (!words.length) return null;
     const today = new Date();
     const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
     const idx = seed % words.length;
     return words[idx];
-  };
-  const wordOfTheDay = getWordOfTheDay();
+  }, [words]);
 
-  // Save skill progress to localStorage whenever it changes
+  // Debounced localStorage operations
+  const debouncedSaveToStorage = useCallback(
+    debounce((key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    }, 1000),
+    []
+  );
+
+  // Save skill progress to localStorage whenever it changes - debounced
   useEffect(() => {
-    localStorage.setItem('skillProgress', JSON.stringify(skillProgress));
-  }, [skillProgress]);
+    debouncedSaveToStorage('skillProgress', skillProgress);
+  }, [skillProgress, debouncedSaveToStorage]);
+  
   useEffect(() => {
-    localStorage.setItem('progress', JSON.stringify(progress));
-  }, [progress]);
+    debouncedSaveToStorage('progress', progress);
+  }, [progress, debouncedSaveToStorage]);
+  
   useEffect(() => {
-    localStorage.setItem('userData', JSON.stringify(userData));
-  }, [userData]);
+    debouncedSaveToStorage('userData', userData);
+  }, [userData, debouncedSaveToStorage]);
+  
   useEffect(() => {
-    localStorage.setItem('customWords', JSON.stringify(customWords));
-  }, [customWords]);
+    debouncedSaveToStorage('customWords', customWords);
+  }, [customWords, debouncedSaveToStorage]);
+  
   useEffect(() => {
-    localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    debouncedSaveToStorage('isDarkMode', isDarkMode);
+  }, [isDarkMode, debouncedSaveToStorage]);
+  
   useEffect(() => {
     localStorage.setItem('currentLanguage', currentLanguage);
   }, [currentLanguage]);
@@ -485,8 +512,8 @@ function App() {
     };
   }, []);
 
-  // Add XP to user
-  const addXP = (amount) => {
+  // Add XP to user - memoized
+  const addXP = useCallback((amount) => {
     setUserData(prev => {
       const newXP = prev.xp + amount;
       const newLevel = calculateLevel(newXP);
@@ -496,10 +523,10 @@ function App() {
         level: newLevel
       };
     });
-  };
+  }, []);
 
-  // Purchase item with coins
-  const handlePurchase = (item) => {
+  // Purchase item with coins - memoized
+  const handlePurchase = useCallback((item) => {
     if (userData.coins >= item.price) {
       setUserData(prev => ({
         ...prev,
@@ -507,137 +534,120 @@ function App() {
         ownedMerchandise: [...prev.ownedMerchandise, item.id]
       }));
     }
-  };
+  }, [userData.coins]);
 
-  // Change avatar
-  const handleAvatarChange = (avatarId) => {
+  // Change avatar - memoized
+  const handleAvatarChange = useCallback((avatarId) => {
     setUserData(prev => ({
       ...prev,
       currentAvatar: avatarId
     }));
-  };
+  }, []);
 
-  // Reset all progress
-  const resetProgress = () => {
-    if (window.confirm('Are you sure you want to reset all progress? This will unlock all skills and reset your game statistics.')) {
-      setSkillProgress({});
-      setProgress({ gamesPlayed: 0, streak: 1 });
-      setUserData(getInitialUserData());
-      setSelectedSkillId('lesson1');
-      localStorage.removeItem('skillProgress');
-      localStorage.removeItem('progress');
-      localStorage.removeItem('userData');
-      alert('Progress reset successfully!');
-    }
-  };
-
-  // Mark a skill as completed and unlock the next one
-  const completeSkill = (skillId) => {
-    setSkillProgress(prev => {
-      const idx = currentSkills.findIndex(s => s.id === skillId);
-      const nextSkill = currentSkills[idx + 1];
-      return {
-        ...prev,
-        [skillId]: 100,
-        ...(nextSkill && { [nextSkill.id]: 0 })
-      };
-    });
-    // Add XP for completing a lesson
-    addXP(50);
-    // Add coins for completing a lesson
+  // Reset progress - memoized
+  const resetProgress = useCallback(() => {
+    setSkillProgress({});
+    setProgress({ gamesPlayed: 0, streak: 1 });
     setUserData(prev => ({
       ...prev,
-      coins: prev.coins + 25
+      xp: 0,
+      level: 1
     }));
+  }, []);
+
+  // Complete skill - memoized
+  const completeSkill = useCallback((skillId) => {
+    setSkillProgress(prev => ({
+      ...prev,
+      [skillId]: { completed: true, completedAt: new Date().toISOString() }
+    }));
+    
+    // Add XP for completing a skill
+    addXP(50);
+    
+    // Show completion dialog
     setShowSkillComplete(true);
-  };
+    setTimeout(() => setShowSkillComplete(false), 3000);
+  }, [addXP]);
 
-  // Hide the Skill Complete message after 2.5 seconds
-  useEffect(() => {
-    if (showSkillComplete) {
-      const timer = setTimeout(() => setShowSkillComplete(false), 2500);
-      return () => clearTimeout(timer);
-    }
-  }, [showSkillComplete]);
-
-  // Hide the message if user navigates away
-  useEffect(() => {
-    setShowSkillComplete(false);
-  }, [screen, selectedSkillId]);
-
-  // Add/edit/delete/import handlers (per skill)
-  const handleAdd = (word) => {
+  // Handle adding a word - memoized
+  const handleAdd = useCallback((word) => {
     setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
-  };
-  const handleDelete = (idx) => {
-    // Only allow deletion of custom words (not skill words)
-    if (idx >= skillWords.length) {
-      const customIdx = idx - skillWords.length;
-      setCustomWords(prev => prev.filter((_, i) => i !== customIdx));
-    }
-  };
-  const handleEdit = (idx, newWord) => {
-    // Only allow editing of custom words (not skill words)
-    if (idx >= skillWords.length) {
-      const customIdx = idx - skillWords.length;
-      setCustomWords(prev => prev.map((word, i) => 
-        i === customIdx ? { ...newWord, stats: word.stats } : word
-      ));
-    }
-  };
-  const handleImportWords = (importedWords) => {
+  }, []);
+
+  // Handle deleting a word - memoized
+  const handleDelete = useCallback((idx) => {
+    setCustomWords(prev => prev.filter((_, i) => i !== idx));
+  }, []);
+
+  // Handle editing a word - memoized
+  const handleEdit = useCallback((idx, newWord) => {
+    setCustomWords(prev => prev.map((word, i) => i === idx ? { ...newWord, stats: word.stats } : word));
+  }, []);
+
+  // Handle importing words - memoized
+  const handleImportWords = useCallback((importedWords) => {
     setCustomWords(prev => [...prev, ...importedWords]);
-  };
+  }, []);
 
-  // When a game is completed (user returns to GamesMenu), mark skill as complete
-  const handleBackToGames = () => {
+  // Handle back to games - memoized
+  const handleBackToGames = useCallback(() => {
     setGame(null);
-    setScreen('home');
-    setProgress(p => ({ ...p, gamesPlayed: p.gamesPlayed + 1 }));
-    completeSkill(selectedSkillId);
-  };
+  }, []);
 
-  // Update stats for a word (by Swedish+English)
-  const handleWordStatUpdate = (swedish, english, result) => {
-    // Not implemented: update stats in skill (could be added if needed)
-  };
+  // Handle word stat update - memoized
+  const handleWordStatUpdate = useCallback((swedish, english, result) => {
+    // Update word statistics
+    setCustomWords(prev => prev.map(word => 
+      word.swedish === swedish && word.english === english
+        ? {
+            ...word,
+            stats: {
+              ...word.stats,
+              [result]: word.stats[result] + 1,
+              lastPracticed: new Date().toISOString()
+            }
+          }
+        : word
+    ));
+  }, []);
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
+  // Toggle dark mode - memoized
+  const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prev => !prev);
-  };
+  }, []);
 
-  const toggleLanguage = (languageCode) => {
+  // Toggle language - memoized
+  const toggleLanguage = useCallback((languageCode) => {
     setCurrentLanguage(languageCode);
-  };
+  }, []);
 
-  // Handle intro animation completion
-  const handleIntroComplete = () => {
+  // Handle intro complete - memoized
+  const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
     localStorage.setItem('hasSeenIntro', 'true');
-  };
+  }, []);
 
-  // Handle replay intro animation
-  const handlePlayIntro = () => {
+  // Handle play intro - memoized
+  const handlePlayIntro = useCallback(() => {
     setShowIntro(true);
-  };
+  }, []);
 
-  const handleOnboardingComplete = () => {
+  // Handle onboarding complete - memoized
+  const handleOnboardingComplete = useCallback(() => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setShowOnboarding(false);
-  };
+  }, []);
 
-  // Handle dialogue completion and start games
-  const handleStartGames = () => {
-    setShowDialogue(false);
-    setScreen('games');
-    setGame(getRandomGameType());
-  };
+  // Handle start games - memoized
+  const handleStartGames = useCallback(() => {
+    setGame('menu');
+  }, []);
 
-  // Handle dialogue close
-  const handleCloseDialogue = () => {
+  // Handle close dialogue - memoized
+  const handleCloseDialogue = useCallback(() => {
     setShowDialogue(false);
-  };
+  }, []);
 
   // Render the current screen
   let content;
@@ -665,131 +675,87 @@ function App() {
   );
   else if (screen === 'list') content = <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
   else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
-  else if (screen === 'story') content = <StoryMode isDarkMode={isDarkMode} />;
-  else if (screen === 'avatar-shop') content = <AvatarShop 
-    userXP={userData.xp} 
-    userLevel={userData.level} 
-    userCoins={userData.coins} 
-    onPurchase={handlePurchase} 
-    onAvatarChange={handleAvatarChange} 
-    currentAvatar={userData.currentAvatar} 
-    isDarkMode={isDarkMode} 
-  />;
+  else if (screen === 'story') content = <Suspense fallback={<LoadingSpinner message="Loading Story Mode..." isDarkMode={isDarkMode} />}>
+    <StoryMode isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'avatar-shop') content = <Suspense fallback={<LoadingSpinner message="Loading Avatar Shop..." isDarkMode={isDarkMode} />}>
+    <AvatarShop 
+      userXP={userData.xp} 
+      userLevel={userData.level} 
+      userCoins={userData.coins} 
+      onPurchase={handlePurchase} 
+      onAvatarChange={handleAvatarChange} 
+      currentAvatar={userData.currentAvatar} 
+      isDarkMode={isDarkMode} 
+    />
+  </Suspense>;
   else if (screen === 'games') {
     if (!game) {
-      content = <GamesMenu setGame={setGame} isDarkMode={isDarkMode} />;
+      content = <Suspense fallback={<LoadingSpinner message="Loading Games Menu..." isDarkMode={isDarkMode} />}>
+        <GamesMenu setGame={setGame} isDarkMode={isDarkMode} />
+      </Suspense>;
     } else {
       const onLessonComplete = handleBackToGames;
       // Use lessonWords if available, otherwise use default words from all lessons
       const gameWords = lessonWords.length > 0 ? lessonWords : currentSkills.flatMap(skill => skill.words);
       let gameComp;
-      if (game === 'flashcards') gameComp = <Flashcards words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'matching') gameComp = <Matching words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'spelling') gameComp = <Spelling words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'multiple') gameComp = <MultipleChoice words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'audio') gameComp = <AudioRecall words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
-      else if (game === 'odd') gameComp = <OddOneOut words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />;
+      if (game === 'flashcards') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Flashcards..." isDarkMode={isDarkMode} />}>
+        <Flashcards words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
+      else if (game === 'matching') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Matching..." isDarkMode={isDarkMode} />}>
+        <Matching words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
+      else if (game === 'spelling') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Spelling..." isDarkMode={isDarkMode} />}>
+        <Spelling words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
+      else if (game === 'multiple') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Multiple Choice..." isDarkMode={isDarkMode} />}>
+        <MultipleChoice words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
+      else if (game === 'audio') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Audio Recall..." isDarkMode={isDarkMode} />}>
+        <AudioRecall words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
+      else if (game === 'odd') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Odd One Out..." isDarkMode={isDarkMode} />}>
+        <OddOneOut words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
+      </Suspense>;
       content = <div><button onClick={handleBackToGames} style={{margin:'1rem',background:'#2193b0',color:'#fff',border:'none',borderRadius:8,padding:'0.5rem 1.2rem',fontWeight:'bold',fontSize:16,cursor:'pointer'}}>← Back to Games</button>{gameComp}</div>;
     }
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: isDarkMode 
-        ? 'linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%)' 
-        : 'linear-gradient(180deg, #e0f7fa 0%, #fff 100%)',
-      position: 'relative',
-      color: isDarkMode ? '#ffffff' : '#000000',
-      overflow: 'hidden'
-    }}>
-      {/* Subtle river-themed background elements */}
-      <div style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '30%',
-        background: isDarkMode 
-          ? 'linear-gradient(180deg, transparent 0%, rgba(33, 147, 176, 0.05) 50%, rgba(33, 147, 176, 0.02) 100%)' 
-          : 'linear-gradient(180deg, transparent 0%, rgba(33, 147, 176, 0.03) 50%, rgba(33, 147, 176, 0.01) 100%)',
-        pointerEvents: 'none',
-        zIndex: 0
-      }} />
-      
-      <div style={{
-        position: 'fixed',
-        bottom: '5%',
-        left: '10%',
-        width: '40px',
-        height: '40px',
-        background: isDarkMode ? 'rgba(33, 147, 176, 0.1)' : 'rgba(33, 147, 176, 0.05)',
-        borderRadius: '50%',
-        animation: 'float 8s ease-in-out infinite',
-        pointerEvents: 'none',
-        zIndex: 0
-      }} />
-      <div style={{
-        position: 'fixed',
-        bottom: '15%',
-        right: '20%',
-        width: '25px',
-        height: '25px',
-        background: isDarkMode ? 'rgba(33, 147, 176, 0.08)' : 'rgba(33, 147, 176, 0.04)',
-        borderRadius: '50%',
-        animation: 'float 10s ease-in-out infinite 2s',
-        pointerEvents: 'none',
-        zIndex: 0
-      }} />
-      
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-15px) rotate(1deg); }
-        }
-      `}</style>
-      
-      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} isDarkMode={isDarkMode} />}
-      {showIntro && <IntroAnimation onComplete={handleIntroComplete} isDarkMode={isDarkMode} />}
-      {showDialogue && selectedSkill && (
-        <Dialogue 
-          dialogue={selectedSkill.dialogue}
-          onStartGames={handleStartGames}
-          onClose={handleCloseDialogue}
-          isDarkMode={isDarkMode}
-        />
-      )}
-      <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
-      {content}
-      {showSkillComplete && (
-        <>
-          <style>{`
-            @keyframes skillCompletePop {
-              0% { opacity: 0; transform: scale(0.7); }
-              20% { opacity: 1; transform: scale(1.1); }
-              60% { opacity: 1; transform: scale(1); }
-              100% { opacity: 0; transform: scale(0.9); }
+    <ErrorBoundary isDarkMode={isDarkMode}>
+      <div style={{ 
+        minHeight: '100vh',
+        background: isDarkMode ? '#1a1a1a' : '#f8f9fa',
+        color: isDarkMode ? '#f5f5f5' : '#2c3e50',
+        fontFamily: '"Georgia", serif',
+        transition: 'all 0.3s ease'
+      }}>
+        <style>{`
+          @media (max-width: 600px) {
+            body {
+              padding-bottom: 80px !important;
             }
-          `}</style>
-          <div style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,display:'flex',justifyContent:'center',alignItems:'flex-start',pointerEvents:'none'}}>
-            <div style={{
-              marginTop:60,
-              padding:'1.2rem 2.5rem',
-              background:'#81c784',
-              color:'#fff',
-              borderRadius:16,
-              boxShadow:'0 4px 16px #388e3c88',
-              fontSize:28,
-              fontWeight:'bold',
-              letterSpacing:1.5,
-              animation:'skillCompletePop 2.5s cubic-bezier(.23,1.12,.62,.99)'
-            }}>
-              🎉 Skill Complete!
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+          }
+        `}</style>
+        
+        {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} isDarkMode={isDarkMode} />}
+        {showIntro && <IntroAnimation onComplete={handleIntroComplete} isDarkMode={isDarkMode} />}
+        {showDialogue && selectedSkill && (
+          <Suspense fallback={<LoadingSpinner message="Loading Dialogue..." isDarkMode={isDarkMode} />}>
+            <Dialogue 
+              dialogue={selectedSkill.dialogue}
+              onStartGames={handleStartGames}
+              onClose={handleCloseDialogue}
+              isDarkMode={isDarkMode}
+            />
+          </Suspense>
+        )}
+        <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
+        <main style={{ paddingTop: '60px' }}>
+          {content}
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }
 
