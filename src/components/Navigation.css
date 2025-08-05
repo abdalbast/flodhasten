@@ -85,6 +85,66 @@
   display: none;
 }
 
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #2d2d2d;
+  border-top: 1px solid #444;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+
+.mobile-bottom-nav.light {
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.mobile-bottom-nav .nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.mobile-bottom-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-width: 60px;
+}
+
+.mobile-bottom-nav button:hover {
+  transform: translateY(-2px);
+}
+
+.mobile-bottom-nav button.active {
+  color: #3498db;
+}
+
+.mobile-bottom-nav button.active .nav-icon {
+  transform: scale(1.1);
+}
+
+.mobile-bottom-nav .nav-icon {
+  font-size: 1.8rem;
+  transition: all 0.2s ease;
+}
+
 /* Responsive breakpoints */
 @media (max-width: 872px) {
   .nav-buttons-desktop {
@@ -98,6 +158,21 @@
   .nav-bar button {
     font-size: 0.95rem;
     padding: 0.6rem 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-bar {
+    display: none !important;
+  }
+  
+  .mobile-bottom-nav {
+    display: block !important;
+  }
+  
+  /* Add bottom padding to body to account for mobile nav */
+  body {
+    padding-bottom: 80px !important;
   }
 }
 
