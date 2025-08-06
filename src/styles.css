@@ -1,0 +1,159 @@
+/* Moomin Design System Variables */
+:root {
+  --primary: #002f6c;
+  --secondary: #ffffff;
+  --accent: #f4e1d2;
+  --background: #fefbf9;
+  --text-primary: #000000;
+  --text-secondary: #4a4a4a;
+  --border: #e0e0e0;
+  --radius: 8px;
+  --radius-btn: 4px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-header: 0 2px 4px rgba(0,0,0,0.05);
+  --font-family-primary: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-family-display: 'Georgia', serif;
+}
+
+.moomin-app-container {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+  transition: all 0.3s ease;
+}
+
+/* Flödhästen Global Styles - Modern, Playful, Mobile-First */
+
+body {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  background: var(--background);
+  min-height: 100vh;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--shadow);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+button:active {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  transform: scale(0.98);
+}
+
+input, textarea {
+  font-family: inherit;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--secondary);
+  transition: border 0.2s;
+}
+input:focus, textarea:focus {
+  border: 1.5px solid var(--primary);
+  outline: none;
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.text-center { text-align: center; }
+.rounded { border-radius: var(--radius); }
+.shadow { box-shadow: var(--shadow); }
+
+/* Responsive typography */
+@media (max-width: 600px) {
+  html { font-size: 15px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.3rem; }
+  button, input, textarea { font-size: 1rem; }
+}
+@media (min-width: 601px) {
+  html { font-size: 17px; }
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 1.7rem; }
+}
+
+/* Moomin design system classes */
+.moomin-card {
+  background: var(--secondary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  border: 1px solid var(--border);
+  transition: transform 0.2s;
+}
+.moomin-card:hover {
+  transform: scale(1.02);
+}
+
+.moomin-button-primary {
+  background: var(--primary);
+  color: var(--secondary);
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 12px 24px;
+  font-family: var(--font-family-primary);
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background 0.2s;
+}
+.moomin-button-primary:hover {
+  background: #001d40;
+}
+
+.moomin-button-secondary {
+  background: var(--secondary);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-btn);
+  padding: 12px 24px;
+  font-family: var(--font-family-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.moomin-button-secondary:hover {
+  background: #f4f4f4;
+}
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-accent { color: var(--accent); } 
