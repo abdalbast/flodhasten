@@ -441,6 +441,33 @@
   border-color: #23BFFF;
 }
 
+/* Correct answer animation for image options */
+.image-option.correct-answer {
+  background: #27ae60;
+  border-color: #27ae60;
+  animation: correctOptionPulse 0.6s ease-in-out;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(39, 174, 96, 0.5);
+}
+
+.image-option.correct-answer:hover {
+  background: #229954;
+  border-color: #229954;
+}
+
+/* Incorrect answer animation for image options */
+.image-option.incorrect-answer {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  animation: incorrectOptionShake 0.5s ease-in-out;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.image-option.incorrect-answer:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
 .image-container {
   display: flex;
   align-items: center;
@@ -555,6 +582,35 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* Animation for correct option pulse */
+@keyframes correctOptionPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 15px rgba(39, 174, 96, 0);
+  }
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
+  }
+}
+
+/* Animation for incorrect option shake */
+@keyframes incorrectOptionShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
   }
 }
 

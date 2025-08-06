@@ -250,7 +250,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
               {(shuffledOptions.length > 0 ? shuffledOptions : (currentExercise.options || currentExercise.allOptions || [])).map((option, index) => (
                 <button
                   key={index}
-                  className={`image-option ${selectedOption === option.id ? 'selected' : ''}`}
+                  className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
                   onClick={() => handleOptionSelect(option.id)}
                 >
                   <div className="image-container">
