@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { MdVolumeUp, MdClose, MdCheck, MdError, MdStar } from 'react-icons/md';
+import { MdVolumeUp, MdClose, MdCheck, MdError } from 'react-icons/md';
 import './LessonView.css';
 import ttsApi from '../utils/ttsApi';
 
@@ -14,84 +14,143 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [showHint, setShowHint] = useState(false);
 
+  // Safety check for lesson and exercises
+  if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Invalid lesson data</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentExercise = lesson.exercises[currentExerciseIndex];
+
+  // Safety check for current exercise
+  if (!currentExercise) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Exercise not found</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Play pronunciation
   const playPronunciation = async (word) => {
     try {
+      if (!word || typeof word !== 'string') {
+        console.warn('Invalid word for pronunciation:', word);
+        return;
+      }
       await ttsApi.playSwedish(word);
     } catch (error) {
       console.error('Failed to play pronunciation:', error);
+      // Fallback: try browser TTS
+      try {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'sv-SE';
+        speechSynthesis.speak(utterance);
+      } catch (fallbackError) {
+        console.error('Fallback TTS also failed:', fallbackError);
+      }
     }
   };
 
   // Initialize matching game and shuffle options
   useEffect(() => {
-    if (currentExercise?.type === 'match') {
-      const shuffledPairs = [...currentExercise.pairs].sort(() => Math.random() - 0.5);
-      setMatchedPairs(shuffledPairs.map((pair, index) => ({
-        ...pair,
-        id: index,
-        matched: false
-      })));
-    }
-    
-    // Generate shuffled options for image choice exercises
-    if (currentExercise?.type === 'image_choice') {
-      // Get the lesson to access allOptions
-      const lesson = lesson;
-      if (lesson?.allOptions && currentExercise.getOptions) {
-        // Generate new shuffled options using the getOptions function
-        const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
-        // Store shuffled options in the exercise object
-        currentExercise.shuffledOptions = shuffledOptions;
+    try {
+      if (currentExercise?.type === 'match' && currentExercise.pairs) {
+        const shuffledPairs = [...currentExercise.pairs].sort(() => Math.random() - 0.5);
+        setMatchedPairs(shuffledPairs.map((pair, index) => ({
+          ...pair,
+          id: index,
+          matched: false
+        })));
       }
+      
+      // Generate shuffled options for image choice exercises
+      if (currentExercise?.type === 'image_choice') {
+        // Get the lesson to access allOptions
+        if (lesson?.allOptions && currentExercise.getOptions) {
+          try {
+            // Generate new shuffled options using the getOptions function
+            const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
+            // Store shuffled options in the exercise object
+            currentExercise.shuffledOptions = shuffledOptions;
+          } catch (error) {
+            console.error('Error generating shuffled options:', error);
+            // Fallback to default options if available
+            if (currentExercise.options) {
+              currentExercise.shuffledOptions = [...currentExercise.options].sort(() => Math.random() - 0.5);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error in lesson initialization:', error);
     }
   }, [currentExercise, lesson]);
 
   const handleAnswerSubmit = useCallback(() => {
-    if (!userAnswer.trim() && !selectedOption) return;
+    try {
+      if (!userAnswer.trim() && !selectedOption) return;
 
-    let answer, correct;
-    
-    if (currentExercise.type === 'image_choice') {
-      answer = selectedOption;
-      correct = answer === currentExercise.answer;
-    } else {
-      answer = selectedOption || userAnswer.toLowerCase().trim();
-      correct = answer === currentExercise.answer.toLowerCase();
-    }
-
-    setIsCorrect(correct);
-    setShowFeedback(true);
-
-    if (correct) {
-      setScore(prev => prev + 1);
-    } else {
-      setLives(prev => prev - 1);
-    }
-
-    setTimeout(() => {
-      setShowFeedback(false);
-      setIsCorrect(null);
-      setUserAnswer('');
-      setSelectedOption(null);
-      setShowHint(false);
+      let answer, correct;
       
-      if (currentExerciseIndex < lesson.exercises.length - 1) {
-        setCurrentExerciseIndex(prev => prev + 1);
+      if (currentExercise.type === 'image_choice') {
+        answer = selectedOption;
+        correct = answer === currentExercise.answer;
       } else {
-        // Lesson complete
-        onComplete(score + (correct ? 1 : 0), lesson.exercises.length, lives);
+        answer = selectedOption || userAnswer.toLowerCase().trim();
+        correct = answer === currentExercise.answer.toLowerCase();
       }
-    }, 1500);
+
+      setIsCorrect(correct);
+      setShowFeedback(true);
+
+      if (correct) {
+        setScore(prev => prev + 1);
+      } else {
+        setLives(prev => prev - 1);
+      }
+
+      setTimeout(() => {
+        setShowFeedback(false);
+        setIsCorrect(null);
+        setUserAnswer('');
+        setSelectedOption(null);
+        setShowHint(false);
+        
+        if (currentExerciseIndex < lesson.exercises.length - 1) {
+          setCurrentExerciseIndex(prev => prev + 1);
+        } else {
+          // Lesson complete
+          onComplete(score + (correct ? 1 : 0), lesson.exercises.length, lives);
+        }
+      }, 1500);
+    } catch (error) {
+      console.error('Error in handleAnswerSubmit:', error);
+      // Fallback: just close the lesson
+      onComplete(0, 1, 0);
+    }
   }, [userAnswer, selectedOption, currentExercise, currentExerciseIndex, lesson.exercises.length, score, lives, onComplete]);
 
-  const handleKeyPress = useCallback((e) => {
-    if (e.key === 'Enter') {
-      handleAnswerSubmit();
-    }
-  }, [handleAnswerSubmit]);
+  // Remove unused handleKeyPress function
 
   const handleOptionSelect = useCallback((option) => {
     setSelectedOption(option);
@@ -104,7 +163,13 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   }, []);
 
   const renderExercise = () => {
-    if (!currentExercise) return null;
+    if (!currentExercise) {
+      return (
+        <div className="exercise-container">
+          <h3>Exercise not found</h3>
+        </div>
+      );
+    }
 
     switch (currentExercise.type) {
       case 'image_choice':
@@ -143,7 +208,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             {/* Image options grid */}
             <div className="image-options-grid">
-              {(currentExercise.shuffledOptions || []).map((option, index) => (
+              {(currentExercise.shuffledOptions || currentExercise.options || []).map((option, index) => (
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''}`}
@@ -154,10 +219,10 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       className="option-image" 
                       style={{ color: option.iconColor || '#FFFFFF' }}
                     >
-                      {option.image}
+                      {option.image || '❓'}
                     </span>
                   </div>
-                  <div className="option-label">{option.label}</div>
+                  <div className="option-label">{option.label || 'Unknown'}</div>
                 </button>
               ))}
             </div>
@@ -173,6 +238,46 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         );
 
       case 'translate':
+        return (
+          <div className="exercise-container">
+            <h3>{currentExercise.instruction}</h3>
+            <div className="question">
+              <h2>{currentExercise.question}</h2>
+            </div>
+            
+            {currentExercise.options ? (
+              <div className="options-grid">
+                {currentExercise.options.map((option, index) => (
+                  <button
+                    key={index}
+                    className={`option-button ${selectedOption === option ? 'selected' : ''}`}
+                    onClick={() => handleOptionSelect(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="answer-input">
+                <input
+                  type="text"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  placeholder="Type your answer..."
+                  className="answer-field"
+                />
+              </div>
+            )}
+            
+            <button 
+              className="submit-button"
+              onClick={handleAnswerSubmit}
+              disabled={!userAnswer.trim() && !selectedOption}
+            >
+              Check
+            </button>
+          </div>
+        );
 
       case 'match':
         return (

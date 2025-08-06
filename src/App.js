@@ -938,44 +938,63 @@ function App() {
 
   // Add lesson handlers after the existing handlers
   const handleStartLesson = useCallback((lessonId) => {
-    const lesson = getLessonById(lessonId);
-    if (lesson) {
-      setCurrentLesson(lesson);
-      setShowLesson(true);
+    try {
+      const lesson = getLessonById(lessonId);
+      if (lesson && lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
+        setCurrentLesson(lesson);
+        setShowLesson(true);
+      } else {
+        console.error('Invalid lesson data:', lesson);
+        alert('Lesson data is invalid. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error starting lesson:', error);
+      alert('Failed to start lesson. Please try again.');
     }
   }, []);
 
   const handleLessonComplete = useCallback((score, total, lives) => {
-    if (lives > 0) {
-      // Calculate progress percentage
-      const progress = Math.round((score / total) * 100);
-      
-      // Update skill progress
-      setSkillProgress(prev => ({
-        ...prev,
-        [currentLesson.id]: Math.max(prev[currentLesson.id] || 0, progress)
-      }));
-      
-      // Award XP
-      const xpGained = Math.round((score / total) * currentLesson.xpReward);
-      setUserData(prev => ({
-        ...prev,
-        xp: prev.xp + xpGained
-      }));
-      
-      // Show achievement notification if perfect score
-      if (score === total) {
-        // Trigger perfect score achievement
+    try {
+      if (lives > 0 && currentLesson) {
+        // Calculate progress percentage
+        const progress = Math.round((score / total) * 100);
+        
+        // Update skill progress
+        setSkillProgress(prev => ({
+          ...prev,
+          [currentLesson.id]: Math.max(prev[currentLesson.id] || 0, progress)
+        }));
+        
+        // Award XP
+        const xpGained = Math.round((score / total) * (currentLesson.xpReward || 10));
+        setUserData(prev => ({
+          ...prev,
+          xp: prev.xp + xpGained
+        }));
+        
+        // Show achievement notification if perfect score
+        if (score === total) {
+          // Trigger perfect score achievement
+        }
       }
+    } catch (error) {
+      console.error('Error completing lesson:', error);
+    } finally {
+      setShowLesson(false);
+      setCurrentLesson(null);
     }
-    
-    setShowLesson(false);
-    setCurrentLesson(null);
   }, [currentLesson]);
 
   const handleLessonExit = useCallback(() => {
-    setShowLesson(false);
-    setCurrentLesson(null);
+    try {
+      setShowLesson(false);
+      setCurrentLesson(null);
+    } catch (error) {
+      console.error('Error exiting lesson:', error);
+      // Force reset state
+      setShowLesson(false);
+      setCurrentLesson(null);
+    }
   }, []);
 
   // Render the current screen
@@ -1173,12 +1192,14 @@ function App() {
         
         {/* Lesson View */}
         {showLesson && currentLesson && (
-          <LessonView
-            lesson={currentLesson}
-            onComplete={handleLessonComplete}
-            onExit={handleLessonExit}
-            isDarkMode={isDarkMode}
-          />
+          <ErrorBoundary>
+            <LessonView
+              lesson={currentLesson}
+              onComplete={handleLessonComplete}
+              onExit={handleLessonExit}
+              isDarkMode={isDarkMode}
+            />
+          </ErrorBoundary>
         )}
       </div>
     </ErrorBoundary>

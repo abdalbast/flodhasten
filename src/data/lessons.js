@@ -174,7 +174,15 @@ export const LESSONS = [
 
 // Helper functions
 export const getLessonById = (id) => {
-  return LESSONS.find(lesson => lesson.id === id);
+  const lesson = LESSONS.find(lesson => lesson.id === id);
+  
+  // Validate lesson structure
+  if (lesson && (!lesson.exercises || !Array.isArray(lesson.exercises))) {
+    console.error('Invalid lesson structure:', lesson);
+    return null;
+  }
+  
+  return lesson;
 };
 
 export const getAllLessons = () => {
@@ -182,8 +190,13 @@ export const getAllLessons = () => {
 };
 
 export const isLessonUnlocked = (lessonId, userLevel) => {
-  const lesson = getLessonById(lessonId);
-  return lesson && userLevel >= lesson.requiredLevel;
+  try {
+    const lesson = getLessonById(lessonId);
+    return lesson && userLevel >= lesson.requiredLevel;
+  } catch (error) {
+    console.error('Error checking lesson unlock status:', error);
+    return false;
+  }
 };
 
 export const getNextLesson = (currentLessonId) => {
