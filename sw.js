@@ -1,6 +1,7 @@
-const CACHE_NAME = 'flodhasten-v1.0.0';
-const STATIC_CACHE = 'flodhasten-static-v1.0.0';
-const DYNAMIC_CACHE = 'flodhasten-dynamic-v1.0.0';
+const CACHE_VERSION = '1.0.1-1754482320346';
+const CACHE_NAME = 'flodhasten-v' + CACHE_VERSION;
+const STATIC_CACHE = 'flodhasten-static-v' + CACHE_VERSION;
+const DYNAMIC_CACHE = 'flodhasten-dynamic-v' + CACHE_VERSION;
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -11,7 +12,9 @@ const STATIC_ASSETS = [
   '/hippo-icon.svg',
   '/logo192.png',
   '/logo512.png',
-  '/manifest.json'
+  '/manifest.json',
+  '/swedish_flag.png',
+  '/kurdish_flag.png'
 ];
 
 // API endpoints to cache
@@ -21,7 +24,7 @@ const API_CACHE = [
 
 // Install event - cache static assets
 self.addEventListener('install', event => {
-  console.log('Service Worker: Installing...');
+  console.log('Service Worker: Installing...', CACHE_VERSION);
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
@@ -40,13 +43,14 @@ self.addEventListener('install', event => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-  console.log('Service Worker: Activating...');
+  console.log('Service Worker: Activating...', CACHE_VERSION);
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+            // Delete all old caches
+            if (!cacheName.includes(CACHE_VERSION)) {
               console.log('Service Worker: Deleting old cache', cacheName);
               return caches.delete(cacheName);
             }
@@ -64,6 +68,15 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
+
+  // Add cache-busting parameter to all requests
+  if (request.method === 'GET' && !url.search.includes('v=')) {
+    const separator = url.search ? '&' : '?';
+    const cacheBustedUrl = url.origin + url.pathname + url.search + separator + 'v=' + CACHE_VERSION;
+    const cacheBustedRequest = new Request(cacheBustedUrl, request);
+    event.respondWith(fetch(cacheBustedRequest));
+    return;
+  }
 
   // Handle API requests
   if (url.pathname.includes('/api/')) {
@@ -100,14 +113,8 @@ async function handleApiRequest(request) {
       return cachedResponse;
     }
     
-    // Return offline response
-    return new Response(
-      JSON.stringify({ error: 'Offline - API unavailable' }),
-      { 
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+    // Return error response if no cache
+    return new Response('Network error', { status: 503 });
   }
 }
 
