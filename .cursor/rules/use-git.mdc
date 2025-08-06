@@ -1,0 +1,5 @@
+---
+description: use git to track chagnes
+globs:
+alwaysApply: false
+---
