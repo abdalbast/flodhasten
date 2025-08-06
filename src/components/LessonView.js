@@ -14,41 +14,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [showHint, setShowHint] = useState(false);
 
-  // Safety check for lesson and exercises
-  if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
-    return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
-          </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Invalid lesson data</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const currentExercise = lesson.exercises[currentExerciseIndex];
-
-  // Safety check for current exercise
-  if (!currentExercise) {
-    return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
-          </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Exercise not found</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Get current exercise safely
+  const currentExercise = lesson?.exercises?.[currentExerciseIndex];
 
   // Play pronunciation
   const playPronunciation = async (word) => {
@@ -112,12 +79,12 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
 
       let answer, correct;
       
-      if (currentExercise.type === 'image_choice') {
+      if (currentExercise?.type === 'image_choice') {
         answer = selectedOption;
         correct = answer === currentExercise.answer;
       } else {
         answer = selectedOption || userAnswer.toLowerCase().trim();
-        correct = answer === currentExercise.answer.toLowerCase();
+        correct = answer === currentExercise?.answer?.toLowerCase();
       }
 
       setIsCorrect(correct);
@@ -136,11 +103,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         setSelectedOption(null);
         setShowHint(false);
         
-        if (currentExerciseIndex < lesson.exercises.length - 1) {
+        if (currentExerciseIndex < (lesson?.exercises?.length || 0) - 1) {
           setCurrentExerciseIndex(prev => prev + 1);
         } else {
           // Lesson complete
-          onComplete(score + (correct ? 1 : 0), lesson.exercises.length, lives);
+          onComplete(score + (correct ? 1 : 0), lesson?.exercises?.length || 1, lives);
         }
       }, 1500);
     } catch (error) {
@@ -148,9 +115,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       // Fallback: just close the lesson
       onComplete(0, 1, 0);
     }
-  }, [userAnswer, selectedOption, currentExercise, currentExerciseIndex, lesson.exercises.length, score, lives, onComplete]);
-
-  // Remove unused handleKeyPress function
+  }, [userAnswer, selectedOption, currentExercise, currentExerciseIndex, lesson, score, lives, onComplete]);
 
   const handleOptionSelect = useCallback((option) => {
     setSelectedOption(option);
@@ -161,6 +126,81 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       p.id === pair.id ? { ...p, matched: !p.matched } : p
     ));
   }, []);
+
+  const handleHintToggle = useCallback(() => {
+    setShowHint(prev => !prev);
+  }, []);
+
+  // Safety check for lesson and exercises - AFTER all hooks
+  if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Invalid lesson data</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check for current exercise - AFTER all hooks
+  if (!currentExercise) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Exercise not found</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Initialize matching game and shuffle options
+  useEffect(() => {
+    try {
+      if (currentExercise?.type === 'match' && currentExercise.pairs) {
+        const shuffledPairs = [...currentExercise.pairs].sort(() => Math.random() - 0.5);
+        setMatchedPairs(shuffledPairs.map((pair, index) => ({
+          ...pair,
+          id: index,
+          matched: false
+        })));
+      }
+      
+      // Generate shuffled options for image choice exercises
+      if (currentExercise?.type === 'image_choice') {
+        // Get the lesson to access allOptions
+        if (lesson?.allOptions && currentExercise.getOptions) {
+          try {
+            // Generate new shuffled options using the getOptions function
+            const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
+            // Store shuffled options in the exercise object
+            currentExercise.shuffledOptions = shuffledOptions;
+          } catch (error) {
+            console.error('Error generating shuffled options:', error);
+            // Fallback to default options if available
+            if (currentExercise.options) {
+              currentExercise.shuffledOptions = [...currentExercise.options].sort(() => Math.random() - 0.5);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error in lesson initialization:', error);
+    }
+  }, [currentExercise, lesson]);
+
+  // Remove duplicate functions
 
   const renderExercise = () => {
     if (!currentExercise) {
