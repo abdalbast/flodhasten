@@ -110,7 +110,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
           // Lesson complete
           onComplete(score + (correct ? 1 : 0), lesson?.exercises?.length || 1, lives);
         }
-      }, 1500);
+      }, correct ? 2000 : 1500); // Longer delay for correct answers to show animation
     } catch (error) {
       console.error('Error in handleAnswerSubmit:', error);
       // Fallback: just close the lesson
@@ -267,11 +267,18 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             </div>
             
             <button 
-              className={`continue-button ${selectedOption ? 'enabled' : ''}`}
+              className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback ? 'feedback-active' : ''}`}
               onClick={handleAnswerSubmit}
               disabled={!selectedOption}
             >
-              CONTINUE
+              {showFeedback && isCorrect ? (
+                <>
+                  <MdCheck className="button-icon" />
+                  CORRECT!
+                </>
+              ) : (
+                'CONTINUE'
+              )}
             </button>
           </div>
         );
@@ -382,26 +389,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       <div className="lesson-content">
         {renderExercise()}
       </div>
-
-      {showFeedback && (
-        <div className={`feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-          {isCorrect ? (
-            <>
-              <MdCheck className="feedback-icon" />
-              <span>Correct!</span>
-            </>
-          ) : (
-            <>
-              <MdError className="feedback-icon" />
-              <span>
-                Incorrect. The answer is: {currentExercise.type === 'image_choice' 
-                  ? currentExercise.options.find(opt => opt.id === currentExercise.answer)?.label 
-                  : currentExercise.answer}
-              </span>
-            </>
-          )}
-        </div>
-      )}
     </div>
   );
 };
