@@ -93,6 +93,22 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
 
       if (correct) {
         setScore(prev => prev + 1);
+        
+        // Proceed to next exercise after correct answer
+        setTimeout(() => {
+          setShowFeedback(false);
+          setIsCorrect(null);
+          setUserAnswer('');
+          setSelectedOption(null);
+          setShowHint(false);
+          
+          if (currentExerciseIndex < (lesson?.exercises?.length || 0) - 1) {
+            setCurrentExerciseIndex(prev => prev + 1);
+          } else {
+            // Lesson complete
+            onComplete(score + 1, lesson?.exercises?.length || 1, lives);
+          }
+        }, 2000); // Longer delay for correct answers to show animation
       } else {
         const newLives = lives - 1;
         setLives(newLives);
@@ -105,32 +121,25 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
           }, 2000); // Show the incorrect animation before game over
           return;
         }
-      }
-
-      setTimeout(() => {
-        setShowFeedback(false);
-        setIsCorrect(null);
-        setUserAnswer('');
-        setSelectedOption(null);
-        setShowHint(false);
         
-        // Only proceed if answer was correct
-        if (correct) {
-          if (currentExerciseIndex < (lesson?.exercises?.length || 0) - 1) {
-            setCurrentExerciseIndex(prev => prev + 1);
-          } else {
-            // Lesson complete
-            onComplete(score + 1, lesson?.exercises?.length || 1, lives);
-          }
-        }
-        // If incorrect, stay on the same exercise and let user try again
-      }, correct ? 2000 : 1500); // Longer delay for correct answers to show animation
+        // For incorrect answers, just show feedback and let user click "TRY AGAIN!"
+        // Don't automatically reset - user must click the button
+      }
     } catch (error) {
       console.error('Error in handleAnswerSubmit:', error);
       // Fallback: just close the lesson
       onComplete(0, 1, 0);
     }
   }, [userAnswer, selectedOption, currentExercise, currentExerciseIndex, lesson, score, lives, onComplete]);
+
+  // Handle "TRY AGAIN!" button click
+  const handleTryAgain = useCallback(() => {
+    setShowFeedback(false);
+    setIsCorrect(null);
+    setUserAnswer('');
+    setSelectedOption(null);
+    setShowHint(false);
+  }, []);
 
   const handleOptionSelect = useCallback((option) => {
     setSelectedOption(option);
@@ -282,8 +291,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             <button 
               className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''}`}
-              onClick={handleAnswerSubmit}
-              disabled={!selectedOption}
+              onClick={showFeedback && !isCorrect ? handleTryAgain : handleAnswerSubmit}
+              disabled={!selectedOption && !showFeedback}
             >
               {showFeedback && isCorrect ? (
                 <>
