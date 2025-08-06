@@ -94,7 +94,17 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       if (correct) {
         setScore(prev => prev + 1);
       } else {
-        setLives(prev => prev - 1);
+        const newLives = lives - 1;
+        setLives(newLives);
+        
+        // Check for game over
+        if (newLives <= 0) {
+          setTimeout(() => {
+            // Game over - exit lesson
+            onComplete(score, lesson?.exercises?.length || 1, 0);
+          }, 2000); // Show the incorrect animation before game over
+          return;
+        }
       }
 
       setTimeout(() => {
@@ -104,12 +114,16 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         setSelectedOption(null);
         setShowHint(false);
         
-        if (currentExerciseIndex < (lesson?.exercises?.length || 0) - 1) {
-          setCurrentExerciseIndex(prev => prev + 1);
-        } else {
-          // Lesson complete
-          onComplete(score + (correct ? 1 : 0), lesson?.exercises?.length || 1, lives);
+        // Only proceed if answer was correct
+        if (correct) {
+          if (currentExerciseIndex < (lesson?.exercises?.length || 0) - 1) {
+            setCurrentExerciseIndex(prev => prev + 1);
+          } else {
+            // Lesson complete
+            onComplete(score + 1, lesson?.exercises?.length || 1, lives);
+          }
         }
+        // If incorrect, stay on the same exercise and let user try again
       }, correct ? 2000 : 1500); // Longer delay for correct answers to show animation
     } catch (error) {
       console.error('Error in handleAnswerSubmit:', error);
@@ -267,7 +281,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             </div>
             
             <button 
-              className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback ? 'feedback-active' : ''}`}
+              className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''}`}
               onClick={handleAnswerSubmit}
               disabled={!selectedOption}
             >
@@ -275,6 +289,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                 <>
                   <MdCheck className="button-icon" />
                   CORRECT!
+                </>
+              ) : showFeedback && !isCorrect ? (
+                <>
+                  <MdError className="button-icon" />
+                  TRY AGAIN!
                 </>
               ) : (
                 'CONTINUE'
