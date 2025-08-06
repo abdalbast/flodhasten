@@ -129,23 +129,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
 
   // Remove unused handleHintToggle function
 
-  // Safety check for lesson and exercises - AFTER all hooks
-  if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
-    return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
-          </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Invalid lesson data</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Initialize matching game and shuffle options
   useEffect(() => {
     try {
@@ -180,6 +163,23 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       console.error('Error in lesson initialization:', error);
     }
   }, [currentExercise, lesson]);
+
+  // Safety check for lesson and exercises - AFTER all hooks
+  if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Invalid lesson data</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Safety check for current exercise - AFTER all hooks
   if (!currentExercise) {
