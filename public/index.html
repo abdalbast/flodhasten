@@ -90,21 +90,6 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js?v=1.0.1-1754485032661-1754485032661-1754484529467-1754484529467-1754482977786-1754482977786-1754482708961')
-            .then(function(registration) {
-              console.log('SW registered: ', registration);
-              // Force update check
-              registration.update();
-            })
-            .catch(function(registrationError) {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
-    </script>
+    <!-- Service Worker Registration Removed -->
   </body>
 </html>
