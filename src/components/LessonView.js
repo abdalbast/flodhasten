@@ -14,6 +14,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [showHint, setShowHint] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState([]); // State for stable shuffled options
+  const [showGameOver, setShowGameOver] = useState(false); // Game over modal state
 
   // Get current exercise safely
   const currentExercise = lesson?.exercises?.[currentExerciseIndex];
@@ -116,8 +117,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         // Check for game over
         if (newLives <= 0) {
           setTimeout(() => {
-            // Game over - exit lesson
-            onComplete(score, lesson?.exercises?.length || 1, 0);
+            // Show game over modal with animation
+            setShowGameOver(true);
           }, 2000); // Show the incorrect animation before game over
           return;
         }
@@ -417,6 +418,28 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       <div className="lesson-content">
         {renderExercise()}
       </div>
+
+      {/* Game Over Modal */}
+      {showGameOver && (
+        <div className="game-over-overlay">
+          <div className="game-over-modal">
+            <div className="game-over-icon">💔</div>
+            <h2 className="game-over-title">Out of Hearts!</h2>
+            <p className="game-over-message">
+              You've run out of hearts for today. Come back later when they refill to continue learning!
+            </p>
+            <button 
+              className="game-over-button"
+              onClick={() => {
+                setShowGameOver(false);
+                onExit();
+              }}
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
