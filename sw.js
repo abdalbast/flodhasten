@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.0.1-1754482320346';
+const CACHE_VERSION = '1.0.1-1754482708961';
 const CACHE_NAME = 'flodhasten-v' + CACHE_VERSION;
 const STATIC_CACHE = 'flodhasten-static-v' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'flodhasten-dynamic-v' + CACHE_VERSION;
@@ -69,15 +69,6 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Add cache-busting parameter to all requests
-  if (request.method === 'GET' && !url.search.includes('v=')) {
-    const separator = url.search ? '&' : '?';
-    const cacheBustedUrl = url.origin + url.pathname + url.search + separator + 'v=' + CACHE_VERSION;
-    const cacheBustedRequest = new Request(cacheBustedUrl, request);
-    event.respondWith(fetch(cacheBustedRequest));
-    return;
-  }
-
   // Handle API requests
   if (url.pathname.includes('/api/')) {
     event.respondWith(handleApiRequest(request));
@@ -118,34 +109,28 @@ async function handleApiRequest(request) {
   }
 }
 
-// Handle static asset requests
+// Handle static requests with caching
 async function handleStaticRequest(request) {
   try {
-    // Check cache first for static assets
+    // Try cache first for static assets
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;
     }
-
-    // Try network if not in cache
+    
+    // Fallback to network
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
-      // Cache new static assets
-      const cache = await caches.open(DYNAMIC_CACHE);
+      // Cache successful responses
+      const cache = await caches.open(STATIC_CACHE);
       cache.put(request, networkResponse.clone());
     }
     
     return networkResponse;
   } catch (error) {
     console.log('Service Worker: Static request failed');
-    
-    // Return offline page for navigation requests
-    if (request.destination === 'document') {
-      return caches.match('/index.html');
-    }
-    
-    return new Response('Offline', { status: 503 });
+    return new Response('Offline - Static asset unavailable', { status: 503 });
   }
 }
 
