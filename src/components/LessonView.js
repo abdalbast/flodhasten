@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { MdVolumeUp, MdClose, MdCheck, MdError } from 'react-icons/md';
+import { MdVolumeUp, MdClose, MdCheck, MdError, MdStar } from 'react-icons/md';
 import './LessonView.css';
 import ttsApi from '../utils/ttsApi';
-import { getOptions } from '../data/lessons.js';
 
 const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -14,7 +13,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [showHint, setShowHint] = useState(false);
-  const [shuffledOptions, setShuffledOptions] = useState([]);
 
   const currentExercise = lesson.exercises[currentExerciseIndex];
 
@@ -40,9 +38,14 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     
     // Generate shuffled options for image choice exercises
     if (currentExercise?.type === 'image_choice') {
-      // Generate new shuffled options using the getOptions function
-      const shuffledOptions = getOptions(currentExercise.correctAnswer);
-      setShuffledOptions(shuffledOptions);
+      // Get the lesson to access allOptions
+      const lesson = lesson;
+      if (lesson?.allOptions && currentExercise.getOptions) {
+        // Generate new shuffled options using the getOptions function
+        const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
+        // Store shuffled options in the exercise object
+        currentExercise.shuffledOptions = shuffledOptions;
+      }
     }
   }, [currentExercise, lesson]);
 
@@ -53,10 +56,10 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     
     if (currentExercise.type === 'image_choice') {
       answer = selectedOption;
-      correct = answer === currentExercise.correctAnswer;
+      correct = answer === currentExercise.answer;
     } else {
       answer = selectedOption || userAnswer.toLowerCase().trim();
-      correct = answer === currentExercise.correctAnswer.toLowerCase();
+      correct = answer === currentExercise.answer.toLowerCase();
     }
 
     setIsCorrect(correct);
@@ -84,7 +87,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     }, 1500);
   }, [userAnswer, selectedOption, currentExercise, currentExerciseIndex, lesson.exercises.length, score, lives, onComplete]);
 
-  // Remove unused handleKeyPress function
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === 'Enter') {
+      handleAnswerSubmit();
+    }
+  }, [handleAnswerSubmit]);
 
   const handleOptionSelect = useCallback((option) => {
     setSelectedOption(option);
@@ -136,7 +143,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             {/* Image options grid */}
             <div className="image-options-grid">
-              {(shuffledOptions || []).map((option, index) => (
+              {(currentExercise.shuffledOptions || []).map((option, index) => (
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''}`}
@@ -166,46 +173,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         );
 
       case 'translate':
-        return (
-          <div className="exercise-container">
-            <h3>{currentExercise.instruction}</h3>
-            <div className="question">
-              <h2>{currentExercise.question}</h2>
-            </div>
-            
-            {currentExercise.options ? (
-              <div className="options-grid">
-                {currentExercise.options.map((option, index) => (
-                  <button
-                    key={index}
-                    className={`option-button ${selectedOption === option ? 'selected' : ''}`}
-                    onClick={() => handleOptionSelect(option)}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="answer-input">
-                <input
-                  type="text"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  placeholder="Type your answer..."
-                  className="answer-field"
-                />
-              </div>
-            )}
-            
-            <button 
-              className="submit-button"
-              onClick={handleAnswerSubmit}
-              disabled={!userAnswer.trim() && !selectedOption}
-            >
-              Check
-            </button>
-          </div>
-        );
 
       case 'match':
         return (
@@ -284,8 +251,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
               <MdError className="feedback-icon" />
               <span>
                 Incorrect. The answer is: {currentExercise.type === 'image_choice' 
-                  ? (shuffledOptions || []).find(opt => opt.id === currentExercise.correctAnswer)?.label 
-                  : currentExercise.correctAnswer}
+                  ? currentExercise.options.find(opt => opt.id === currentExercise.answer)?.label 
+                  : currentExercise.answer}
               </span>
             </>
           )}
