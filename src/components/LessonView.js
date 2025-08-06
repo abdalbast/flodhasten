@@ -127,9 +127,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     ));
   }, []);
 
-  const handleHintToggle = useCallback(() => {
-    setShowHint(prev => !prev);
-  }, []);
+  // Remove unused handleHintToggle function
 
   // Safety check for lesson and exercises - AFTER all hooks
   if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
@@ -142,23 +140,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
           <div className="lesson-info">
             <h2>Error</h2>
             <p>Invalid lesson data</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Safety check for current exercise - AFTER all hooks
-  if (!currentExercise) {
-    return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
-          </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Exercise not found</p>
           </div>
         </div>
       </div>
@@ -199,6 +180,23 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       console.error('Error in lesson initialization:', error);
     }
   }, [currentExercise, lesson]);
+
+  // Safety check for current exercise - AFTER all hooks
+  if (!currentExercise) {
+    return (
+      <div className="lesson-view">
+        <div className="lesson-header">
+          <button className="exit-button" onClick={onExit}>
+            <MdClose />
+          </button>
+          <div className="lesson-info">
+            <h2>Error</h2>
+            <p>Exercise not found</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Remove duplicate functions
 
