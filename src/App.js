@@ -18,7 +18,7 @@ import AdvancedAnalytics from './components/AdvancedAnalytics';
 import GamifiedLearning from './components/GamifiedLearning';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
-import { LESSONS, getLessonById, getAllLessons, isLessonUnlocked } from './data/lessons';
+import { getLessonById } from './data/lessons';
 import LessonView from './components/LessonView';
 
 // Version tracking utility
@@ -428,11 +428,7 @@ function calculateLevel(xp) {
   return Math.floor(xp / 100) + 1;
 }
 
-// Helper: pick a random game type
-const GAME_TYPES = ['flashcards', 'matching', 'spelling', 'multiple', 'audio', 'odd'];
-function getRandomGameType() {
-  return GAME_TYPES[Math.floor(Math.random() * GAME_TYPES.length)];
-}
+
 
 function App() {
   const [screen, setScreen] = useState('home');
@@ -441,7 +437,7 @@ function App() {
   const [game, setGame] = useState(null); // Which game is active
   const [progress, setProgress] = useState(getInitialProgress());
   const [userData, setUserData] = useState(getInitialUserData());
-  const [showSkillComplete, setShowSkillComplete] = useState(false);
+
   const [lessonWords, setLessonWords] = useState([]);
   const [customWords, setCustomWords] = useState(() => {
     const saved = localStorage.getItem('customWords');
@@ -516,11 +512,7 @@ function App() {
     return saved ? JSON.parse(saved) : {};
   });
 
-  // Voice Recognition state
-  const [isListening, setIsListening] = useState(false);
-  const [recognizedText, setRecognizedText] = useState('');
-  const [pronunciationAttempts, setPronunciationAttempts] = useState({});
-  const [pronunciationSuccesses, setPronunciationSuccesses] = useState({});
+
 
   // Add lesson state variables after the existing state declarations
   const [currentLesson, setCurrentLesson] = useState(null);
@@ -782,10 +774,6 @@ function App() {
     
     // Add XP for completing a skill
     addXP(50);
-    
-    // Show completion dialog
-    setShowSkillComplete(true);
-    setTimeout(() => setShowSkillComplete(false), 3000);
   }, [addXP, userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Handle adding a word - memoized
@@ -799,29 +787,7 @@ function App() {
     checkAndUnlockAchievements(previousStats, newStats);
   }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
-  // Track game completion for challenges
-  const handleGamePlayed = useCallback(() => {
-    const previousStats = userStats;
-    const newStats = { ...userStats, games_played: userStats.games_played + 1 };
-    updateUserStats({ games_played: userStats.games_played + 1 });
-    checkAndUnlockAchievements(previousStats, newStats);
-  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
-  // Track perfect score for challenges
-  const handlePerfectScore = useCallback(() => {
-    const previousStats = userStats;
-    const newStats = { ...userStats, perfect_scores: userStats.perfect_scores + 1 };
-    updateUserStats({ perfect_scores: userStats.perfect_scores + 1 });
-    checkAndUnlockAchievements(previousStats, newStats);
-  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
-
-  // Track pronunciation usage for challenges
-  const handlePronunciationUsed = useCallback(() => {
-    const previousStats = userStats;
-    const newStats = { ...userStats, pronunciations_used: userStats.pronunciations_used + 1 };
-    updateUserStats({ pronunciations_used: userStats.pronunciations_used + 1 });
-    checkAndUnlockAchievements(previousStats, newStats);
-  }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
   // Track pronunciation attempts for voice recognition
   const handlePronunciationAttempt = useCallback((result) => {

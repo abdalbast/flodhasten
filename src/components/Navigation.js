@@ -20,13 +20,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
   // Handle clicks outside dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log('Click detected:', event.target);
-      console.log('Settings dropdown open:', showSettingsDropdown);
-      console.log('More dropdown open:', showMoreDropdown);
-      
       // Close settings dropdown if clicked outside
       if (showSettingsDropdown && settingsDropdownRef.current && !settingsDropdownRef.current.contains(event.target)) {
-        console.log('Closing settings dropdown - clicked outside');
         setShowSettingsDropdown(false);
       }
       
@@ -35,13 +30,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
         const isOutsideDesktop = !desktopMoreDropdownRef.current?.contains(event.target);
         const isOutsideMobile = !mobileMoreDropdownRef.current?.contains(event.target);
         
-        console.log('Desktop ref:', desktopMoreDropdownRef.current);
-        console.log('Mobile ref:', mobileMoreDropdownRef.current);
-        console.log('Is outside desktop:', isOutsideDesktop);
-        console.log('Is outside mobile:', isOutsideMobile);
-        
         if (isOutsideDesktop && isOutsideMobile) {
-          console.log('Closing more dropdown - clicked outside');
           setShowMoreDropdown(false);
         }
       }
@@ -49,14 +38,12 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
 
     // Add event listener if any dropdown is open
     if (showSettingsDropdown || showMoreDropdown) {
-      console.log('Adding click outside listener');
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
 
     // Cleanup event listener
     return () => {
-      console.log('Removing click outside listener');
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
