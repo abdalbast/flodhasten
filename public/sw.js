@@ -14,7 +14,9 @@ const STATIC_ASSETS = [
   '/logo512.png',
   '/manifest.json',
   '/swedish_flag.png',
-  '/kurdish_flag.png'
+  '/kurdish_flag.png',
+  '/gothenburg.jpg',
+  '/stockholm.jpg'
 ];
 
 // API endpoints to cache
