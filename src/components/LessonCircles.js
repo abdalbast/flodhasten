@@ -23,10 +23,12 @@ function LessonCircles({ skills, progress, onSelectSkill, isDarkMode }) {
     <div style={{ textAlign: 'center', padding: '2rem' }}>
       {/* Lesson Circles Grid - Moomin-inspired */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'stretch',
         gap: '2rem',
-        maxWidth: '900px',
+        maxWidth: '1200px',
         margin: '0 auto',
         padding: '1rem'
       }}>
@@ -34,19 +36,27 @@ function LessonCircles({ skills, progress, onSelectSkill, isDarkMode }) {
           const { isUnlocked, isCompleted, progressValue, isInProgress } = getLessonStatus(skill.id);
           
           return (
-            <LessonCard
-              key={skill.id}
-              lesson={skill}
-              index={index}
-              progress={progressValue}
-              isUnlocked={isUnlocked}
-              isCompleted={isCompleted}
-              isInProgress={isInProgress}
-              onLessonClick={handleLessonClick}
-              isDarkMode={isDarkMode}
-              enableTilt={true}
-              enableMobileTilt={false}
-            />
+            <div key={skill.id} style={{
+              flex: '0 1 300px',
+              minWidth: '250px',
+              maxWidth: '350px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'stretch'
+            }}>
+              <LessonCard
+                lesson={skill}
+                index={index}
+                progress={progressValue}
+                isUnlocked={isUnlocked}
+                isCompleted={isCompleted}
+                isInProgress={isInProgress}
+                onLessonClick={handleLessonClick}
+                isDarkMode={isDarkMode}
+                enableTilt={true}
+                enableMobileTilt={false}
+              />
+            </div>
           );
         })}
       </div>
