@@ -325,20 +325,50 @@
   background: none;
   border: none;
   color: white;
-  padding: 0.5rem;
+  padding: 0.75rem 0.5rem; /* Increased padding for better touch targets */
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.8rem;
-  transition: all 0.3s ease;
-  border-radius: 10px;
+  font-size: 0.75rem; /* Slightly smaller for mobile */
+  transition: all 0.2s ease; /* Faster transition for mobile */
+  border-radius: 12px;
   min-width: 60px;
+  min-height: 44px; /* Accessibility: Minimum touch target */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mobile button touch feedback */
+.mobile-nav button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 12px;
+}
+
+.mobile-nav button:active::before {
+  opacity: 1;
 }
 
 .mobile-nav button:hover {
   background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px); /* Subtle lift effect */
+}
+
+/* Mobile-specific hover states (only on devices that support hover) */
+@media (hover: hover) {
+  .mobile-nav button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
 }
 
 /* Accessibility: Focus states for mobile navigation */
@@ -354,7 +384,34 @@
 
 .mobile-nav button.active {
   background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Active state animation */
+.mobile-nav button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  animation: activeIndicator 0.3s ease;
+}
+
+@keyframes activeIndicator {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 20px;
+    opacity: 1;
+  }
 }
 
 .mobile-nav button svg {
@@ -375,25 +432,48 @@
   background: none;
   border: none;
   color: white;
-  padding: 0.5rem;
+  padding: 0.75rem 0.5rem; /* Increased padding for better touch targets */
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.8rem;
-  transition: all 0.3s ease;
-  border-radius: 10px;
+  font-size: 0.75rem; /* Slightly smaller for mobile */
+  transition: all 0.2s ease; /* Faster transition for mobile */
+  border-radius: 12px;
   min-width: 60px;
+  min-height: 44px; /* Accessibility: Minimum touch target */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mobile more button touch feedback */
+.mobile-more-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 12px;
+}
+
+.mobile-more-btn:active::before {
+  opacity: 1;
 }
 
 .mobile-more-btn:hover {
   background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .mobile-more-btn.active {
   background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .mobile-more-btn .hamburger {
@@ -410,14 +490,26 @@
   bottom: 100%;
   right: 0;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
-  padding: 0.5rem;
+  padding: 0.75rem;
   min-width: 200px;
   z-index: 1001;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   max-height: 300px;
   overflow-y: auto;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-more-dropdown button {

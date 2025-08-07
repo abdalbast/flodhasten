@@ -27,19 +27,19 @@ function LessonCircles({ skills, progress, onSelectSkill, isDarkMode }) {
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'stretch',
-        gap: '2rem',
+        gap: 'clamp(1rem, 4vw, 2rem)', // Responsive gap
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '1rem'
+        padding: 'clamp(0.5rem, 2vw, 1rem)' // Responsive padding
       }}>
         {skills.map((skill, index) => {
           const { isUnlocked, isCompleted, progressValue, isInProgress } = getLessonStatus(skill.id);
           
           return (
             <div key={skill.id} style={{
-              flex: '0 1 300px',
-              minWidth: '250px',
-              maxWidth: '350px',
+              flex: '0 1 clamp(250px, 30vw, 350px)', // Responsive sizing
+              minWidth: 'clamp(200px, 25vw, 250px)',
+              maxWidth: 'clamp(280px, 35vw, 350px)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'stretch'
