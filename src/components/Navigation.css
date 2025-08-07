@@ -49,6 +49,19 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Accessibility: Focus states for keyboard navigation */
+.nav-buttons button:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-buttons button:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .nav-buttons button.active {
   background: #e74c3c;
   color: white;
@@ -85,6 +98,18 @@
   transform: scale(1.1);
 }
 
+/* Accessibility: Focus states for language button */
+.lang-btn:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.lang-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .lang-btn.active {
   background: #e74c3c;
   color: white;
@@ -115,10 +140,22 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  min-height: 44px; /* Accessibility: Minimum touch target size */
 }
 
 .settings-dropdown button:hover {
   background: #f8f9fa;
+}
+
+/* Accessibility: Focus states for dropdown buttons */
+.settings-dropdown button:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: #f8f9fa;
+}
+
+.settings-dropdown button:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .settings-dropdown button.active {
@@ -148,6 +185,18 @@
 .hamburger-btn:hover {
   background: rgba(255, 255, 255, 1);
   transform: scale(1.1);
+}
+
+/* Accessibility: Focus states for hamburger button */
+.hamburger-btn:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.hamburger-btn:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .hamburger-btn.open {
@@ -231,6 +280,17 @@
   background: #f8f9fa;
 }
 
+/* Accessibility: Focus states for more dropdown buttons */
+.more-dropdown button:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: #f8f9fa;
+}
+
+.more-dropdown button:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .more-dropdown button.active {
   background: #e3f2fd;
   color: #1976d2;
@@ -279,6 +339,17 @@
 
 .mobile-nav button:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Accessibility: Focus states for mobile navigation */
+.mobile-nav button:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav button:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .mobile-nav button.active {

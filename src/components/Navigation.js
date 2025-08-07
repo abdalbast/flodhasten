@@ -99,6 +99,9 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                 key={screen}
                 className={currentScreen === screen ? 'active' : ''}
                 onClick={() => handleNavigationClick(screen)}
+                aria-label={`Navigate to ${label}`}
+                aria-current={currentScreen === screen ? 'page' : undefined}
+                type="button"
               >
                 {icon} {label}
               </button>
@@ -123,7 +126,11 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
               </button>
               {showSettingsDropdown && (
                 <div className="settings-dropdown">
-                  <button onClick={handleDarkModeToggle}>
+                  <button 
+                    onClick={handleDarkModeToggle}
+                    aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+                    type="button"
+                  >
                     {isDarkMode ? <MdLightMode /> : <MdDarkMode />} 
                     {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                   </button>
@@ -132,8 +139,11 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                       key={code}
                       onClick={() => handleLanguageChange(code)}
                       className={currentLanguage === code ? 'active' : ''}
+                      aria-label={`Switch to ${name}`}
+                      aria-pressed={currentLanguage === code}
+                      type="button"
                     >
-                      <img src={flag} alt={name} style={{ width: '16px', height: '12px', marginRight: '8px' }} />
+                      <img src={flag} alt="" style={{ width: '16px', height: '12px', marginRight: '8px' }} />
                       {name}
                     </button>
                   ))}
@@ -147,6 +157,9 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                 className={`hamburger-btn${showMoreDropdown ? ' open' : ''}`}
                 onClick={() => setShowMoreDropdown(!showMoreDropdown)}
                 aria-label="More options"
+                aria-expanded={showMoreDropdown}
+                aria-haspopup="true"
+                type="button"
               >
                 <div className="hamburger">
                   <span className="bar"></span>
@@ -161,6 +174,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                       key={screen}
                       className={currentScreen === screen ? 'active' : ''}
                       onClick={() => handleNavigationClick(screen)}
+                      aria-label={`Navigate to ${label}`}
+                      type="button"
                     >
                       {icon} {label}
                     </button>
@@ -180,6 +195,9 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
               key={screen}
               className={currentScreen === screen ? 'active' : ''}
               onClick={() => handleNavigationClick(screen)}
+              aria-label={`Navigate to ${label}`}
+              aria-current={currentScreen === screen ? 'page' : undefined}
+              type="button"
             >
               {icon}
               <span>{label}</span>
@@ -191,6 +209,10 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
             <button
               className={`mobile-more-btn${showMoreDropdown ? ' active' : ''}`}
               onClick={() => setShowMoreDropdown(!showMoreDropdown)}
+              aria-label="More options"
+              aria-expanded={showMoreDropdown}
+              aria-haspopup="true"
+              type="button"
             >
               <div className="hamburger">
                 <span className="bar"></span>
@@ -205,6 +227,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                     key={screen}
                     className={currentScreen === screen ? 'active' : ''}
                     onClick={() => handleNavigationClick(screen)}
+                    aria-label={`Navigate to ${label}`}
+                    type="button"
                   >
                     {icon} {label}
                   </button>
