@@ -6,7 +6,7 @@ import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import ttsApi from '../utils/ttsApi';
 import LessonCircles from './LessonCircles';
 import { MdVolumeUp } from 'react-icons/md';
-import TiltedCardDemo from './TiltedCardDemo';
+
 import './Home.css';
 
 // Home screen with welcome, app description, and progress tracker
@@ -444,10 +444,7 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
         </div>
       </div>
 
-      {/* TiltedCard Demo */}
-      <div style={{ marginTop: '3rem' }}>
-        <TiltedCardDemo />
-      </div>
+
     </div>
   );
 });
