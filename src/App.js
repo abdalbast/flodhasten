@@ -8,6 +8,7 @@ import ToastContainer from './components/ToastContainer';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
+import { sampleLessons, getLessonById as getSampleLessonById } from './data/sampleLessons';
 
 // Lazy load components for code splitting
 const WordList = React.lazy(() => import('./components/WordList'));
@@ -939,12 +940,11 @@ function App() {
   // Add lesson handlers after the existing handlers
   const handleStartLesson = useCallback((lessonId) => {
     try {
-      const lesson = getLessonById(lessonId);
-      if (lesson && lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
+      // Prefer enhanced sample lessons when available
+      const lesson = getSampleLessonById(lessonId) || getLessonById(lessonId);
+      if (lesson && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
         setCurrentLesson(lesson);
         setShowLesson(true);
-        
-        // Show info message
         if (window.showToast) {
           window.showToast.info(`Starting lesson: ${lesson.name}`, 3000);
         }
@@ -1038,7 +1038,30 @@ function App() {
       userData={userData}
       currentLanguage={currentLanguage}
       onStartLesson={() => {
-        // Show dialogue first, then proceed to games
+        // Start enhanced lesson content for the selected skill
+        if (selectedSkill) {
+          const enhancedId = selectedSkill.id.replace('lesson', '');
+          const mapping = {
+            '1': 'basics-1',
+            '2': 'family-1',
+            '3': 'food-1',
+            '4': 'family-1',
+            '5': 'numbers-1',
+            '6': 'food-1',
+            '7': 'colours-1'
+          };
+          const targetId = mapping[enhancedId] || 'basics-1';
+          const lesson = getSampleLessonById(targetId);
+          if (lesson) {
+            setCurrentLesson(lesson);
+            setShowLesson(true);
+            if (window.showToast) {
+              window.showToast.info(`Starting lesson: ${lesson.name}`, 3000);
+            }
+            return;
+          }
+        }
+        // Fallback to original flow if no enhanced lesson
         if (selectedSkill) {
           setLessonWords(selectedSkill.words);
           setShowDialogue(true);

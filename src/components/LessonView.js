@@ -109,14 +109,20 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       if (currentExercise?.type === 'image_choice') {
         if (lesson?.allOptions && currentExercise.getOptions) {
           try {
-            const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
-            currentExercise.shuffledOptions = shuffledOptions;
+            const newShuffled = currentExercise.getOptions(lesson.allOptions);
+            setShuffledOptions(newShuffled);
           } catch (error) {
             console.error('Error generating shuffled options:', error);
             if (currentExercise.options) {
-              currentExercise.shuffledOptions = [...currentExercise.options].sort(() => Math.random() - 0.5);
+              setShuffledOptions([...currentExercise.options].sort(() => Math.random() - 0.5));
+            } else {
+              setShuffledOptions([]);
             }
           }
+        } else if (currentExercise.options) {
+          setShuffledOptions([...currentExercise.options].sort(() => Math.random() - 0.5));
+        } else {
+          setShuffledOptions([]);
         }
       }
 
@@ -181,7 +187,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
           if (currentExerciseIndex < lesson.exercises.length - 1) {
             setCurrentExerciseIndex(prev => prev + 1);
           } else {
-            onComplete(score, streak);
+            onComplete(score + 1, lesson.exercises.length, lives);
           }
         }, 2000);
       } else {
