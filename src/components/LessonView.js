@@ -239,7 +239,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             {/* Image options grid */}
             <div className="image-options-grid">
-              {(currentExercise.shuffledOptions || currentExercise.options || currentExercise.allOptions || []).map((option, index) => (
+              {(shuffledOptions.length ? shuffledOptions : (currentExercise.options || (lesson?.allOptions && currentExercise.getOptions ? currentExercise.getOptions(lesson.allOptions) : []))).map((option, index) => (
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
@@ -258,25 +258,27 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
               ))}
             </div>
             
-            <button 
-              className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''}`}
-              onClick={showFeedback && !isCorrect ? handleTryAgain : handleAnswerSubmit}
-              disabled={!selectedOption && !showFeedback}
-            >
-              {showFeedback && isCorrect ? (
-                <>
-                  <MdCheck className="button-icon" />
-                  CORRECT!
-                </>
-              ) : showFeedback && !isCorrect ? (
-                <>
-                  <MdError className="button-icon" />
-                  TRY AGAIN!
-                </>
-              ) : (
-                'CONTINUE'
-              )}
-            </button>
+            <div className="continue-footer">
+              <button 
+                className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''}`}
+                onClick={showFeedback && !isCorrect ? handleTryAgain : handleAnswerSubmit}
+                disabled={!selectedOption && !showFeedback}
+              >
+                {showFeedback && isCorrect ? (
+                  <>
+                    <MdCheck className="button-icon" />
+                    CORRECT!
+                  </>
+                ) : showFeedback && !isCorrect ? (
+                  <>
+                    <MdError className="button-icon" />
+                    TRY AGAIN!
+                  </>
+                ) : (
+                  'CONTINUE'
+                )}
+              </button>
+            </div>
           </div>
         );
 
