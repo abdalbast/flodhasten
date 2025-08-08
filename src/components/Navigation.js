@@ -97,7 +97,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
             {primaryNavItems.map(({ screen, icon, label }) => (
               <button
                 key={screen}
-                className={currentScreen === screen ? 'active' : ''}
+                className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
                 onClick={() => handleNavigationClick(screen)}
                 aria-label={`Navigate to ${label}`}
                 aria-current={currentScreen === screen ? 'page' : undefined}
@@ -113,7 +113,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
             {/* Language selector */}
             <div className="settings-container" ref={settingsDropdownRef}>
               <button
-                className={`lang-btn${showSettingsDropdown ? ' active' : ''}`}
+                className={`lang-btn${showSettingsDropdown ? ' active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
                 onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
                 aria-label="Select language"
                 type="button"
@@ -127,6 +127,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
               {showSettingsDropdown && (
                 <div className="settings-dropdown">
                   <button 
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md"
                     onClick={handleDarkModeToggle}
                     aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
                     type="button"
@@ -138,7 +139,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                     <button
                       key={code}
                       onClick={() => handleLanguageChange(code)}
-                      className={currentLanguage === code ? 'active' : ''}
+                      className={`${currentLanguage === code ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
                       aria-label={`Switch to ${name}`}
                       aria-pressed={currentLanguage === code}
                       type="button"
@@ -154,7 +155,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
             {/* Hamburger menu */}
             <div className="more-dropdown-container" ref={desktopMoreDropdownRef}>
               <button
-                className={`hamburger-btn${showMoreDropdown ? ' open' : ''}`}
+                className={`hamburger-btn${showMoreDropdown ? ' open' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
                 onClick={() => setShowMoreDropdown(!showMoreDropdown)}
                 aria-label="More options"
                 aria-expanded={showMoreDropdown}
@@ -172,7 +173,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                   {dropdownItems.map(({ screen, icon, label }) => (
                     <button
                       key={screen}
-                      className={currentScreen === screen ? 'active' : ''}
+                      className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
                       onClick={() => handleNavigationClick(screen)}
                       aria-label={`Navigate to ${label}`}
                       type="button"
@@ -193,7 +194,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
           {primaryNavItems.map(({ screen, icon, label }) => (
             <button
               key={screen}
-              className={currentScreen === screen ? 'active' : ''}
+              className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
               onClick={() => handleNavigationClick(screen)}
               aria-label={`Navigate to ${label}`}
               aria-current={currentScreen === screen ? 'page' : undefined}
@@ -207,7 +208,7 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
           {/* Mobile More button */}
           <div className="mobile-more-container" ref={mobileMoreDropdownRef}>
             <button
-              className={`mobile-more-btn${showMoreDropdown ? ' active' : ''}`}
+              className={`mobile-more-btn${showMoreDropdown ? ' active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
               onClick={() => setShowMoreDropdown(!showMoreDropdown)}
               aria-label="More options"
               aria-expanded={showMoreDropdown}
