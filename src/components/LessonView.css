@@ -56,17 +56,36 @@
 }
 
 .progress-bar {
-  width: 200px;
-  height: 8px;
+  width: 260px;
+  height: 12px;
   background: #2E2F38;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
+  position: relative;
 }
 
 .progress-fill {
   height: 100%;
-  background: #B2F35D;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #88FF4D, #B2F35D);
+  transition: width 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* subtle shine animation */
+.progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shine 2.2s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% { left: -40%; }
+  60% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .lesson-stats {
@@ -469,17 +488,49 @@
 }
 
 .image-container {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100px;
   height: 100px;
   margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.option-svg {
+  width: 90px;
+  height: 90px;
 }
 
 .option-image {
   font-size: 4rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Ripple effect */
+.image-option {
+  position: relative;
+  overflow: hidden;
+}
+.image-option::after {
+  content: "";
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: var(--ripple-y, -100%);
+  left: var(--ripple-x, -100%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  pointer-events: none;
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.6s ease;
+  opacity: 0;
+}
+.image-option.rippling::after {
+  opacity: 1;
+  width: 220px;
+  height: 220px;
 }
 
 .option-label {

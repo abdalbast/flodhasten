@@ -39,14 +39,10 @@ export const LESSONS = [
     ],
     // All available options for shuffling
     allOptions: [
-      { id: 'water', label: 'water', image: '💧', iconColor: '#51D0FF' },
-      { id: 'milk', label: 'milk', image: '🥛', iconColor: '#A3E5FF' },
-      { id: 'coffee', label: 'coffee', image: '☕', iconColor: '#8C6239' },
-      { id: 'bread', label: 'bread', image: '🍞', iconColor: '#FFA133' },
-      { id: 'apple', label: 'apple', image: '🍎', iconColor: '#FF6B6B' },
-      { id: 'cheese', label: 'cheese', image: '🧀', iconColor: '#FFD93D' },
-      { id: 'fish', label: 'fish', image: '🐟', iconColor: '#4ECDC4' },
-      { id: 'meat', label: 'meat', image: '🥩', iconColor: '#FF8A80' }
+      { id: 'water', label: 'water', image: '/icons/water.svg' },
+      { id: 'milk', label: 'milk', image: '/icons/milk.svg' },
+      { id: 'coffee', label: 'coffee', image: '/icons/coffee.svg' },
+      { id: 'bread', label: 'bread', image: '/icons/bread.svg' }
     ],
     exercises: [
       {

@@ -243,15 +243,25 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
-                  onClick={() => handleOptionSelect(option.id)}
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    e.currentTarget.style.setProperty('--ripple-x', `${x}px`);
+                    e.currentTarget.style.setProperty('--ripple-y', `${y}px`);
+                    e.currentTarget.classList.add('rippling');
+                    setTimeout(() => e.currentTarget.classList.remove('rippling'), 450);
+                    handleOptionSelect(option.id);
+                  }}
                 >
                   <div className="image-container">
-                    <span 
-                      className="option-image" 
-                      style={{ color: option.iconColor || '#FFFFFF' }}
-                    >
-                      {option.image || '❓'}
-                    </span>
+                    {option.image && option.image.endsWith('.svg') ? (
+                      <img src={option.image} alt={option.label} className="option-svg" />
+                    ) : (
+                      <span className="option-image" style={{ color: option.iconColor || '#FFFFFF' }}>
+                        {option.image || '❓'}
+                      </span>
+                    )}
                   </div>
                   <div className="option-label">{option.label || 'Unknown'}</div>
                 </button>

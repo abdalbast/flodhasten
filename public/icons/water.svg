@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="water">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6EE7FF"/>
+      <stop offset="100%" stop-color="#22B8FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="16" fill="#0E1117"/>
+  <path d="M48 10c10 18 22 28 22 40a22 22 0 1 1-44 0c0-12 12-22 22-40z" fill="url(#g)" stroke="#51D0FF" stroke-width="2"/>
+</svg>
