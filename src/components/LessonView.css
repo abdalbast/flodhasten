@@ -8,7 +8,7 @@
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* restore original */
   color: white;
 }
 
@@ -128,7 +128,9 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
+  scroll-padding-bottom: 120px;
 }
 
 .exercise-container {
@@ -334,16 +336,23 @@
 
 /* Duolingo-style exercise components */
 .new-word-indicator {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 0.5rem;
-  color: #C48BFF;
-  padding: 0.5rem 0;
-  margin-bottom: 1rem;
-  font-size: 16px;
-  font-weight: bold;
+  gap: 8px;
+  color: #B8B8B8;
+  margin: 8px 0 12px;
+  padding: 6px 10px;
+  background: #1F2A36;
+  border: 1px solid #2E2F38;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
 }
+.new-word-indicator .dot{
+  width: 8px; height: 8px; border-radius:50%; background:#C48BFF; box-shadow:0 0 0 6px rgba(196,139,255,.15);
+}
+.new-word-indicator .label{ color:#E5E7EB; text-transform: uppercase; }
 
 .star-icon {
   font-size: 1.2rem;
@@ -377,10 +386,11 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(35,191,255,.25);
 }
+.speaker-icon { width: 26px; height: 26px; display:block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
 
 .pronunciation-button:hover {
   background: #1a9fdf;
@@ -394,11 +404,20 @@
 .swedish-word {
   color: #C48BFF;
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 800;
   margin: 0;
   text-align: center;
   text-decoration: underline;
   text-decoration-style: dotted;
+  text-underline-offset: 6px;
+}
+.swedish-word.interactive{
+  position: relative;
+  cursor: help;
+  transition: text-shadow .2s ease;
+}
+.swedish-word.interactive:hover{
+  text-shadow: none;
 }
 
 .english-hint {
@@ -456,8 +475,14 @@
 }
 
 .image-option.selected {
-  background: #23BFFF;
-  border-color: #23BFFF;
+  /* Ring + glow (keep surface, emphasise selection) */
+  background: #1F2A36;
+  border-color: #F8D94E;
+  box-shadow: 0 0 0 2px #F8D94E, 0 0 22px rgba(248,217,78,.35);
+}
+.image-option.selected .option-svg {
+  /* ensure icon remains visible on selection */
+  filter: brightness(0) invert(1) saturate(0) contrast(1.1);
 }
 
 /* Pressed / depth shadow for tactile feel */
@@ -508,6 +533,12 @@
 .option-svg {
   width: 90px;
   height: 90px;
+  display: block;
+}
+
+/* Fallback broken-image hide */
+.option-svg:where([src=""], [src="null"], [src="undefined"]) {
+  display: none;
 }
 
 .option-image {
@@ -579,6 +610,8 @@
 .continue-button.enabled:hover {
   background: #1a9fdf;
 }
+
+/* effect demo styles removed */
 
 /* Fixed footer like Duolingo */
 .continue-footer {

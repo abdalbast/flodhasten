@@ -4,7 +4,7 @@ export const LESSONS = [
     id: 'lesson1',
     name: 'Basics 1',
     description: 'Learn your first Swedish words',
-    iconSet: 'phosphor',
+    iconSet: 'sketch',
     difficulty: 'beginner',
     xpReward: 10,
     requiredLevel: 1,

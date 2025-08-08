@@ -17,8 +17,20 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [shuffledOptions, setShuffledOptions] = useState([]); // State for shuffled options
   const [showGameOver, setShowGameOver] = useState(false); // Game over modal state
 
+
   // Get current exercise safely - handle null/undefined cases
   const currentExercise = lesson?.exercises?.[currentExerciseIndex] || null;
+
+  // Demo icon source (coffee)
+  const demoCoffeeSrc = (() => {
+    const setName = lesson?.iconSet || 'sketch';
+    const id = 'coffee';
+    try {
+      return setName === 'phosphor' ? getIconSrc(setName, id) : getIconPath(setName, id);
+    } catch (e) {
+      return getIconSrc('duotone', id);
+    }
+  })();
 
   // Play pronunciation
   const playPronunciation = async (word) => {
@@ -80,6 +92,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       console.error('Error in lesson initialization:', error);
     }
   }, [currentExercise, lesson]);
+
+  // Keyboard shortcuts moved below action handlers to avoid TDZ issues
 
   const handleAnswerSubmit = useCallback(() => {
     try {
@@ -158,6 +172,52 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     ));
   }, []);
 
+  // Keyboard shortcuts: 1-4 to select options, Enter to submit/continue, Esc to exit
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!currentExercise || showGameOver) return;
+
+      const getOptions = () => {
+        if (currentExercise.type === 'image_choice') {
+          if (shuffledOptions && shuffledOptions.length) return shuffledOptions;
+          if (currentExercise.options) return currentExercise.options;
+          if (lesson?.allOptions && currentExercise.getOptions) {
+            try { return currentExercise.getOptions(lesson.allOptions); } catch { return []; }
+          }
+        }
+        return [];
+      };
+
+      if (currentExercise.type === 'image_choice') {
+        const opts = getOptions();
+        const idx = ['1','2','3','4'].indexOf(e.key);
+        if (idx !== -1 && opts[idx]) {
+          e.preventDefault();
+          setSelectedOption(opts[idx].id);
+          return;
+        }
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (showFeedback && !isCorrect) {
+          handleTryAgain();
+        } else {
+          handleAnswerSubmit();
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onExit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentExercise, shuffledOptions, showFeedback, isCorrect, lesson, onExit, showGameOver, handleAnswerSubmit, handleTryAgain]);
+
   // Safety check for lesson and exercises - AFTER all hooks
   if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
     return (
@@ -208,30 +268,40 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         return (
           <div className="exercise-container">
             {/* NEW WORD indicator */}
-            <div className="new-word-indicator">
-              <span>🟣</span>
-              <span>NEW WORD</span>
+            <div className="new-word-indicator" role="status" aria-label="New word introduced">
+              {/* Tailwind-only inline tone (no layout change) */}
+              <span className="dot" aria-hidden="true"></span>
+              <span className="label">New word</span>
             </div>
             
             {/* Instruction */}
-            <h3 className="instruction">{currentExercise.instruction}</h3>
+            <h3 className="instruction font-semibold text-white/90">{currentExercise.instruction}</h3>
             
             {/* Swedish word with pronunciation */}
             <div className="word-section">
               <button 
                 className="pronunciation-button"
                 onClick={() => playPronunciation(currentExercise.swedishWord)}
-                onMouseEnter={() => setShowHint(true)}
-                onMouseLeave={() => setShowHint(false)}
-                onTouchStart={() => setShowHint(true)}
-                onTouchEnd={() => setShowHint(false)}
+                aria-label={`Play pronunciation of ${currentExercise.swedishWord}`}
               >
-                <MdVolumeUp />
+                {/* speaker icon from registry with fallback */}
+                {(() => {
+                  // Force reliable inline icon independent of set
+                  const src = getIconSrc('duotone', 'speaker');
+                  return <img src={src} alt="speaker" className="speaker-icon" />;
+                })()}
               </button>
               <div className="word-container">
-                <h2 className="swedish-word">{currentExercise.swedishWord}</h2>
+                <h2 
+                  className="swedish-word interactive underline decoration-[#C48BFF] underline-offset-4 font-semibold"
+                  onMouseEnter={() => setShowHint(true)}
+                  onMouseLeave={() => setShowHint(false)}
+                  onClick={() => setShowHint((v)=>!v)}
+                >
+                  {currentExercise.swedishWord}
+                </h2>
                 {showHint && (
-                  <div className="english-hint">
+                  <div className="english-hint text-white/85">
                     {currentExercise.englishHint}
                   </div>
                 )}
@@ -243,20 +313,24 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
               {(shuffledOptions.length ? shuffledOptions : (currentExercise.options || (lesson?.allOptions && currentExercise.getOptions ? currentExercise.getOptions(lesson.allOptions) : []))).map((option, index) => (
                 <button
                   key={index}
-                  className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
-                  onMouseDown={(e) => e.currentTarget.classList.add('pressing')}
-                  onMouseUp={(e) => e.currentTarget.classList.remove('pressing')}
-                  onMouseLeave={(e) => e.currentTarget.classList.remove('pressing')}
-                  onTouchStart={(e) => e.currentTarget.classList.add('pressing')}
-                  onTouchEnd={(e) => e.currentTarget.classList.remove('pressing')}
+                  className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8D94E] rounded-lg`}
+                  onMouseDown={(e) => e.currentTarget && e.currentTarget.classList.add('pressing')}
+                  onMouseUp={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
+                  onMouseLeave={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
+                  onTouchStart={(e) => e.currentTarget && e.currentTarget.classList.add('pressing')}
+                  onTouchEnd={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
                   onClick={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    e.currentTarget.style.setProperty('--ripple-x', `${x}px`);
-                    e.currentTarget.style.setProperty('--ripple-y', `${y}px`);
-                    e.currentTarget.classList.add('rippling');
-                    setTimeout(() => e.currentTarget.classList.remove('rippling'), 450);
+                    const el = e.currentTarget; // capture before async
+                    if (!el) return;
+                    const rect = el.getBoundingClientRect();
+                    const x = (e.clientX || 0) - rect.left;
+                    const y = (e.clientY || 0) - rect.top;
+                    el.style.setProperty('--ripple-x', `${x}px`);
+                    el.style.setProperty('--ripple-y', `${y}px`);
+                    el.classList.add('rippling');
+                    setTimeout(() => {
+                      if (el && el.classList) el.classList.remove('rippling');
+                    }, 450);
                     handleOptionSelect(option.id);
                   }}
                 >
@@ -267,11 +341,15 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       const iconId = option.id;
                       let src = option.image;
                       if (!hasImage) {
-                        // Use built-in data URI set for reliability
-                        src = getIconSrc(lesson?.iconSet || 'duotone', iconId);
+                        const setName = lesson?.iconSet || 'duotone';
+                        if (setName === 'phosphor') {
+                          src = getIconSrc(setName, iconId);
+                        } else {
+                          src = getIconPath(setName, iconId);
+                        }
                       }
                       return (
-                        <img src={src} alt={option.label} className="option-svg" referrerPolicy="no-referrer" loading="eager" onError={(e)=>{e.currentTarget.style.display='none';}} />
+                        <img src={src} alt={option.label} className="option-svg" referrerPolicy="no-referrer" loading="eager" onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} />
                       );
                     })()}
                   </div>
@@ -282,7 +360,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             <div className="continue-footer">
               <button 
-                className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''}`}
+                className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-pill`}
                 onClick={showFeedback && !isCorrect ? handleTryAgain : handleAnswerSubmit}
                 disabled={!selectedOption && !showFeedback}
               >
@@ -374,12 +452,12 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   return (
     <div className={`lesson-view ${isDarkMode ? 'dark' : 'light'}`}>
       <div className="lesson-header">
-        <button className="exit-button" onClick={onExit}>
+        <button className="exit-button focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full" onClick={onExit}>
           <MdClose />
         </button>
         <div className="lesson-info">
-          <h2>{lesson.name}</h2>
-          <p>{lesson.description}</p>
+          <h2 className="font-bold text-[1.4rem] text-white">{lesson.name}</h2>
+          <p className="text-[0.85rem] text-white/70">{lesson.description}</p>
         </div>
         <div className="lesson-progress">
           <div className="progress-bar">
