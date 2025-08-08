@@ -4,6 +4,7 @@ import Home from './components/Home';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import AchievementNotification from './components/AchievementNotification';
+import ToastContainer from './components/ToastContainer';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
@@ -757,26 +758,50 @@ function App() {
 
   // Reset progress - memoized
   const resetProgress = useCallback(() => {
-    setSkillProgress({});
-    setProgress({ gamesPlayed: 0, streak: 1 });
-    setUserData(prev => ({
-      ...prev,
-      xp: 0,
-      level: 1
-    }));
+    try {
+      setSkillProgress({});
+      setProgress({ gamesPlayed: 0, streak: 1 });
+      setUserData(prev => ({
+        ...prev,
+        xp: 0,
+        level: 1
+      }));
+      
+      // Show confirmation message
+      if (window.showToast) {
+        window.showToast.success('Progress reset successfully! Start fresh with your learning journey.', 5000);
+      }
+    } catch (error) {
+      console.error('Error resetting progress:', error);
+      if (window.showToast) {
+        window.showToast.error('Failed to reset progress. Please try again.', 5000);
+      }
+    }
   }, []);
 
 
 
   // Handle adding a word - memoized
   const handleAdd = useCallback((word) => {
-    setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
-    
-    // Track custom word addition for achievements and challenges
-    const previousStats = userStats;
-    const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
-    updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
-    checkAndUnlockAchievements(previousStats, newStats);
+    try {
+      setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
+      
+      // Track custom word addition for achievements and challenges
+      const previousStats = userStats;
+      const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
+      updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
+      checkAndUnlockAchievements(previousStats, newStats);
+      
+      // Show success message
+      if (window.showToast) {
+        window.showToast.success(`Added "${word.swedish}" to your word list!`, 3000);
+      }
+    } catch (error) {
+      console.error('Error adding word:', error);
+      if (window.showToast) {
+        window.showToast.error('Failed to add word. Please try again.', 5000);
+      }
+    }
   }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
 
@@ -802,7 +827,24 @@ function App() {
 
   // Handle deleting a word - memoized
   const handleDelete = useCallback((idx) => {
-    setCustomWords(prev => prev.filter((_, i) => i !== idx));
+    try {
+      setCustomWords(prev => {
+        const wordToDelete = prev[idx];
+        const newWords = prev.filter((_, i) => i !== idx);
+        
+        // Show confirmation message
+        if (window.showToast && wordToDelete) {
+          window.showToast.info(`Removed "${wordToDelete.swedish}" from your word list.`, 3000);
+        }
+        
+        return newWords;
+      });
+    } catch (error) {
+      console.error('Error deleting word:', error);
+      if (window.showToast) {
+        window.showToast.error('Failed to delete word. Please try again.', 5000);
+      }
+    }
   }, []);
 
   // Handle editing a word - memoized
@@ -901,13 +943,22 @@ function App() {
       if (lesson && lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
         setCurrentLesson(lesson);
         setShowLesson(true);
+        
+        // Show info message
+        if (window.showToast) {
+          window.showToast.info(`Starting lesson: ${lesson.name}`, 3000);
+        }
       } else {
         console.error('Invalid lesson data:', lesson);
-        alert('Lesson data is invalid. Please try again.');
+        if (window.showToast) {
+          window.showToast.error('Lesson data is invalid. Please try again.', 5000);
+        }
       }
     } catch (error) {
       console.error('Error starting lesson:', error);
-      alert('Failed to start lesson. Please try again.');
+      if (window.showToast) {
+        window.showToast.error('Failed to start lesson. Please try again.', 5000);
+      }
     }
   }, []);
 
@@ -930,13 +981,29 @@ function App() {
           xp: prev.xp + xpGained
         }));
         
+        // Show success message
+        if (window.showToast) {
+          const message = score === total 
+            ? `Perfect! You completed the lesson with 100% accuracy! +${xpGained} XP`
+            : `Great job! You completed the lesson with ${progress}% accuracy! +${xpGained} XP`;
+          window.showToast.success(message, 5000);
+        }
+        
         // Show achievement notification if perfect score
         if (score === total) {
           // Trigger perfect score achievement
         }
+      } else {
+        // Show failure message
+        if (window.showToast) {
+          window.showToast.warning('You ran out of lives! Try again to improve your score.', 5000);
+        }
       }
     } catch (error) {
       console.error('Error completing lesson:', error);
+      if (window.showToast) {
+        window.showToast.error('Failed to save lesson progress. Please try again.', 5000);
+      }
     } finally {
       setShowLesson(false);
       setCurrentLesson(null);
@@ -1159,6 +1226,9 @@ function App() {
             />
           </ErrorBoundary>
         )}
+        
+        {/* Toast Container for User Feedback */}
+        <ToastContainer isDarkMode={isDarkMode} />
       </div>
     </ErrorBoundary>
   );
