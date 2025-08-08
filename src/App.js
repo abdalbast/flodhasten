@@ -1241,12 +1241,14 @@ function App() {
         {/* Lesson View */}
         {showLesson && currentLesson && (
           <ErrorBoundary>
-            <LessonView
-              lesson={currentLesson}
-              onComplete={handleLessonComplete}
-              onExit={handleLessonExit}
-              isDarkMode={isDarkMode}
-            />
+            <Suspense fallback={<LoadingSpinner message="Loading Lesson..." isDarkMode={isDarkMode} />}>
+              <LessonView
+                lesson={currentLesson}
+                onComplete={handleLessonComplete}
+                onExit={handleLessonExit}
+                isDarkMode={isDarkMode}
+              />
+            </Suspense>
           </ErrorBoundary>
         )}
         
