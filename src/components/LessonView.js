@@ -114,7 +114,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             // Lesson complete
             onComplete(score + 1, lesson?.exercises?.length || 1, lives);
           }
-        }, 2000); // Longer delay for correct answers to show animation
+        }, 900); // micro-delay for readability
       } else {
         const newLives = lives - 1;
         setLives(newLives);
@@ -243,6 +243,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
+                  onMouseDown={(e) => e.currentTarget.classList.add('pressing')}
+                  onMouseUp={(e) => e.currentTarget.classList.remove('pressing')}
+                  onMouseLeave={(e) => e.currentTarget.classList.remove('pressing')}
+                  onTouchStart={(e) => e.currentTarget.classList.add('pressing')}
+                  onTouchEnd={(e) => e.currentTarget.classList.remove('pressing')}
                   onClick={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = e.clientX - rect.left;
