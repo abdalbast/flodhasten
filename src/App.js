@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, startTransition } from 'react';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -947,8 +947,11 @@ function App() {
       setLoading(true, 'Starting lesson...');
       const lesson = getLessonById(lessonId);
       if (lesson && lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
-        setCurrentLesson(lesson);
-        setShowLesson(true);
+        // Use startTransition to handle the lazy component loading
+        startTransition(() => {
+          setCurrentLesson(lesson);
+          setShowLesson(true);
+        });
         showSuccess('Lesson started! Good luck!');
       } else {
         console.error('Invalid lesson data:', lesson);
@@ -1261,13 +1264,15 @@ function App() {
         
         {/* Lesson View */}
         {showLesson && currentLesson && (
-          <ErrorBoundary>
-            <LessonView
-              lesson={currentLesson}
-              onComplete={handleLessonComplete}
-              onExit={handleLessonExit}
-              isDarkMode={isDarkMode}
-            />
+          <ErrorBoundary isDarkMode={isDarkMode}>
+            <Suspense fallback={<LoadingSpinner message="Loading Lesson..." isDarkMode={isDarkMode} />}>
+              <LessonView
+                lesson={currentLesson}
+                onComplete={handleLessonComplete}
+                onExit={handleLessonExit}
+                isDarkMode={isDarkMode}
+              />
+            </Suspense>
           </ErrorBoundary>
         )}
       </div>

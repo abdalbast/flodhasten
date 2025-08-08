@@ -13,11 +13,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [showHint, setShowHint] = useState(false);
-  const [shuffledOptions, setShuffledOptions] = useState([]); // State for stable shuffled options
+  const [shuffledOptions, setShuffledOptions] = useState([]); // State for shuffled options
   const [showGameOver, setShowGameOver] = useState(false); // Game over modal state
 
-  // Get current exercise safely
-  const currentExercise = lesson?.exercises?.[currentExerciseIndex];
+  // Get current exercise safely - handle null/undefined cases
+  const currentExercise = lesson?.exercises?.[currentExerciseIndex] || null;
 
   // Play pronunciation
   const playPronunciation = async (word) => {
@@ -43,7 +43,12 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   // Initialize matching game and shuffle options
   useEffect(() => {
     try {
-      if (currentExercise?.type === 'match' && currentExercise.pairs) {
+      if (!currentExercise) {
+        console.warn('No current exercise available');
+        return;
+      }
+
+      if (currentExercise.type === 'match' && currentExercise.pairs) {
         const shuffledPairs = [...currentExercise.pairs].sort(() => Math.random() - 0.5);
         setMatchedPairs(shuffledPairs.map((pair, index) => ({
           ...pair,
@@ -53,19 +58,19 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
       }
       
       // Generate shuffled options for image choice exercises
-      if (currentExercise?.type === 'image_choice') {
+      if (currentExercise.type === 'image_choice') {
         // Get the lesson to access allOptions
         if (lesson?.allOptions && currentExercise.getOptions) {
           try {
             // Generate new shuffled options using the getOptions function
-            const shuffledOptions = currentExercise.getOptions(lesson.allOptions);
-            // Store shuffled options in the exercise object
-            currentExercise.shuffledOptions = shuffledOptions;
+            const newShuffledOptions = currentExercise.getOptions(lesson.allOptions);
+            // Store shuffled options in state to keep them stable during the exercise
+            setShuffledOptions(newShuffledOptions);
           } catch (error) {
             console.error('Error generating shuffled options:', error);
             // Fallback to default options if available
             if (currentExercise.options) {
-              currentExercise.shuffledOptions = [...currentExercise.options].sort(() => Math.random() - 0.5);
+              setShuffledOptions([...currentExercise.options].sort(() => Math.random() - 0.5));
             }
           }
         }
@@ -152,43 +157,6 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     ));
   }, []);
 
-  // Remove unused handleHintToggle function
-
-  // Initialize matching game and shuffle options - only when exercise index changes
-  useEffect(() => {
-    try {
-      if (currentExercise?.type === 'match' && currentExercise.pairs) {
-        const shuffledPairs = [...currentExercise.pairs].sort(() => Math.random() - 0.5);
-        setMatchedPairs(shuffledPairs.map((pair, index) => ({
-          ...pair,
-          id: index,
-          matched: false
-        })));
-      }
-      
-      // Generate shuffled options for image choice exercises - only when moving to new exercise
-      if (currentExercise?.type === 'image_choice') {
-        // Get the lesson to access allOptions
-        if (lesson?.allOptions && currentExercise.getOptions) {
-          try {
-            // Generate new shuffled options using the getOptions function
-            const newShuffledOptions = currentExercise.getOptions(lesson.allOptions);
-            // Store shuffled options in state to keep them stable during the exercise
-            setShuffledOptions(newShuffledOptions);
-          } catch (error) {
-            console.error('Error generating shuffled options:', error);
-            // Fallback to default options if available
-            if (currentExercise.options) {
-              setShuffledOptions([...currentExercise.options].sort(() => Math.random() - 0.5));
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error in lesson initialization:', error);
-    }
-  }, [currentExerciseIndex, lesson]); // Only depend on exercise index, not currentExercise object
-
   // Safety check for lesson and exercises - AFTER all hooks
   if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
     return (
@@ -271,7 +239,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             
             {/* Image options grid */}
             <div className="image-options-grid">
-              {(shuffledOptions.length > 0 ? shuffledOptions : (currentExercise.options || currentExercise.allOptions || [])).map((option, index) => (
+              {(currentExercise.shuffledOptions || currentExercise.options || currentExercise.allOptions || []).map((option, index) => (
                 <button
                   key={index}
                   className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
