@@ -3,21 +3,78 @@ import React from 'react';
 const LoadingSpinner = ({ 
   message = 'Loading...', 
   isDarkMode = false, 
-  size = 'medium',
-  showProgress = false,
-  progress = 0 
+  type = 'spinner',
+  progress = null 
 }) => {
   const textColor = isDarkMode ? '#f5f5f5' : '#2c3e50';
   const spinnerColor = isDarkMode ? '#3498db' : '#3498db';
   const bgColor = isDarkMode ? '#2d2d2d' : '#f8f9fa';
 
-  const sizeMap = {
-    small: { width: 24, height: 24, borderWidth: 2 },
-    medium: { width: 40, height: 40, borderWidth: 3 },
-    large: { width: 60, height: 60, borderWidth: 4 }
+  const renderSpinner = () => {
+    switch (type) {
+      case 'dots':
+        return (
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            {[0, 1, 2].map(i => (
+              <div
+                key={i}
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  backgroundColor: spinnerColor,
+                  animation: `bounce 1.4s ease-in-out infinite both`,
+                  animationDelay: `${i * 0.16}s`
+                }}
+              />
+            ))}
+          </div>
+        );
+      case 'pulse':
+        return (
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: spinnerColor,
+            animation: 'pulse 1.5s ease-in-out infinite',
+            marginBottom: '1rem'
+          }} />
+        );
+      case 'progress':
+        return (
+          <div style={{
+            width: '200px',
+            height: '8px',
+            backgroundColor: isDarkMode ? '#555' : '#e8f4f8',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            marginBottom: '1rem'
+          }}>
+            <div style={{
+              width: `${progress || 0}%`,
+              height: '100%',
+              backgroundColor: spinnerColor,
+              borderRadius: '4px',
+              transition: 'width 0.3s ease',
+              animation: progress === null ? 'shimmer 2s infinite' : 'none'
+            }} />
+          </div>
+        );
+      default:
+        return (
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: `3px solid ${isDarkMode ? '#555' : '#e8f4f8'}`,
+            borderTop: `3px solid ${spinnerColor}`,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginBottom: '1rem'
+          }} />
+        );
+    }
   };
-
-  const spinnerSize = sizeMap[size];
 
   return (
     <div style={{
@@ -29,69 +86,43 @@ const LoadingSpinner = ({
       minHeight: '200px',
       color: textColor,
       backgroundColor: bgColor,
-      borderRadius: '12px',
+      borderRadius: '15px',
       boxShadow: isDarkMode 
-        ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
-        : '0 4px 12px rgba(0, 0, 0, 0.1)'
+        ? '0 4px 20px rgba(0, 0, 0, 0.3)' 
+        : '0 4px 20px rgba(0, 0, 0, 0.1)'
     }}>
-      {/* Moomin-inspired loading animation */}
+      {/* Hippo mascot */}
       <div style={{
-        position: 'relative',
-        marginBottom: '1.5rem'
+        fontSize: '2.5rem',
+        marginBottom: '1rem',
+        animation: 'float 2s ease-in-out infinite'
       }}>
-        <div style={{
-          width: spinnerSize.width,
-          height: spinnerSize.height,
-          border: `${spinnerSize.borderWidth}px solid ${isDarkMode ? '#555' : '#e8f4f8'}`,
-          borderTop: `${spinnerSize.borderWidth}px solid ${spinnerColor}`,
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          position: 'relative'
-        }} />
-        
-        {/* Floating hippo animation */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontSize: `${spinnerSize.width * 0.4}px`,
-          animation: 'float 2s ease-in-out infinite'
-        }}>
-          🦛
-        </div>
+        🦛
       </div>
-
+      
+      {renderSpinner()}
+      
       <p style={{
-        margin: '0 0 1rem 0',
+        margin: '0',
         fontSize: '1rem',
         fontFamily: '"Georgia", serif',
-        fontWeight: '500'
+        textAlign: 'center',
+        maxWidth: '300px'
       }}>
         {message}
       </p>
-
-      {/* Progress bar for loading states */}
-      {showProgress && (
-        <div style={{
-          width: '200px',
-          height: '6px',
-          backgroundColor: isDarkMode ? '#555' : '#e8f4f8',
-          borderRadius: '3px',
-          overflow: 'hidden',
-          marginTop: '0.5rem'
+      
+      {progress !== null && (
+        <p style={{
+          margin: '0.5rem 0 0 0',
+          fontSize: '0.9rem',
+          color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
+          fontFamily: '"Georgia", serif'
         }}>
-          <div style={{
-            width: `${progress}%`,
-            height: '100%',
-            backgroundColor: spinnerColor,
-            borderRadius: '3px',
-            transition: 'width 0.3s ease',
-            animation: 'progressPulse 1.5s ease-in-out infinite'
-          }} />
-        </div>
+          {progress}% complete
+        </p>
       )}
-
+      
       <style>
         {`
           @keyframes spin {
@@ -99,14 +130,49 @@ const LoadingSpinner = ({
             100% { transform: rotate(360deg); }
           }
           
-          @keyframes float {
-            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
-            50% { transform: translate(-50%, -50%) translateY(-8px); }
+          @keyframes bounce {
+            0%, 80%, 100% { 
+              transform: scale(0);
+              opacity: 0.5;
+            }
+            40% { 
+              transform: scale(1);
+              opacity: 1;
+            }
           }
           
-          @keyframes progressPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+          @keyframes pulse {
+            0% { 
+              transform: scale(0.8);
+              opacity: 0.5;
+            }
+            50% { 
+              transform: scale(1.2);
+              opacity: 1;
+            }
+            100% { 
+              transform: scale(0.8);
+              opacity: 0.5;
+            }
+          }
+          
+          @keyframes shimmer {
+            0% { 
+              transform: translateX(-100%);
+              opacity: 0.3;
+            }
+            50% { 
+              opacity: 1;
+            }
+            100% { 
+              transform: translateX(100%);
+              opacity: 0.3;
+            }
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
           }
         `}
       </style>

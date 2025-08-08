@@ -12,19 +12,6 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Flodhästen Error Boundary caught an error:', error, errorInfo);
-    
-    // Log error to console with more details
-    console.group('🚨 Flodhästen Error Details');
-    console.error('Error:', error);
-    console.error('Error Info:', errorInfo);
-    console.error('Component Stack:', errorInfo.componentStack);
-    console.error('Timestamp:', new Date().toISOString());
-    console.groupEnd();
-    
-    // Show user-friendly error notification if available
-    if (window.showToast) {
-      window.showToast.error('Something went wrong. Please try refreshing the page.', 8000);
-    }
   }
 
   render() {

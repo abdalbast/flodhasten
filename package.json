@@ -49,8 +49,7 @@
   },
   "devDependencies": {
     "gh-pages": "^4.0.0",
-    "source-map-loader": "^5.0.0",
-    "tailwindcss": "^4.1.11"
+    "source-map-loader": "^5.0.0"
   },
   "engines": {
     "node": ">=16.0.0",

@@ -4,11 +4,10 @@ import Home from './components/Home';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import AchievementNotification from './components/AchievementNotification';
-import ToastContainer from './components/ToastContainer';
+import UserFeedback from './components/UserFeedback';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
-import { sampleLessons, getLessonById as getSampleLessonById } from './data/sampleLessons';
 
 // Lazy load components for code splitting
 const WordList = React.lazy(() => import('./components/WordList'));
@@ -505,6 +504,11 @@ function App() {
   });
   const [showAchievementNotification, setShowAchievementNotification] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState(null);
+  
+  // Error handling and user feedback state
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const [userFeedback, setUserFeedback] = useState({ show: false, type: 'info', message: '' });
 
   // Daily Challenges state
   const [dailyChallenges, setDailyChallenges] = useState(() => {
@@ -526,6 +530,47 @@ function App() {
   // Add lesson state variables after the existing state declarations
   const [currentLesson, setCurrentLesson] = useState(null);
   const [showLesson, setShowLesson] = useState(false);
+
+  // Error handling and user feedback functions
+  const showError = useCallback((message) => {
+    setUserFeedback({ show: true, type: 'error', message });
+  }, []);
+
+  const showSuccess = useCallback((message) => {
+    setUserFeedback({ show: true, type: 'success', message });
+  }, []);
+
+  const showWarning = useCallback((message) => {
+    setUserFeedback({ show: true, type: 'warning', message });
+  }, []);
+
+
+
+
+
+  const clearUserFeedback = useCallback(() => {
+    setUserFeedback({ show: false, type: 'info', message: '' });
+  }, []);
+
+  const setLoading = useCallback((loading, message = 'Loading...') => {
+    setIsLoading(loading);
+    setLoadingMessage(message);
+  }, []);
+
+  // Enhanced skill selection with error handling
+  const handleSkillSelect = useCallback((skillId) => {
+    try {
+      setLoading(true, 'Loading lesson...');
+      setSelectedSkillId(skillId);
+      setScreen('home');
+      showSuccess('Lesson selected successfully!');
+    } catch (err) {
+      showError('Failed to load lesson. Please try again.');
+      console.error('Error selecting skill:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, showSuccess, showError]);
 
   // Memoized calculations
   const currentSkills = useMemo(() => SKILLS[currentLanguage] || SKILLS.en, [currentLanguage]);
@@ -759,50 +804,26 @@ function App() {
 
   // Reset progress - memoized
   const resetProgress = useCallback(() => {
-    try {
-      setSkillProgress({});
-      setProgress({ gamesPlayed: 0, streak: 1 });
-      setUserData(prev => ({
-        ...prev,
-        xp: 0,
-        level: 1
-      }));
-      
-      // Show confirmation message
-      if (window.showToast) {
-        window.showToast.success('Progress reset successfully! Start fresh with your learning journey.', 5000);
-      }
-    } catch (error) {
-      console.error('Error resetting progress:', error);
-      if (window.showToast) {
-        window.showToast.error('Failed to reset progress. Please try again.', 5000);
-      }
-    }
+    setSkillProgress({});
+    setProgress({ gamesPlayed: 0, streak: 1 });
+    setUserData(prev => ({
+      ...prev,
+      xp: 0,
+      level: 1
+    }));
   }, []);
 
 
 
   // Handle adding a word - memoized
   const handleAdd = useCallback((word) => {
-    try {
-      setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
-      
-      // Track custom word addition for achievements and challenges
-      const previousStats = userStats;
-      const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
-      updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
-      checkAndUnlockAchievements(previousStats, newStats);
-      
-      // Show success message
-      if (window.showToast) {
-        window.showToast.success(`Added "${word.swedish}" to your word list!`, 3000);
-      }
-    } catch (error) {
-      console.error('Error adding word:', error);
-      if (window.showToast) {
-        window.showToast.error('Failed to add word. Please try again.', 5000);
-      }
-    }
+    setCustomWords(prev => [...prev, { ...word, stats: { correct: 0, incorrect: 0, lastPracticed: null } }]);
+    
+    // Track custom word addition for achievements and challenges
+    const previousStats = userStats;
+    const newStats = { ...userStats, custom_words_added: userStats.custom_words_added + 1 };
+    updateUserStats({ custom_words_added: userStats.custom_words_added + 1 });
+    checkAndUnlockAchievements(previousStats, newStats);
   }, [userStats, updateUserStats, checkAndUnlockAchievements]);
 
 
@@ -828,24 +849,7 @@ function App() {
 
   // Handle deleting a word - memoized
   const handleDelete = useCallback((idx) => {
-    try {
-      setCustomWords(prev => {
-        const wordToDelete = prev[idx];
-        const newWords = prev.filter((_, i) => i !== idx);
-        
-        // Show confirmation message
-        if (window.showToast && wordToDelete) {
-          window.showToast.info(`Removed "${wordToDelete.swedish}" from your word list.`, 3000);
-        }
-        
-        return newWords;
-      });
-    } catch (error) {
-      console.error('Error deleting word:', error);
-      if (window.showToast) {
-        window.showToast.error('Failed to delete word. Please try again.', 5000);
-      }
-    }
+    setCustomWords(prev => prev.filter((_, i) => i !== idx));
   }, []);
 
   // Handle editing a word - memoized
@@ -940,27 +944,23 @@ function App() {
   // Add lesson handlers after the existing handlers
   const handleStartLesson = useCallback((lessonId) => {
     try {
-      // Prefer enhanced sample lessons when available
-      const lesson = getSampleLessonById(lessonId) || getLessonById(lessonId);
-      if (lesson && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
+      setLoading(true, 'Starting lesson...');
+      const lesson = getLessonById(lessonId);
+      if (lesson && lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length > 0) {
         setCurrentLesson(lesson);
         setShowLesson(true);
-        if (window.showToast) {
-          window.showToast.info(`Starting lesson: ${lesson.name}`, 3000);
-        }
+        showSuccess('Lesson started! Good luck!');
       } else {
         console.error('Invalid lesson data:', lesson);
-        if (window.showToast) {
-          window.showToast.error('Lesson data is invalid. Please try again.', 5000);
-        }
+        showError('Lesson data is invalid. Please try again.');
       }
     } catch (error) {
       console.error('Error starting lesson:', error);
-      if (window.showToast) {
-        window.showToast.error('Failed to start lesson. Please try again.', 5000);
-      }
+      showError('Failed to start lesson. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [setLoading, showSuccess, showError]);
 
   const handleLessonComplete = useCallback((score, total, lives) => {
     try {
@@ -982,33 +982,26 @@ function App() {
         }));
         
         // Show success message
-        if (window.showToast) {
-          const message = score === total 
-            ? `Perfect! You completed the lesson with 100% accuracy! +${xpGained} XP`
-            : `Great job! You completed the lesson with ${progress}% accuracy! +${xpGained} XP`;
-          window.showToast.success(message, 5000);
-        }
-        
-        // Show achievement notification if perfect score
         if (score === total) {
-          // Trigger perfect score achievement
+          showSuccess(`Perfect! You earned ${xpGained} XP! 🌟`);
+        } else if (progress >= 80) {
+          showSuccess(`Great job! You earned ${xpGained} XP! 👍`);
+        } else if (progress >= 60) {
+          showSuccess(`Good work! You earned ${xpGained} XP! 😊`);
+        } else {
+          showWarning(`Keep practicing! You earned ${xpGained} XP. 💪`);
         }
       } else {
-        // Show failure message
-        if (window.showToast) {
-          window.showToast.warning('You ran out of lives! Try again to improve your score.', 5000);
-        }
+        showError('Lesson failed. Try again! 💪');
       }
     } catch (error) {
       console.error('Error completing lesson:', error);
-      if (window.showToast) {
-        window.showToast.error('Failed to save lesson progress. Please try again.', 5000);
-      }
+      showError('Something went wrong. Please try again.');
     } finally {
       setShowLesson(false);
       setCurrentLesson(null);
     }
-  }, [currentLesson]);
+  }, [currentLesson, showSuccess, showWarning, showError]);
 
   const handleLessonExit = useCallback(() => {
     try {
@@ -1028,7 +1021,7 @@ function App() {
     <Home
       skills={currentSkills}
       skillProgress={skillProgress}
-      onSelectSkill={setSelectedSkillId}
+      onSelectSkill={handleSkillSelect}
       selectedSkill={selectedSkill}
       numWords={words.length}
       progress={progress}
@@ -1038,30 +1031,7 @@ function App() {
       userData={userData}
       currentLanguage={currentLanguage}
       onStartLesson={() => {
-        // Start enhanced lesson content for the selected skill
-        if (selectedSkill) {
-          const enhancedId = selectedSkill.id.replace('lesson', '');
-          const mapping = {
-            '1': 'basics-1',
-            '2': 'family-1',
-            '3': 'food-1',
-            '4': 'family-1',
-            '5': 'numbers-1',
-            '6': 'food-1',
-            '7': 'colours-1'
-          };
-          const targetId = mapping[enhancedId] || 'basics-1';
-          const lesson = getSampleLessonById(targetId);
-          if (lesson) {
-            setCurrentLesson(lesson);
-            setShowLesson(true);
-            if (window.showToast) {
-              window.showToast.info(`Starting lesson: ${lesson.name}`, 3000);
-            }
-            return;
-          }
-        }
-        // Fallback to original flow if no enhanced lesson
+        // Show dialogue first, then proceed to games
         if (selectedSkill) {
           setLessonWords(selectedSkill.words);
           setShowDialogue(true);
@@ -1070,15 +1040,33 @@ function App() {
       onStartDuolingoLesson={handleStartLesson}
     />
   );
-  else if (screen === 'list') content = <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />;
-  else if (screen === 'explore') content = <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={setSelectedSkillId} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />;
-  else if (screen === 'achievements') content = <Achievements userStats={userStats} unlockedAchievements={unlockedAchievements} isDarkMode={isDarkMode} />;
-  else if (screen === 'challenges') content = <DailyChallenges challenges={dailyChallenges} userStats={userStats} onChallengeComplete={checkAndCompleteChallenges} isDarkMode={isDarkMode} />;
-  else if (screen === 'voice-recognition') content = <VoiceRecognition userStats={userStats} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
-  else if (screen === 'testing-hub') content = <TestingHub userStats={userStats} unlockedAchievements={unlockedAchievements} dailyChallenges={dailyChallenges} onChallengeComplete={checkAndCompleteChallenges} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />;
-  else if (screen === 'cultural-integration') content = <CulturalIntegration userProgress={culturalProgress} onLessonComplete={handleCulturalLessonComplete} isDarkMode={isDarkMode} />;
-  else if (screen === 'social-features') content = <SocialFeatures userStats={userStats} isDarkMode={isDarkMode} />;
-  else if (screen === 'advanced-analytics') content = <AdvancedAnalytics userStats={userStats} isDarkMode={isDarkMode} />;
+  else if (screen === 'list') content = <Suspense fallback={<LoadingSpinner message="Loading Word List..." isDarkMode={isDarkMode} />}>
+    <WordList words={words} skillWords={skillWords} onDelete={handleDelete} onEdit={handleEdit} onImportWords={handleImportWords} onAdd={handleAdd} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'explore') content = <Suspense fallback={<LoadingSpinner message="Loading Explore..." isDarkMode={isDarkMode} />}>
+    <Explore skills={currentSkills} progress={skillProgress} onSelectSkill={handleSkillSelect} isDarkMode={isDarkMode} currentLanguage={currentLanguage} />
+  </Suspense>;
+  else if (screen === 'achievements') content = <Suspense fallback={<LoadingSpinner message="Loading Achievements..." isDarkMode={isDarkMode} />}>
+    <Achievements userStats={userStats} unlockedAchievements={unlockedAchievements} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'challenges') content = <Suspense fallback={<LoadingSpinner message="Loading Daily Challenges..." isDarkMode={isDarkMode} />}>
+    <DailyChallenges challenges={dailyChallenges} userStats={userStats} onChallengeComplete={checkAndCompleteChallenges} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'voice-recognition') content = <Suspense fallback={<LoadingSpinner message="Loading Voice Recognition..." isDarkMode={isDarkMode} />}>
+    <VoiceRecognition userStats={userStats} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'testing-hub') content = <Suspense fallback={<LoadingSpinner message="Loading Testing Hub..." isDarkMode={isDarkMode} />}>
+    <TestingHub userStats={userStats} unlockedAchievements={unlockedAchievements} dailyChallenges={dailyChallenges} onChallengeComplete={checkAndCompleteChallenges} onPronunciationAttempt={handlePronunciationAttempt} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'cultural-integration') content = <Suspense fallback={<LoadingSpinner message="Loading Cultural Integration..." isDarkMode={isDarkMode} />}>
+    <CulturalIntegration userProgress={culturalProgress} onLessonComplete={handleCulturalLessonComplete} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'social-features') content = <Suspense fallback={<LoadingSpinner message="Loading Social Features..." isDarkMode={isDarkMode} />}>
+    <SocialFeatures userStats={userStats} isDarkMode={isDarkMode} />
+  </Suspense>;
+  else if (screen === 'advanced-analytics') content = <Suspense fallback={<LoadingSpinner message="Loading Advanced Analytics..." isDarkMode={isDarkMode} />}>
+    <AdvancedAnalytics userStats={userStats} isDarkMode={isDarkMode} />
+  </Suspense>;
   else if (screen === 'gamified-learning') content = <GamifiedLearning 
     userStats={userStats} 
     isDarkMode={isDarkMode} 
@@ -1177,6 +1165,39 @@ function App() {
             isDarkMode={isDarkMode}
           />
         )}
+
+        {/* User Feedback Notifications */}
+        <UserFeedback
+          type={userFeedback.type}
+          message={userFeedback.message}
+          isVisible={userFeedback.show}
+          onClose={clearUserFeedback}
+          isDarkMode={isDarkMode}
+        />
+
+        {/* Global Loading State */}
+        {isLoading && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9998,
+            backdropFilter: 'blur(5px)',
+            WebkitBackdropFilter: 'blur(5px)'
+          }}>
+            <LoadingSpinner 
+              message={loadingMessage} 
+              isDarkMode={isDarkMode} 
+              type="dots"
+            />
+          </div>
+        )}
         
         {/* Challenge Completion Notification */}
         {showChallengeComplete && currentChallenge && (
@@ -1241,19 +1262,14 @@ function App() {
         {/* Lesson View */}
         {showLesson && currentLesson && (
           <ErrorBoundary>
-            <Suspense fallback={<LoadingSpinner message="Loading Lesson..." isDarkMode={isDarkMode} />}>
-              <LessonView
-                lesson={currentLesson}
-                onComplete={handleLessonComplete}
-                onExit={handleLessonExit}
-                isDarkMode={isDarkMode}
-              />
-            </Suspense>
+            <LessonView
+              lesson={currentLesson}
+              onComplete={handleLessonComplete}
+              onExit={handleLessonExit}
+              isDarkMode={isDarkMode}
+            />
           </ErrorBoundary>
         )}
-        
-        {/* Toast Container for User Feedback */}
-        <ToastContainer isDarkMode={isDarkMode} />
       </div>
     </ErrorBoundary>
   );
