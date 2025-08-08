@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { FaHatCowboy, FaUserTie, FaPlay, FaVolumeUp, FaStar, FaChartLine, FaTrophy, FaUndo, FaTrash } from 'react-icons/fa';
+import React from 'react';
+import { FaHatCowboy, FaUserTie, FaUndo, FaTrash } from 'react-icons/fa';
 import { GiDress } from 'react-icons/gi';
 import { BsPersonHeart, BsPersonFill, BsPersonBoundingBox } from 'react-icons/bs';
 import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import ttsApi from '../utils/ttsApi';
 import LessonCircles from './LessonCircles';
-import { MdVolumeUp } from 'react-icons/md';
 
 import './Home.css';
 
@@ -58,19 +57,14 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
   const backgroundColor = isDarkMode ? '#2d2d2d' : '#f8f9fa';
   const cardBackground = isDarkMode ? '#3d3d3d' : '#ffffff';
   const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
-  const titleColor = isDarkMode ? '#64b5f6' : '#3498db';
-  const progressBg = isDarkMode ? '#1e3a5f' : '#e8f4f8';
   const wordOfDayBg = isDarkMode ? '#2d2d2d' : '#fff8e1';
   const wordOfDayBorder = isDarkMode ? '#555555' : '#ffd54f';
-  const resetButtonBg = isDarkMode ? '#d32f2f' : '#e74c3c';
-  const resetButtonHoverBg = isDarkMode ? '#b71c1c' : '#c0392b';
   
   // Moomin-inspired accent colours
   const moominBlue = '#3498db';
   const moominGreen = '#27ae60';
   const moominYellow = '#f1c40f';
   const moominOrange = '#e67e22';
-  const moominPink = '#e91e63';
 
   const playSwedish = async (word) => {
     try {

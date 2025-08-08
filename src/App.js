@@ -1,25 +1,27 @@
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
-import WordList from './components/WordList';
-import Explore from './components/Explore';
-import IntroAnimation from './components/IntroAnimation';
-import Onboarding from './components/Onboarding';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
-import Achievements from './components/Achievements';
 import AchievementNotification from './components/AchievementNotification';
-import DailyChallenges from './components/DailyChallenges';
-import VoiceRecognition from './components/VoiceRecognition';
-import TestingHub from './components/TestingHub';
-import CulturalIntegration from './components/CulturalIntegration';
-import SocialFeatures from './components/SocialFeatures';
-import AdvancedAnalytics from './components/AdvancedAnalytics';
-import GamifiedLearning from './components/GamifiedLearning';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
-import LessonView from './components/LessonView';
+
+// Lazy load components for code splitting
+const WordList = React.lazy(() => import('./components/WordList'));
+const Explore = React.lazy(() => import('./components/Explore'));
+const IntroAnimation = React.lazy(() => import('./components/IntroAnimation'));
+const Onboarding = React.lazy(() => import('./components/Onboarding'));
+const Achievements = React.lazy(() => import('./components/Achievements'));
+const DailyChallenges = React.lazy(() => import('./components/DailyChallenges'));
+const VoiceRecognition = React.lazy(() => import('./components/VoiceRecognition'));
+const TestingHub = React.lazy(() => import('./components/TestingHub'));
+const CulturalIntegration = React.lazy(() => import('./components/CulturalIntegration'));
+const SocialFeatures = React.lazy(() => import('./components/SocialFeatures'));
+const AdvancedAnalytics = React.lazy(() => import('./components/AdvancedAnalytics'));
+const GamifiedLearning = React.lazy(() => import('./components/GamifiedLearning'));
+const LessonView = React.lazy(() => import('./components/LessonView'));
 
 // Version tracking utility
 const CACHE_VERSION = '1.0.1-1754482708961';
@@ -56,6 +58,11 @@ const debounce = (func, wait) => {
     timeout = setTimeout(later, wait);
   };
 };
+
+// Create debounced localStorage save function
+const debouncedSaveToStorage = debounce((key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+}, 1000);
 
 // Grouped Swedish Vocabulary Skills by Language
 const SKILLS = {
@@ -538,13 +545,7 @@ function App() {
     return words[idx];
   }, [words]);
 
-  // Debounced localStorage operations
-  const debouncedSaveToStorage = useCallback(
-    debounce((key, value) => {
-      localStorage.setItem(key, JSON.stringify(value));
-    }, 1000),
-    []
-  );
+
 
   // Achievement tracking functions
   const updateUserStats = useCallback((updates) => {
@@ -579,12 +580,18 @@ function App() {
     }
   }, [debouncedSaveToStorage]);
 
-  // Save states to localStorage
+  // Save states to localStorage - optimized with useMemo
+  const saveData = useMemo(() => ({
+    userStats,
+    unlockedAchievements,
+    culturalProgress
+  }), [userStats, unlockedAchievements, culturalProgress]);
+
   useEffect(() => {
-    debouncedSaveToStorage('userStats', userStats);
-    debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
-    debouncedSaveToStorage('culturalProgress', culturalProgress);
-  }, [userStats, unlockedAchievements, culturalProgress, debouncedSaveToStorage]);
+    debouncedSaveToStorage('userStats', saveData.userStats);
+    debouncedSaveToStorage('unlockedAchievements', saveData.unlockedAchievements);
+    debouncedSaveToStorage('culturalProgress', saveData.culturalProgress);
+  }, [saveData]);
 
   // Handle cultural lesson completion
   const handleCulturalLessonComplete = useCallback((lessonId, score) => {
@@ -759,22 +766,7 @@ function App() {
     }));
   }, []);
 
-  // Complete skill - memoized
-  const completeSkill = useCallback((skillId) => {
-    setSkillProgress(prev => ({
-      ...prev,
-      [skillId]: { completed: true, completedAt: new Date().toISOString() }
-    }));
-    
-    // Track lesson completion for achievements and challenges
-    const previousStats = userStats;
-    const newStats = { ...userStats, lessons_completed: userStats.lessons_completed + 1 };
-    updateUserStats({ lessons_completed: userStats.lessons_completed + 1 });
-    checkAndUnlockAchievements(previousStats, newStats);
-    
-    // Add XP for completing a skill
-    addXP(50);
-  }, [addXP, userStats, updateUserStats, checkAndUnlockAchievements]);
+
 
   // Handle adding a word - memoized
   const handleAdd = useCallback((word) => {

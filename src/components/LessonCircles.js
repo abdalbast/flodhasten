@@ -1,7 +1,7 @@
 import React from 'react';
 import LessonCard from './LessonCard';
 
-function LessonCircles({ skills, progress, onSelectSkill, isDarkMode }) {
+const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode }) => {
   const getLessonStatus = (skillId) => {
     const skillIndex = skills.findIndex(s => s.id === skillId);
     const isUnlocked = skillIndex === 0 || (progress[skills[skillIndex - 1].id] >= 100);
@@ -62,6 +62,6 @@ function LessonCircles({ skills, progress, onSelectSkill, isDarkMode }) {
       </div>
     </div>
   );
-}
+});
 
 export default LessonCircles; 
