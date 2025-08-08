@@ -4,6 +4,7 @@ export const LESSONS = [
     id: 'lesson1',
     name: 'Basics 1',
     description: 'Learn your first Swedish words',
+    iconSet: 'phosphor',
     difficulty: 'beginner',
     xpReward: 10,
     requiredLevel: 1,
@@ -39,10 +40,10 @@ export const LESSONS = [
     ],
     // All available options for shuffling
     allOptions: [
-      { id: 'water', label: 'water', image: '/icons/water.svg' },
-      { id: 'milk', label: 'milk', image: '/icons/milk.svg' },
-      { id: 'coffee', label: 'coffee', image: '/icons/coffee.svg' },
-      { id: 'bread', label: 'bread', image: '/icons/bread.svg' }
+      { id: 'water', label: 'water' },
+      { id: 'milk', label: 'milk' },
+      { id: 'coffee', label: 'coffee' },
+      { id: 'bread', label: 'bread' }
     ],
     exercises: [
       {

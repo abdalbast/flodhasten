@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { MdVolumeUp, MdClose, MdCheck, MdError } from 'react-icons/md';
 import './LessonView.css';
 import ttsApi from '../utils/ttsApi';
+import { getIconPath, getIconSrc } from '../data/iconRegistry';
 
 const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -260,13 +261,19 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                   }}
                 >
                   <div className="image-container">
-                    {option.image && option.image.endsWith('.svg') ? (
-                      <img src={option.image} alt={option.label} className="option-svg" />
-                    ) : (
-                      <span className="option-image" style={{ color: option.iconColor || '#FFFFFF' }}>
-                        {option.image || '❓'}
-                      </span>
-                    )}
+                    {/* Use icon registry when option.image is not provided */}
+                    {(() => {
+                      const hasImage = option.image && typeof option.image === 'string';
+                      const iconId = option.id;
+                      let src = option.image;
+                      if (!hasImage) {
+                        // Use built-in data URI set for reliability
+                        src = getIconSrc(lesson?.iconSet || 'duotone', iconId);
+                      }
+                      return (
+                        <img src={src} alt={option.label} className="option-svg" referrerPolicy="no-referrer" loading="eager" onError={(e)=>{e.currentTarget.style.display='none';}} />
+                      );
+                    })()}
                   </div>
                   <div className="option-label">{option.label || 'Unknown'}</div>
                 </button>
