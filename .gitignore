@@ -71,5 +71,5 @@ jspm_packages/
 # TernJS port file
 .tern-port
 
-# React app
-src/ 
+# React app build artifacts
+# src/ is now tracked
