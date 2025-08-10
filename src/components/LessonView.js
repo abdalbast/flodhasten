@@ -360,26 +360,14 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       const iconId = option.id;
                       let src = option.image;
                       
-                      // Debug logging
-                      console.log('🎨 Icon Debug:', { 
-                        optionId: option.id, 
-                        hasImage, 
-                        originalImage: option.image, 
-                        lessonIconSet: lesson?.iconSet 
-                      });
-                      
                       if (!hasImage) {
                         const setName = lesson?.iconSet || 'clean';
-                        console.log('🎯 Using icon registry:', { setName, iconId });
                         
                         if (setName === 'phosphor') {
                           src = getIconSrc(setName, iconId);
                         } else {
                           src = getIconPath(setName, iconId);
                         }
-                        console.log('📍 Generated icon path:', src);
-                      } else {
-                        console.log('⚠️ Using provided image instead of icon registry:', src);
                       }
                       
                       return (
@@ -390,11 +378,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                           referrerPolicy="no-referrer" 
                           loading="eager" 
                           onError={(e)=>{ 
-                            console.log('❌ Icon load error, falling back to clean icons:', e.currentTarget.src);
                             e.currentTarget.src = getIconPath('clean', iconId); 
-                          }} 
-                          onLoad={(e) => {
-                            console.log('✅ Icon loaded successfully:', e.currentTarget.src);
                           }}
                         />
                       );
