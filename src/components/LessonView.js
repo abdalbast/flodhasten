@@ -359,14 +359,29 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       const hasImage = option.image && typeof option.image === 'string';
                       const iconId = option.id;
                       let src = option.image;
+                      
+                      // Debug logging
+                      console.log('🎨 Icon Debug:', { 
+                        optionId: option.id, 
+                        hasImage, 
+                        originalImage: option.image, 
+                        lessonIconSet: lesson?.iconSet 
+                      });
+                      
                       if (!hasImage) {
                         const setName = lesson?.iconSet || 'duotone';
+                        console.log('🎯 Using icon registry:', { setName, iconId });
+                        
                         if (setName === 'phosphor') {
                           src = getIconSrc(setName, iconId);
                         } else {
                           src = getIconPath(setName, iconId);
                         }
+                        console.log('📍 Generated icon path:', src);
+                      } else {
+                        console.log('⚠️ Using provided image instead of icon registry:', src);
                       }
+                      
                       return (
                         <img 
                           src={src} 
@@ -374,7 +389,13 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                           className="option-svg" 
                           referrerPolicy="no-referrer" 
                           loading="eager" 
-                          onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} 
+                          onError={(e)=>{ 
+                            console.log('❌ Icon load error, falling back to duotone:', e.currentTarget.src);
+                            e.currentTarget.src = getIconSrc('duotone', iconId); 
+                          }} 
+                          onLoad={(e) => {
+                            console.log('✅ Icon loaded successfully:', e.currentTarget.src);
+                          }}
                         />
                       );
                     })()}
