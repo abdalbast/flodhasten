@@ -90,61 +90,80 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
   return (
     <>
       {/* Desktop Navigation Bar */}
-      <nav className={`nav-bar ${isDarkMode ? 'dark' : ''}`}>
-        <div className="nav-container">
+      <nav className={`sticky top-0 z-30 w-full bg-blue-600 dark:bg-blue-900 text-white shadow-md`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
           {/* Main navigation buttons */}
-          <div className="nav-buttons">
+          <div className="flex space-x-1 sm:space-x-4">
             {primaryNavItems.map(({ screen, icon, label }) => (
               <button
                 key={screen}
-                className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+                className={`px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-200
+                  ${currentScreen === screen 
+                    ? 'bg-blue-800 dark:bg-blue-700 text-white' 
+                    : 'text-blue-100 hover:bg-blue-700 dark:hover:bg-blue-800 hover:text-white'
+                  }
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
                 onClick={() => handleNavigationClick(screen)}
                 aria-label={`Navigate to ${label}`}
                 aria-current={currentScreen === screen ? 'page' : undefined}
                 type="button"
               >
-                {icon} {label}
+                <span className="text-xl mr-2">{icon}</span> 
+                <span className="hidden sm:block">{label}</span>
               </button>
             ))}
           </div>
           
           {/* Right side controls */}
-          <div className="nav-right-controls">
+          <div className="flex items-center space-x-2">
             {/* Language selector */}
-            <div className="settings-container" ref={settingsDropdownRef}>
+            <div className="relative" ref={settingsDropdownRef}>
               <button
-                className={`lang-btn${showSettingsDropdown ? ' active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+                className={`p-2 rounded-full flex items-center justify-center transition-colors duration-200
+                  ${showSettingsDropdown 
+                    ? 'bg-blue-800 dark:bg-blue-700' 
+                    : 'hover:bg-blue-700 dark:hover:bg-blue-800'
+                  }
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
                 onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
                 aria-label="Select language"
+                aria-expanded={showSettingsDropdown}
+                aria-haspopup="true"
                 type="button"
               >
                 <img
                   src={languages.find(l => l.code === currentLanguage)?.flag}
                   alt={languages.find(l => l.code === currentLanguage)?.name}
-                  style={{ width: '20px', height: '15px' }}
+                  className="w-5 h-4 object-cover rounded-sm"
                 />
               </button>
               {showSettingsDropdown && (
-                <div className="settings-dropdown">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
                   <button 
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md"
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700"
                     onClick={handleDarkModeToggle}
                     aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
                     type="button"
                   >
-                    {isDarkMode ? <MdLightMode /> : <MdDarkMode />} 
+                    <span className="text-xl mr-2">{isDarkMode ? <MdLightMode /> : <MdDarkMode />}</span>
                     {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                   </button>
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                   {languages.map(({ code, name, flag }) => (
                     <button
                       key={code}
                       onClick={() => handleLanguageChange(code)}
-                      className={`${currentLanguage === code ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+                      className={`flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
+                        ${currentLanguage === code 
+                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }
+                        focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
                       aria-label={`Switch to ${name}`}
                       aria-pressed={currentLanguage === code}
                       type="button"
                     >
-                      <img src={flag} alt="" style={{ width: '16px', height: '12px', marginRight: '8px' }} />
+                      <img src={flag} alt="" className="w-4 h-3 mr-2 object-cover rounded-sm" />
                       {name}
                     </button>
                   ))}
@@ -153,34 +172,47 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
             </div>
 
             {/* Hamburger menu */}
-            <div className="more-dropdown-container" ref={desktopMoreDropdownRef}>
+            <div className="relative" ref={desktopMoreDropdownRef}>
               <button
-                className={`hamburger-btn${showMoreDropdown ? ' open' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+                className={`p-2 rounded-full flex items-center justify-center transition-colors duration-200
+                  ${showMoreDropdown 
+                    ? 'bg-blue-800 dark:bg-blue-700' 
+                    : 'hover:bg-blue-700 dark:hover:bg-blue-800'
+                  }
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
                 onClick={() => setShowMoreDropdown(!showMoreDropdown)}
                 aria-label="More options"
                 aria-expanded={showMoreDropdown}
                 aria-haspopup="true"
                 type="button"
               >
-                <div className="hamburger">
-                  <span className="bar"></span>
-                  <span className="bar"></span>
-                  <span className="bar"></span>
+                <div className="w-5 h-5 flex flex-col justify-between">
+                  <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? 'rotate-45 translate-y-2' : ''}`}></span>
+                  <span className={`block w-5 h-0.5 bg-white transition-opacity duration-300 ${showMoreDropdown ? 'opacity-0' : ''}`}></span>
+                  <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? '-rotate-45 -translate-y-2' : ''}`}></span>
                 </div>
               </button>
               {showMoreDropdown && (
-                <div className="more-dropdown">
-                  {dropdownItems.map(({ screen, icon, label }) => (
-                    <button
-                      key={screen}
-                      className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
-                      onClick={() => handleNavigationClick(screen)}
-                      aria-label={`Navigate to ${label}`}
-                      type="button"
-                    >
-                      {icon} {label}
-                    </button>
-                  ))}
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                  <div className="max-h-96 overflow-y-auto">
+                    {dropdownItems.map(({ screen, icon, label }) => (
+                      <button
+                        key={screen}
+                        className={`flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
+                          ${currentScreen === screen 
+                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          }
+                          focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
+                        onClick={() => handleNavigationClick(screen)}
+                        aria-label={`Navigate to ${label}`}
+                        type="button"
+                      >
+                        <span className="text-xl mr-2">{icon}</span>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -189,49 +221,66 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
       </nav>
 
       {/* Mobile Bottom Navigation */}
-      <nav className={`mobile-nav ${isDarkMode ? 'dark' : ''}`}>
-        <div className="mobile-nav-container">
+      <nav className={`fixed bottom-0 left-0 right-0 z-30 bg-blue-600 dark:bg-blue-900 text-white border-t border-blue-700 dark:border-blue-800 md:hidden`}>
+        <div className="flex justify-between items-center h-16">
           {primaryNavItems.map(({ screen, icon, label }) => (
             <button
               key={screen}
-              className={`${currentScreen === screen ? 'active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+              className={`flex-1 flex flex-col items-center justify-center h-full transition-colors duration-200 py-1
+                ${currentScreen === screen 
+                  ? 'bg-blue-700 dark:bg-blue-800 text-white' 
+                  : 'text-blue-100 hover:bg-blue-700/50 dark:hover:bg-blue-800/50 hover:text-white'
+                }
+                focus-visible:outline-none focus-visible:bg-blue-700/50 dark:focus-visible:bg-blue-800/50`}
               onClick={() => handleNavigationClick(screen)}
               aria-label={`Navigate to ${label}`}
               aria-current={currentScreen === screen ? 'page' : undefined}
               type="button"
             >
-              {icon}
-              <span>{label}</span>
+              <span className="text-xl mb-1">{icon}</span>
+              <span className="text-xs">{label}</span>
             </button>
           ))}
           
           {/* Mobile More button */}
-          <div className="mobile-more-container" ref={mobileMoreDropdownRef}>
+          <div className="flex-1 relative" ref={mobileMoreDropdownRef}>
             <button
-              className={`mobile-more-btn${showMoreDropdown ? ' active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-md`}
+              className={`flex flex-col items-center justify-center w-full h-full transition-colors duration-200 py-1
+                ${showMoreDropdown 
+                  ? 'bg-blue-700 dark:bg-blue-800 text-white' 
+                  : 'text-blue-100 hover:bg-blue-700/50 dark:hover:bg-blue-800/50 hover:text-white'
+                }
+                focus-visible:outline-none focus-visible:bg-blue-700/50 dark:focus-visible:bg-blue-800/50`}
               onClick={() => setShowMoreDropdown(!showMoreDropdown)}
               aria-label="More options"
               aria-expanded={showMoreDropdown}
               aria-haspopup="true"
               type="button"
             >
-              <div className="hamburger">
-                <span className="bar"></span>
-                <span className="bar"></span>
-                <span className="bar"></span>
+              <div className="w-5 h-5 flex flex-col justify-between mb-1">
+                <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? 'rotate-45 translate-y-2' : ''}`}></span>
+                <span className={`block w-5 h-0.5 bg-white transition-opacity duration-300 ${showMoreDropdown ? 'opacity-0' : ''}`}></span>
+                <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? '-rotate-45 -translate-y-2' : ''}`}></span>
               </div>
+              <span className="text-xs">More</span>
             </button>
             {showMoreDropdown && (
-              <div className="mobile-more-dropdown">
+              <div className="absolute bottom-full right-0 left-0 mb-2 bg-white dark:bg-gray-800 rounded-t-lg shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700 max-h-[70vh] overflow-y-auto">
                 {dropdownItems.map(({ screen, icon, label }) => (
                   <button
                     key={screen}
-                    className={currentScreen === screen ? 'active' : ''}
+                    className={`flex items-center w-full px-4 py-3 text-sm transition-colors duration-200
+                      ${currentScreen === screen 
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }
+                      focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
                     onClick={() => handleNavigationClick(screen)}
                     aria-label={`Navigate to ${label}`}
                     type="button"
                   >
-                    {icon} {label}
+                    <span className="text-xl mr-3">{icon}</span>
+                    {label}
                   </button>
                 ))}
               </div>

@@ -221,15 +221,30 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   // Safety check for lesson and exercises - AFTER all hooks
   if (!lesson || !lesson.exercises || !Array.isArray(lesson.exercises)) {
     return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
+      <div className="lesson-view bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="lesson-header flex items-center justify-between p-4 bg-red-600 dark:bg-red-800 shadow-md">
+          <button 
+            className="exit-button text-white p-2 hover:bg-red-700 dark:hover:bg-red-900 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full" 
+            onClick={onExit}
+            aria-label="Exit lesson"
+          >
+            <MdClose className="text-xl" />
           </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Invalid lesson data</p>
+          <div className="lesson-info flex-grow mx-4">
+            <h2 className="font-bold text-[1.4rem] text-white flex items-center">
+              <MdError className="mr-2 text-yellow-300" /> Error
+            </h2>
+            <p className="text-[0.85rem] text-white/80">Invalid lesson data</p>
           </div>
+        </div>
+        <div className="p-8 text-center">
+          <p className="text-gray-700 dark:text-gray-300 mb-4">We couldn't load this lesson. Please try again later.</p>
+          <button 
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={onExit}
+          >
+            Return to Home
+          </button>
         </div>
       </div>
     );
@@ -238,15 +253,30 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   // Safety check for current exercise - AFTER all hooks
   if (!currentExercise) {
     return (
-      <div className="lesson-view">
-        <div className="lesson-header">
-          <button className="exit-button" onClick={onExit}>
-            <MdClose />
+      <div className="lesson-view bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="lesson-header flex items-center justify-between p-4 bg-red-600 dark:bg-red-800 shadow-md">
+          <button 
+            className="exit-button text-white p-2 hover:bg-red-700 dark:hover:bg-red-900 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full" 
+            onClick={onExit}
+            aria-label="Exit lesson"
+          >
+            <MdClose className="text-xl" />
           </button>
-          <div className="lesson-info">
-            <h2>Error</h2>
-            <p>Exercise not found</p>
+          <div className="lesson-info flex-grow mx-4">
+            <h2 className="font-bold text-[1.4rem] text-white flex items-center">
+              <MdError className="mr-2 text-yellow-300" /> Error
+            </h2>
+            <p className="text-[0.85rem] text-white/80">Exercise not found</p>
           </div>
+        </div>
+        <div className="p-8 text-center">
+          <p className="text-gray-700 dark:text-gray-300 mb-4">We couldn't load this exercise. Please try again later.</p>
+          <button 
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={onExit}
+          >
+            Return to Home
+          </button>
         </div>
       </div>
     );
@@ -257,8 +287,9 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   const renderExercise = () => {
     if (!currentExercise) {
       return (
-        <div className="exercise-container">
-          <h3>Exercise not found</h3>
+        <div className="exercise-container bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-medium text-red-600 dark:text-red-400 mb-2">Exercise not found</h3>
+          <p className="text-gray-600 dark:text-gray-400">There was a problem loading this exercise.</p>
         </div>
       );
     }
@@ -266,21 +297,21 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
     switch (currentExercise.type) {
       case 'image_choice':
         return (
-          <div className="exercise-container">
+          <div className="exercise-container bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             {/* NEW WORD indicator */}
-            <div className="new-word-indicator" role="status" aria-label="New word introduced">
+            <div className="new-word-indicator inline-flex items-center px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 mb-4" role="status" aria-label="New word introduced">
               {/* Tailwind-only inline tone (no layout change) */}
-              <span className="dot" aria-hidden="true"></span>
-              <span className="label">New word</span>
+              <span className="dot w-2 h-2 rounded-full bg-purple-500 mr-1.5" aria-hidden="true"></span>
+              <span className="label text-xs font-medium text-purple-700 dark:text-purple-300">New word</span>
             </div>
             
             {/* Instruction */}
-            <h3 className="instruction font-semibold text-white/90">{currentExercise.instruction}</h3>
+            <h3 className="instruction text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">{currentExercise.instruction}</h3>
             
             {/* Swedish word with pronunciation */}
-            <div className="word-section">
+            <div className="word-section flex items-center justify-center mb-6">
               <button 
-                className="pronunciation-button"
+                className="pronunciation-button flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full mr-3 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={() => playPronunciation(currentExercise.swedishWord)}
                 aria-label={`Play pronunciation of ${currentExercise.swedishWord}`}
               >
@@ -288,12 +319,12 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                 {(() => {
                   // Force reliable inline icon independent of set
                   const src = getIconSrc('duotone', 'speaker');
-                  return <img src={src} alt="speaker" className="speaker-icon" />;
+                  return <img src={src} alt="speaker" className="speaker-icon w-5 h-5" />;
                 })()}
               </button>
-              <div className="word-container">
+              <div className="word-container relative">
                 <h2 
-                  className="swedish-word interactive underline decoration-[#C48BFF] underline-offset-4 font-semibold"
+                  className="swedish-word interactive text-2xl font-semibold text-gray-900 dark:text-white underline decoration-[#C48BFF] underline-offset-4 cursor-help"
                   onMouseEnter={() => setShowHint(true)}
                   onMouseLeave={() => setShowHint(false)}
                   onClick={() => setShowHint((v)=>!v)}
@@ -301,7 +332,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                   {currentExercise.swedishWord}
                 </h2>
                 {showHint && (
-                  <div className="english-hint text-white/85">
+                  <div className="english-hint absolute top-full left-0 mt-1 px-3 py-1.5 bg-gray-800 dark:bg-gray-700 text-white rounded-md text-sm shadow-lg z-10">
                     {currentExercise.englishHint}
                   </div>
                 )}
@@ -309,11 +340,15 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             </div>
             
             {/* Image options grid */}
-            <div className="image-options-grid">
+            <div className="image-options-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               {(shuffledOptions.length ? shuffledOptions : (currentExercise.options || (lesson?.allOptions && currentExercise.getOptions ? currentExercise.getOptions(lesson.allOptions) : []))).map((option, index) => (
                 <button
                   key={index}
-                  className={`image-option ${selectedOption === option.id ? 'selected' : ''} ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8D94E] rounded-lg`}
+                  className={`image-option relative overflow-hidden flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] 
+                    ${selectedOption === option.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'} 
+                    ${showFeedback && isCorrect && selectedOption === option.id ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : ''} 
+                    ${showFeedback && !isCorrect && selectedOption === option.id ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : ''} 
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8D94E] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800`}
                   onMouseDown={(e) => e.currentTarget && e.currentTarget.classList.add('pressing')}
                   onMouseUp={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
                   onMouseLeave={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
@@ -334,7 +369,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                     handleOptionSelect(option.id);
                   }}
                 >
-                  <div className="image-container">
+                  <div className="image-container h-16 w-16 flex items-center justify-center mb-2">
                     {/* Use icon registry when option.image is not provided */}
                     {(() => {
                       const hasImage = option.image && typeof option.image === 'string';
@@ -349,31 +384,44 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                         }
                       }
                       return (
-                        <img src={src} alt={option.label} className="option-svg" referrerPolicy="no-referrer" loading="eager" onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} />
+                        <img 
+                          src={src} 
+                          alt={option.label} 
+                          className="option-svg max-h-full max-w-full object-contain" 
+                          referrerPolicy="no-referrer" 
+                          loading="eager" 
+                          onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} 
+                        />
                       );
                     })()}
                   </div>
-                  <div className="option-label">{option.label || 'Unknown'}</div>
+                  <div className="option-label text-sm font-medium text-gray-800 dark:text-gray-200">{option.label || 'Unknown'}</div>
                 </button>
               ))}
             </div>
             
-            <div className="continue-footer">
+            <div className="continue-footer fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-center">
               <button 
-                className={`continue-button ${selectedOption ? 'enabled' : ''} ${isCorrect ? 'correct' : ''} ${showFeedback && !isCorrect ? 'incorrect' : ''} ${showFeedback ? 'feedback-active' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-pill`}
+                className={`continue-button relative overflow-hidden px-8 py-3 rounded-full font-bold text-white transition-all duration-200 shadow-md
+                  ${!selectedOption && !showFeedback ? 'bg-gray-400 cursor-not-allowed opacity-70' : ''}
+                  ${selectedOption && !showFeedback ? 'bg-blue-600 hover:bg-blue-700 enabled:hover:shadow-lg' : ''}
+                  ${isCorrect ? 'bg-green-600 hover:bg-green-700' : ''} 
+                  ${showFeedback && !isCorrect ? 'bg-red-600 hover:bg-red-700' : ''} 
+                  ${showFeedback ? 'feedback-active' : ''} 
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800`}
                 onClick={showFeedback && !isCorrect ? handleTryAgain : handleAnswerSubmit}
                 disabled={!selectedOption && !showFeedback}
               >
                 {showFeedback && isCorrect ? (
-                  <>
-                    <MdCheck className="button-icon" />
+                  <span className="flex items-center">
+                    <MdCheck className="button-icon mr-2 text-xl" />
                     CORRECT!
-                  </>
+                  </span>
                 ) : showFeedback && !isCorrect ? (
-                  <>
-                    <MdError className="button-icon" />
+                  <span className="flex items-center">
+                    <MdError className="button-icon mr-2 text-xl" />
                     TRY AGAIN!
-                  </>
+                  </span>
                 ) : (
                   'CONTINUE'
                 )}
@@ -384,18 +432,23 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
 
       case 'translate':
         return (
-          <div className="exercise-container">
-            <h3>{currentExercise.instruction}</h3>
-            <div className="question">
-              <h2>{currentExercise.question}</h2>
+          <div className="exercise-container bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">{currentExercise.instruction}</h3>
+            <div className="question mb-6">
+              <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">{currentExercise.question}</h2>
             </div>
             
             {currentExercise.options ? (
-              <div className="options-grid">
+              <div className="options-grid grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {currentExercise.options.map((option, index) => (
                   <button
                     key={index}
-                    className={`option-button ${selectedOption === option ? 'selected' : ''}`}
+                    className={`option-button py-3 px-4 rounded-lg border-2 transition-all duration-200 font-medium text-left
+                      ${selectedOption === option 
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' 
+                        : 'border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      }
+                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800`}
                     onClick={() => handleOptionSelect(option)}
                   >
                     {option}
@@ -403,40 +456,52 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                 ))}
               </div>
             ) : (
-              <div className="answer-input">
+              <div className="answer-input mb-6">
                 <input
                   type="text"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   placeholder="Type your answer..."
-                  className="answer-field"
+                  className="answer-field w-full py-3 px-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500"
                 />
               </div>
             )}
             
-            <button 
-              className="submit-button"
-              onClick={handleAnswerSubmit}
-              disabled={!userAnswer.trim() && !selectedOption}
-            >
-              Check
-            </button>
+            <div className="flex justify-center">
+              <button 
+                className={`submit-button py-3 px-8 rounded-full font-bold text-white transition-all duration-200 shadow-md
+                  ${!userAnswer.trim() && !selectedOption 
+                    ? 'bg-gray-400 cursor-not-allowed opacity-70' 
+                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
+                  }
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800`}
+                onClick={handleAnswerSubmit}
+                disabled={!userAnswer.trim() && !selectedOption}
+              >
+                Check
+              </button>
+            </div>
           </div>
         );
 
       case 'match':
         return (
-          <div className="exercise-container">
-            <h3>{currentExercise.instruction}</h3>
-            <div className="matching-grid">
+          <div className="exercise-container bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">{currentExercise.instruction}</h3>
+            <div className="matching-grid grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {matchedPairs.map((pair) => (
                 <div key={pair.id} className="match-pair">
                   <button
-                    className={`match-button ${pair.matched ? 'matched' : ''}`}
+                    className={`match-button w-full p-4 rounded-lg border-2 transition-all duration-200 flex justify-between items-center
+                      ${pair.matched 
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' 
+                        : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      }
+                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800`}
                     onClick={() => handleMatchSelect(pair)}
                   >
-                    <span className="swedish">{pair.swedish}</span>
-                    <span className="english">{pair.english}</span>
+                    <span className="swedish font-medium text-gray-900 dark:text-white">{pair.swedish}</span>
+                    <span className="english text-gray-600 dark:text-gray-300">{pair.english}</span>
                   </button>
                 </div>
               ))}
@@ -445,61 +510,69 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         );
 
       default:
-        return <div>Exercise type not supported</div>;
+        return (
+          <div className="exercise-container bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div className="text-center py-8">
+              <div className="text-yellow-500 text-4xl mb-4">⚠️</div>
+              <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Exercise type not supported</h3>
+              <p className="text-gray-600 dark:text-gray-400">This exercise type is not available yet.</p>
+            </div>
+          </div>
+        );
     }
   };
 
   return (
     <div className={`lesson-view ${isDarkMode ? 'dark' : 'light'}`}>
-      <div className="lesson-header">
-        <button className="exit-button focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full" onClick={onExit}>
-          <MdClose />
+      <div className="lesson-header flex items-center justify-between p-4 bg-blue-600 dark:bg-blue-800 shadow-md">
+        <button className="exit-button text-white p-2 hover:bg-blue-700 dark:hover:bg-blue-900 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full" onClick={onExit} aria-label="Exit lesson">
+          <MdClose className="text-xl" />
         </button>
-        <div className="lesson-info">
+        <div className="lesson-info flex-grow mx-4">
           <h2 className="font-bold text-[1.4rem] text-white">{lesson.name}</h2>
           <p className="text-[0.85rem] text-white/70">{lesson.description}</p>
         </div>
-        <div className="lesson-progress">
-          <div className="progress-bar">
+        <div className="lesson-progress w-1/3">
+          <div className="progress-bar h-2 bg-blue-300/30 rounded-full overflow-hidden">
             <div 
-              className="progress-fill"
+              className="progress-fill h-full bg-yellow-400 transition-all duration-300 ease-out"
               style={{ width: `${((currentExerciseIndex + 1) / lesson.exercises.length) * 100}%` }}
             />
           </div>
-          <span>{currentExerciseIndex + 1} / {lesson.exercises.length}</span>
+          <span className="text-sm text-white/80 mt-1 block text-right">{currentExerciseIndex + 1} / {lesson.exercises.length}</span>
         </div>
       </div>
 
-      <div className="lesson-stats">
-        <div className="stat">
-          <span className="stat-label">Lives:</span>
-          <span className="stat-value">
+      <div className="lesson-stats flex justify-between px-4 py-2 bg-gray-100 dark:bg-gray-800 shadow-sm">
+        <div className="stat flex items-center">
+          <span className="stat-label text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Lives:</span>
+          <span className="stat-value flex">
             {[...Array(3)].map((_, i) => (
-              <span key={i} className={`heart ${i < lives ? 'active' : 'lost'}`}>❤️</span>
+              <span key={i} className={`heart ${i < lives ? 'active' : 'lost'} transition-all duration-300 ${i < lives ? 'scale-100' : 'scale-75 opacity-40'} mx-0.5`}>❤️</span>
             ))}
           </span>
         </div>
-        <div className="stat">
-          <span className="stat-label">Score:</span>
-          <span className="stat-value">{score}</span>
+        <div className="stat flex items-center">
+          <span className="stat-label text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Score:</span>
+          <span className="stat-value text-lg font-bold text-blue-600 dark:text-blue-400">{score}</span>
         </div>
       </div>
 
-      <div className="lesson-content">
+      <div className="lesson-content flex-1 p-4 overflow-y-auto pb-24">
         {renderExercise()}
       </div>
 
       {/* Game Over Modal */}
       {showGameOver && (
-        <div className="game-over-overlay">
-          <div className="game-over-modal">
-            <div className="game-over-icon">💔</div>
-            <h2 className="game-over-title">Out of Hearts!</h2>
-            <p className="game-over-message">
+        <div className="game-over-overlay fixed inset-0 flex items-center justify-center bg-black/70 z-50 backdrop-blur-sm">
+          <div className="game-over-modal bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-11/12 mx-auto transform transition-all duration-300 scale-100 animate-fadeIn">
+            <div className="game-over-icon text-5xl text-center mb-4 animate-pulse">💔</div>
+            <h2 className="game-over-title text-2xl font-bold text-center text-gray-800 dark:text-white mb-4">Out of Hearts!</h2>
+            <p className="game-over-message text-center text-gray-600 dark:text-gray-300 mb-6">
               You've run out of hearts for today. Come back later when they refill to continue learning!
             </p>
             <button 
-              className="game-over-button"
+              className="game-over-button w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
               onClick={() => {
                 setShowGameOver(false);
                 onExit();

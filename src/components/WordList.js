@@ -185,377 +185,189 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', background: '#fffde7', padding: '1.5rem', borderRadius: 16, boxShadow: '0 2px 8px #ffe082' }}>
-      <h2 style={{ color: '#fbc02d' }}><FaBookOpen style={{verticalAlign:'middle',marginRight:6}}/>Saved Words</h2>
+    <div className="max-w-md mx-auto my-8 bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/30">
+      <h2 className="text-xl font-bold text-amber-600 dark:text-amber-400 flex items-center mb-4">
+        <FaBookOpen className="mr-2" />
+        <span>Saved Words</span>
+      </h2>
       
       {/* Add Word Section */}
-      <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#e0f7fa', borderRadius: 12, border: '2px solid #b2ebf2' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <h3 style={{ color: '#2193b0', margin: 0 }}><MdAddCircle style={{verticalAlign:'middle',marginRight:6}}/>Add New Word</h3>
+      <div className="mb-6 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border-2 border-cyan-200 dark:border-cyan-800">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-cyan-700 dark:text-cyan-400 flex items-center m-0">
+            <MdAddCircle className="mr-2" />
+            <span>Add New Word</span>
+          </h3>
           <button 
             onClick={() => setShowAddForm(!showAddForm)}
-            style={{
-              background: '#2193b0',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              padding: '0.5rem 1rem',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: 14,
-              transition: 'all 0.2s ease',
-              transform: 'translateY(0)',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-            }}
+            className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
             {showAddForm ? 'Cancel' : 'Add Word'}
           </button>
         </div>
         
         {showAddForm && (
-          <form onSubmit={handleAddWord} style={{ marginTop: '1rem' }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>Swedish</label>
+          <form onSubmit={handleAddWord} className="mt-4">
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-cyan-700 dark:text-cyan-400">Swedish</label>
               <input 
                 value={newSwedish} 
                 onChange={e => setNewSwedish(e.target.value)} 
-                style={{ 
-                  width: '100%', 
-                  padding: 8, 
-                  borderRadius: 8, 
-                  border: '1px solid #b2ebf2',
-                  fontSize: 14
-                }}
+                className="w-full px-3 py-2 text-sm border border-cyan-200 dark:border-cyan-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="Enter Swedish word..."
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#2193b0', fontWeight: 'bold' }}>English</label>
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-cyan-700 dark:text-cyan-400">English</label>
               <input 
                 value={newEnglish} 
                 onChange={e => setNewEnglish(e.target.value)} 
-                style={{ 
-                  width: '100%', 
-                  padding: 8, 
-                  borderRadius: 8, 
-                  border: '1px solid #b2ebf2',
-                  fontSize: 14
-                }}
+                className="w-full px-3 py-2 text-sm border border-cyan-200 dark:border-cyan-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="Enter English translation..."
               />
             </div>
             <button 
               type="submit" 
-              style={{ 
-                width: '100%', 
-                background: '#2193b0', 
-                color: '#fff', 
-                border: 'none', 
-                borderRadius: 8, 
-                padding: 10, 
-                fontWeight: 'bold', 
-                fontSize: 16, 
-                cursor: 'pointer',
-                transition:'all 0.2s ease',
-                transform:'translateY(0)',
-                boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-              }}
-              onMouseDown={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-              }}
-              onMouseUp={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-              }}
+              className="w-full py-3 px-4 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white font-medium rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:translate-y-0 active:shadow-sm"
             >
               Add Word
             </button>
-            {addMessage && <div style={{ color: '#388e3c', marginTop: 10, textAlign: 'center', fontWeight: 'bold' }}>{addMessage}</div>}
+            {addMessage && <div className="mt-3 text-center font-medium text-green-600 dark:text-green-400">{addMessage}</div>}
           </form>
         )}
       </div>
 
       {/* Import file input */}
-      <div style={{marginBottom:12}}>
-        <input type="file" accept=".csv,.txt" onChange={handleImportFile} style={{marginBottom:4}} />
-        <div style={{fontSize:12,color:'#888'}}>Import .csv (Swedish,English) or .txt (Swedish - English)</div>
-        <button type="button" onClick={handleTranslateAll} disabled={translatingAll} style={{
-          marginTop:6,
-          marginBottom:4,
-          background:'#2193b0',
-          color:'#fff',
-          border:'none',
-          borderRadius:8,
-          padding:'0.4rem 1.1rem',
-          fontWeight:'bold',
-          fontSize:14,
-          cursor:translatingAll?'not-allowed':'pointer',
-          transition:'all 0.2s ease',
-          transform:'translateY(0)',
-          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-        }}
-        onMouseEnter={(e) => {
-          if (!translatingAll) {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-        }}
-        onMouseDown={(e) => {
-          if (!translatingAll) {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-          }
-        }}
-        onMouseUp={(e) => {
-          if (!translatingAll) {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-          }
-        }}
+      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+        <h3 className="text-lg font-medium text-blue-700 dark:text-blue-400 mb-3">Import Words</h3>
+        <div className="flex flex-col space-y-2">
+          <label className="flex items-center justify-center w-full px-4 py-2 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
+            <input 
+              type="file" 
+              accept=".csv,.txt" 
+              onChange={handleImportFile} 
+              className="hidden" 
+            />
+            <span className="text-blue-600 dark:text-blue-400 font-medium">Choose CSV or TXT file</span>
+          </label>
+          <div className="text-xs text-gray-500 dark:text-gray-400 ml-1">Import .csv (Swedish,English) or .txt (Swedish - English)</div>
+        </div>
+        
+        <button 
+          type="button" 
+          onClick={handleTranslateAll} 
+          disabled={translatingAll}
+          className={`mt-4 w-full py-2 px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center
+            ${translatingAll 
+              ? 'bg-blue-400 dark:bg-blue-700 cursor-not-allowed opacity-70' 
+              : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-sm'
+            }
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800`}
         >
-          {translatingAll ? <FaSpinner className="spin" style={{fontSize:16,marginRight:6}}/> : null}
+          {translatingAll && <FaSpinner className="animate-spin mr-2" />}
           Translate All Unknown
         </button>
-        {importMsg && <div style={{fontSize:13,color:'#388e3c',marginTop:2}}>{importMsg}</div>}
+        
+        {importMsg && <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">{importMsg}</div>}
       </div>
       {words.length === 0 ? (
-        <div style={{ color: '#aaa', textAlign: 'center' }}>No words yet. Add some!</div>
+        <div className="text-gray-400 dark:text-gray-500 text-center py-6">No words yet. Add some!</div>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className="list-none p-0 space-y-3">
           {words.map((w, i) => {
             const isSkillWord = i < skillWords.length;
             return (
-              <li key={i} style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                margin: '0.7rem 0', 
-                background: isSkillWord ? '#e8f5e8' : '#fffde7', 
-                borderRadius: 8, 
-                padding: '0.5rem 0.7rem',
-                border: isSkillWord ? '1px solid #4caf50' : '1px solid #ffeb3b'
-              }}>
+              <li key={i} className={`flex items-center justify-between rounded-lg p-3 border ${
+                isSkillWord 
+                  ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
+                  : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
+              }`}>
                 {editIdx === i ? (
-                  <span style={{ flex: 1, display: 'flex', gap: 6 }}>
-                    <input value={editSwedish} onChange={e=>setEditSwedish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
-                    <span style={{ color: '#888' }}>–</span>
-                    <input value={editEnglish} onChange={e=>setEditEnglish(e.target.value)} style={{width:70,borderRadius:6,border:'1px solid #b2ebf2',padding:3}} />
+                  <span className="flex-1 flex items-center gap-2">
+                    <input 
+                      value={editSwedish} 
+                      onChange={e=>setEditSwedish(e.target.value)} 
+                      className="w-24 px-2 py-1 text-sm border border-cyan-200 dark:border-cyan-700 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white" 
+                    />
+                    <span className="text-gray-400 dark:text-gray-500">–</span>
+                    <input 
+                      value={editEnglish} 
+                      onChange={e=>setEditEnglish(e.target.value)} 
+                      className="w-24 px-2 py-1 text-sm border border-cyan-200 dark:border-cyan-700 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white" 
+                    />
                   </span>
                 ) : (
-                  <span>
-                    <b style={{ color: '#2193b0' }}>{w.swedish}</b>
-                    <button type="button" aria-label={`Play ${w.swedish}`} onClick={()=>playSwedish(w.swedish)} style={{background:'none',border:'none',color:'#2193b0',cursor:'pointer',fontSize:20,verticalAlign:'middle',marginLeft:4}}><MdVolumeUp /></button>
-                    <span style={{ color: '#888' }}>–</span> <span style={{ color: '#333' }}>{w.english}</span>
-                    {isSkillWord && (
-                      <span style={{ 
-                        background: '#4caf50', 
-                        color: '#fff', 
-                        padding: '0.2rem 0.5rem', 
-                        borderRadius: '12px', 
-                        fontSize: '0.7rem', 
-                        marginLeft: '0.5rem',
-                        fontWeight: 'bold'
-                      }}>
-                        Skill
-                      </span>
-                    )}
-                    {w.english === '(unknown)' && (
-                      <button type="button" onClick={()=>handleTranslate(i, w.swedish)} disabled={translatingIdx===i} style={{
-                        marginLeft:8,
-                        background:'#2193b0',
-                        color:'#fff',
-                        border:'none',
-                        borderRadius:8,
-                        padding:'0.2rem 0.7rem',
-                        fontSize:13,
-                        cursor:'pointer',
-                        verticalAlign:'middle',
-                        transition:'all 0.2s ease',
-                        transform:'translateY(0)',
-                        boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (translatingIdx !== i) {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                      }}
-                      onMouseDown={(e) => {
-                        if (translatingIdx !== i) {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                        }
-                      }}
-                      onMouseUp={(e) => {
-                        if (translatingIdx !== i) {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                        }
-                      }}
+                  <span className="flex-1">
+                    <div className="flex items-center flex-wrap">
+                      <span className="font-bold text-cyan-600 dark:text-cyan-400">{w.swedish}</span>
+                      <button 
+                        type="button" 
+                        aria-label={`Play ${w.swedish}`} 
+                        onClick={()=>playSwedish(w.swedish)}
+                        className="bg-transparent border-none text-cyan-600 dark:text-cyan-400 cursor-pointer mx-1 p-1 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-500"
                       >
-                        {translatingIdx===i ? <FaSpinner className="spin" style={{fontSize:16}}/> : 'Translate'}
+                        <MdVolumeUp className="text-xl" />
                       </button>
-                    )}
-                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-                      <span>✔️ {w.stats?.correct || 0} </span>
-                      <span>❌ {w.stats?.incorrect || 0} </span>
-                      <span>🕒 {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
+                      <span className="text-gray-400 dark:text-gray-500 mx-1">–</span> 
+                      <span className="text-gray-700 dark:text-gray-300">{w.english}</span>
+                      {isSkillWord && (
+                        <span className="ml-2 bg-green-500 dark:bg-green-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                          Skill
+                        </span>
+                      )}
+                      {w.english === '(unknown)' && (
+                        <button 
+                          type="button" 
+                          onClick={()=>handleTranslate(i, w.swedish)} 
+                          disabled={translatingIdx===i}
+                          className={`ml-2 px-3 py-1 text-xs rounded-md font-medium text-white transition-all duration-200
+                            ${translatingIdx===i 
+                              ? 'bg-cyan-400 dark:bg-cyan-700 cursor-not-allowed' 
+                              : 'bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 hover:-translate-y-0.5 hover:shadow-sm'
+                            }
+                            focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1`}
+                        >
+                          {translatingIdx===i ? <FaSpinner className="animate-spin" /> : 'Translate'}
+                        </button>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
+                      <span className="flex items-center"><span className="text-green-500 mr-0.5">✓</span> {w.stats?.correct || 0}</span>
+                      <span className="flex items-center"><span className="text-red-500 mr-0.5">✗</span> {w.stats?.incorrect || 0}</span>
+                      <span className="flex items-center"><span className="text-gray-400 mr-0.5">⏱</span> {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
                     </div>
                   </span>
                 )}
                 {editIdx === i ? (
-                  <span style={{ display: 'flex', gap: 4 }}>
-                    <button onClick={saveEdit} style={{ 
-                      background: '#388e3c', 
-                      color: '#fff', 
-                      border: 'none', 
-                      borderRadius: 8, 
-                      padding: '0.3rem 0.7rem', 
-                      cursor: 'pointer', 
-                      fontWeight: 'bold',
-                      transition:'all 0.2s ease',
-                      transform:'translateY(0)',
-                      boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                    }}
-                    onMouseDown={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                    }}
-                    onMouseUp={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(56, 142, 60, 0.3)';
-                    }}
+                  <span className="flex gap-2">
+                    <button 
+                      onClick={saveEdit}
+                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-medium py-1 px-3 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
                     >
                       Save
                     </button>
-                    <button onClick={cancelEdit} style={{ 
-                      background: '#f44336', 
-                      color: '#fff', 
-                      border: 'none', 
-                      borderRadius: 8, 
-                      padding: '0.3rem 0.7rem', 
-                      cursor: 'pointer', 
-                      fontWeight: 'bold',
-                      transition:'all 0.2s ease',
-                      transform:'translateY(0)',
-                      boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                    }}
-                    onMouseDown={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                    }}
-                    onMouseUp={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                    }}
+                    <button 
+                      onClick={cancelEdit}
+                      className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white font-medium py-1 px-3 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
                     >
                       Cancel
                     </button>
                   </span>
                 ) : (
-                  <span style={{ display: 'flex', gap: 4 }}>
+                  <span className="flex gap-2">
                     {!isSkillWord && (
                       <>
-                        <button onClick={() => startEdit(i)} style={{ 
-                          background: '#2193b0', 
-                          color: '#fff', 
-                          border: 'none', 
-                          borderRadius: 8, 
-                          padding: '0.3rem 0.7rem', 
-                          cursor: 'pointer', 
-                          fontWeight: 'bold',
-                          transition:'all 0.2s ease',
-                          transform:'translateY(0)',
-                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                        }}
-                        onMouseDown={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                        }}
-                        onMouseUp={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(33, 147, 176, 0.3)';
-                        }}
+                        <button 
+                          onClick={() => startEdit(i)}
+                          className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white p-2 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1"
+                          aria-label="Edit word"
                         >
                           <FaEdit />
                         </button>
-                        <button onClick={() => onDelete(i)} style={{ 
-                          background: '#f44336', 
-                          color: '#fff', 
-                          border: 'none', 
-                          borderRadius: 8, 
-                          padding: '0.3rem 0.7rem', 
-                          cursor: 'pointer', 
-                          fontWeight: 'bold',
-                          transition:'all 0.2s ease',
-                          transform:'translateY(0)',
-                          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-                        }}
-                        onMouseDown={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                        }}
-                        onMouseUp={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(244, 67, 54, 0.3)';
-                        }}
+                        <button 
+                          onClick={() => onDelete(i)}
+                          className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white p-2 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                          aria-label="Delete word"
                         >
                           <FaTrash />
                         </button>
