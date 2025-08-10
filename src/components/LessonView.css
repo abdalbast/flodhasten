@@ -498,9 +498,10 @@
   margin-right: auto;
 }
 
-.image-option {
-  background: #1F2A36;
-  border: 2px solid #2E2F38;
+/* High specificity to override Tailwind dark mode */
+.exercise-container .image-option {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 2px solid #e0e7ff !important;
   border-radius: 12px;
   padding: 1rem;
   cursor: pointer;
@@ -509,22 +510,24 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  backdrop-filter: blur(10px);
 }
 
-.image-option:hover {
-  border-color: #23BFFF;
+.exercise-container .image-option:hover {
+  border-color: #23BFFF !important;
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(35, 191, 255, 0.15);
 }
 
-.image-option.selected {
-  /* Ring + glow (keep surface, emphasise selection) */
-  background: #1F2A36;
-  border-color: #F8D94E;
+.exercise-container .image-option.selected {
+  /* Ring + glow with clean background */
+  background: rgba(248, 217, 78, 0.1) !important;
+  border-color: #F8D94E !important;
   box-shadow: 0 0 0 2px #F8D94E, 0 0 22px rgba(248,217,78,.35);
 }
-.image-option.selected .option-svg {
-  /* ensure icon remains visible on selection */
-  filter: brightness(0) invert(1) saturate(0) contrast(1.1);
+.exercise-container .image-option.selected .option-svg {
+  /* Keep original icon colors - no filter! */
+  transform: scale(1.05);
 }
 
 /* Pressed / depth shadow for tactile feel */
@@ -561,7 +564,7 @@
   border-color: #c0392b;
 }
 
-.image-container {
+.exercise-container .image-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -569,13 +572,16 @@
   width: 80px;
   height: 80px;
   margin-bottom: 0.5rem;
-  overflow: hidden;
+  overflow: visible; /* Allow icons to be fully visible */
 }
 
-.option-svg {
+.exercise-container .option-svg {
   width: 70px;
   height: 70px;
   display: block;
+  /* Ensure icons are always visible */
+  opacity: 1 !important;
+  filter: none !important;
 }
 
 /* Fallback broken-image hide */
@@ -613,8 +619,8 @@
   height: 220px;
 }
 
-.option-label {
-  color: white;
+.exercise-container .option-label {
+  color: #374151 !important;
   font-size: 0.95rem;
   font-weight: 600;
   text-align: center;
