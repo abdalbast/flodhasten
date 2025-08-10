@@ -360,7 +360,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       const iconId = option.id;
                       let src = option.image;
                       if (!hasImage) {
-                        const setName = lesson?.iconSet || 'sketch';
+                        const setName = lesson?.iconSet || 'duotone';
                         if (setName === 'phosphor') {
                           src = getIconSrc(setName, iconId);
                         } else {
@@ -374,7 +374,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                           className="option-svg" 
                           referrerPolicy="no-referrer" 
                           loading="eager" 
-                          onError={(e)=>{ e.currentTarget.src = getIconSrc('sketch', iconId); }} 
+                          onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} 
                         />
                       );
                     })()}

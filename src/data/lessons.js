@@ -103,6 +103,7 @@ export const LESSONS = [
     id: 'lesson2',
     name: 'Basics 2',
     description: 'Learn more basic words',
+    iconSet: 'duotone',
     difficulty: 'beginner',
     xpReward: 15,
     requiredLevel: 2,
