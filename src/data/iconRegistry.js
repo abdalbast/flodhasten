@@ -2,6 +2,12 @@
 // All assets are custom, licence-free SVGs designed for this app.
 
 export const ICON_SETS = {
+  clean: {
+    water: '/icons/clean/water.svg',
+    milk: '/icons/clean/milk.svg',
+    coffee: '/icons/clean/coffee.svg',
+    bread: '/icons/clean/bread.svg',
+  },
   duotone: {
     water: '/icons/duotone/water.svg',
     milk: '/icons/duotone/milk.svg',
@@ -51,7 +57,7 @@ function deriveBaseFromLocation() {
 }
 
 export function getIconPath(iconSet, id) {
-  const set = ICON_SETS[iconSet] || ICON_SETS.duotone;
+  const set = ICON_SETS[iconSet] || ICON_SETS.clean;
   const path = set[id] || set.water;
   const envBase = (typeof process !== 'undefined' && process.env && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : '';
   const base = envBase || deriveBaseFromLocation();

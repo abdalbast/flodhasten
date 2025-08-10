@@ -4,7 +4,7 @@ export const sampleLessons = [
     id: 'basics-1',
     name: 'Basic Greetings',
     description: 'Learn essential Swedish greetings and introductions',
-    iconSet: 'duotone',
+    iconSet: 'clean',
     difficulty: 'beginner',
     estimatedTime: '5-8 minutes',
     exercises: [
@@ -69,7 +69,7 @@ export const sampleLessons = [
     id: 'family-1',
     name: 'Family Members',
     description: 'Learn Swedish words for family members',
-    iconSet: 'duotone',
+    iconSet: 'clean',
     difficulty: 'beginner',
     estimatedTime: '6-10 minutes',
     exercises: [
@@ -135,7 +135,7 @@ export const sampleLessons = [
     id: 'food-1',
     name: 'Basic Foods',
     description: 'Learn Swedish words for common foods and drinks',
-    iconSet: 'duotone',
+    iconSet: 'clean',
     difficulty: 'beginner',
     estimatedTime: '7-12 minutes',
     exercises: [
@@ -201,7 +201,7 @@ export const sampleLessons = [
     id: 'numbers-1',
     name: 'Numbers 1-10',
     description: 'Learn to count from 1 to 10 in Swedish',
-    iconSet: 'duotone',
+    iconSet: 'clean',
     difficulty: 'beginner',
     estimatedTime: '8-15 minutes',
     exercises: [
@@ -267,7 +267,7 @@ export const sampleLessons = [
     id: 'colours-1',
     name: 'Basic Colours',
     description: 'Learn Swedish words for basic colours',
-    iconSet: 'duotone',
+    iconSet: 'clean',
     difficulty: 'beginner',
     estimatedTime: '6-10 minutes',
     exercises: [

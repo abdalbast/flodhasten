@@ -369,7 +369,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                       });
                       
                       if (!hasImage) {
-                        const setName = lesson?.iconSet || 'duotone';
+                        const setName = lesson?.iconSet || 'clean';
                         console.log('🎯 Using icon registry:', { setName, iconId });
                         
                         if (setName === 'phosphor') {
@@ -390,8 +390,8 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                           referrerPolicy="no-referrer" 
                           loading="eager" 
                           onError={(e)=>{ 
-                            console.log('❌ Icon load error, falling back to duotone:', e.currentTarget.src);
-                            e.currentTarget.src = getIconSrc('duotone', iconId); 
+                            console.log('❌ Icon load error, falling back to clean icons:', e.currentTarget.src);
+                            e.currentTarget.src = getIconPath('clean', iconId); 
                           }} 
                           onLoad={(e) => {
                             console.log('✅ Icon loaded successfully:', e.currentTarget.src);
