@@ -51,7 +51,7 @@ function deriveBaseFromLocation() {
 }
 
 export function getIconPath(iconSet, id) {
-  const set = ICON_SETS[iconSet] || ICON_SETS.duotone;
+  const set = ICON_SETS[iconSet] || ICON_SETS.sketch;
   const path = set[id] || set.water;
   const envBase = (typeof process !== 'undefined' && process.env && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : '';
   const base = envBase || deriveBaseFromLocation();

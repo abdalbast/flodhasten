@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { MdVolumeUp, MdClose, MdCheck, MdError } from 'react-icons/md';
+import { MdVolumeUp, MdClose, MdCheck, MdError } from 'react-icons/md'; // MdVolumeUp now used for speaker icon
 import './LessonView.css';
 import ttsApi from '../utils/ttsApi';
 import { getIconPath, getIconSrc } from '../data/iconRegistry';
@@ -21,16 +21,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
   // Get current exercise safely - handle null/undefined cases
   const currentExercise = lesson?.exercises?.[currentExerciseIndex] || null;
 
-  // Demo icon source (coffee)
-  const demoCoffeeSrc = (() => {
-    const setName = lesson?.iconSet || 'sketch';
-    const id = 'coffee';
-    try {
-      return setName === 'phosphor' ? getIconSrc(setName, id) : getIconPath(setName, id);
-    } catch (e) {
-      return getIconSrc('duotone', id);
-    }
-  })();
+  // We don't need the demo coffee source anymore since we're using MdVolumeUp
 
   // Play pronunciation
   const playPronunciation = async (word) => {
@@ -311,16 +302,11 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             {/* Swedish word with pronunciation */}
             <div className="word-section flex items-center justify-center mb-6">
               <button 
-                className="pronunciation-button flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full mr-3 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={() => playPronunciation(currentExercise.swedishWord)}
                 aria-label={`Play pronunciation of ${currentExercise.swedishWord}`}
+                className="flex items-center justify-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
               >
-                {/* speaker icon from registry with fallback */}
-                {(() => {
-                  // Force reliable inline icon independent of set
-                  const src = getIconSrc('duotone', 'speaker');
-                  return <img src={src} alt="speaker" className="speaker-icon w-5 h-5" />;
-                })()}
+                <MdVolumeUp className="text-3xl" />
               </button>
               <div className="word-container relative">
                 <h2 
@@ -340,15 +326,13 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
             </div>
             
             {/* Image options grid */}
-            <div className="image-options-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="image-options-grid">
               {(shuffledOptions.length ? shuffledOptions : (currentExercise.options || (lesson?.allOptions && currentExercise.getOptions ? currentExercise.getOptions(lesson.allOptions) : []))).map((option, index) => (
                 <button
                   key={index}
-                  className={`image-option relative overflow-hidden flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] 
-                    ${selectedOption === option.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'} 
-                    ${showFeedback && isCorrect && selectedOption === option.id ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : ''} 
-                    ${showFeedback && !isCorrect && selectedOption === option.id ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : ''} 
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8D94E] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800`}
+                  className={`image-option ${selectedOption === option.id ? 'selected' : ''} 
+                    ${showFeedback && isCorrect && selectedOption === option.id ? 'correct-answer' : ''} 
+                    ${showFeedback && !isCorrect && selectedOption === option.id ? 'incorrect-answer' : ''}`}
                   onMouseDown={(e) => e.currentTarget && e.currentTarget.classList.add('pressing')}
                   onMouseUp={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
                   onMouseLeave={(e) => e.currentTarget && e.currentTarget.classList.remove('pressing')}
@@ -369,14 +353,14 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                     handleOptionSelect(option.id);
                   }}
                 >
-                  <div className="image-container h-16 w-16 flex items-center justify-center mb-2">
+                  <div className="image-container">
                     {/* Use icon registry when option.image is not provided */}
                     {(() => {
                       const hasImage = option.image && typeof option.image === 'string';
                       const iconId = option.id;
                       let src = option.image;
                       if (!hasImage) {
-                        const setName = lesson?.iconSet || 'duotone';
+                        const setName = lesson?.iconSet || 'sketch';
                         if (setName === 'phosphor') {
                           src = getIconSrc(setName, iconId);
                         } else {
@@ -387,22 +371,22 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
                         <img 
                           src={src} 
                           alt={option.label} 
-                          className="option-svg max-h-full max-w-full object-contain" 
+                          className="option-svg" 
                           referrerPolicy="no-referrer" 
                           loading="eager" 
-                          onError={(e)=>{ e.currentTarget.src = getIconSrc('duotone', iconId); }} 
+                          onError={(e)=>{ e.currentTarget.src = getIconSrc('sketch', iconId); }} 
                         />
                       );
                     })()}
                   </div>
-                  <div className="option-label text-sm font-medium text-gray-800 dark:text-gray-200">{option.label || 'Unknown'}</div>
+                  <div className="option-label">{option.label || 'Unknown'}</div>
                 </button>
               ))}
             </div>
             
-            <div className="continue-footer fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-center">
+            <div className="continue-footer fixed bottom-0 left-0 right-0 p-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-center">
               <button 
-                className={`continue-button relative overflow-hidden px-8 py-3 rounded-full font-bold text-white transition-all duration-200 shadow-md
+                className={`continue-button relative overflow-hidden px-6 py-2 rounded-full font-bold text-white transition-all duration-200 shadow-md
                   ${!selectedOption && !showFeedback ? 'bg-gray-400 cursor-not-allowed opacity-70' : ''}
                   ${selectedOption && !showFeedback ? 'bg-blue-600 hover:bg-blue-700 enabled:hover:shadow-lg' : ''}
                   ${isCorrect ? 'bg-green-600 hover:bg-green-700' : ''} 
@@ -543,7 +527,7 @@ const LessonView = ({ lesson, onComplete, onExit, isDarkMode }) => {
         </div>
       </div>
 
-      <div className="lesson-stats flex justify-between px-4 py-2 bg-gray-100 dark:bg-gray-800 shadow-sm">
+      <div className="lesson-stats flex justify-between px-3 py-1 bg-gray-100 dark:bg-gray-800 shadow-sm">
         <div className="stat flex items-center">
           <span className="stat-label text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Lives:</span>
           <span className="stat-value flex">
