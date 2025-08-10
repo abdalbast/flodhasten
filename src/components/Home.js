@@ -3,6 +3,7 @@ import { FaHatCowboy, FaUserTie, FaUndo, FaTrash } from 'react-icons/fa';
 import { GiDress } from 'react-icons/gi';
 import { BsPersonHeart, BsPersonFill, BsPersonBoundingBox } from 'react-icons/bs';
 import { WiMoonWaningCrescent6 } from 'react-icons/wi';
+import { MdVolumeUp } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 import LessonCircles from './LessonCircles';
 

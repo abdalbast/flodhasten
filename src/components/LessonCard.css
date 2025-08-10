@@ -1,0 +1,92 @@
+.lesson-card-figure {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 280px;
+  perspective: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  min-height: 44px; /* Accessibility: Minimum touch target size */
+}
+
+/* Accessibility: Focus states for lesson cards */
+.lesson-card-figure:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  border-radius: 25px;
+}
+
+.lesson-card-figure:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.lesson-card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  /* Performance optimization */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.lesson-card-caption {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 4px;
+  background-color: #fff;
+  padding: 4px 10px;
+  font-size: 10px;
+  color: #2d2d2d;
+  opacity: 0;
+  z-index: 3;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .lesson-card-figure {
+    min-width: 200px;
+    max-width: 300px;
+    min-height: 240px; /* Reduced height for mobile */
+    margin: 0.5rem;
+  }
+  
+  .lesson-card-inner {
+    min-height: 240px; /* Match parent height */
+  }
+  
+  .lesson-card-caption {
+    display: none;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .lesson-card-figure {
+    min-width: 160px;
+    max-width: 280px;
+    min-height: 220px;
+    margin: 0.25rem;
+  }
+  
+  .lesson-card-inner {
+    min-height: 220px;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .lesson-card-figure {
+    min-width: 220px;
+    max-width: 320px;
+  }
+}
