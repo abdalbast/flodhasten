@@ -499,7 +499,7 @@
 }
 
 .image-option {
-  background: #161B22;
+  background: #0D1117;
   border: 2px solid #30363D;
   border-radius: 16px;
   padding: 1.25rem 1rem;
@@ -515,16 +515,16 @@
 
 .image-option:hover {
   border-color: #58A6FF;
-  background: #1C2128;
+  background: #161B22;
 }
 
 .image-option.selected {
-  background: #161B22;
+  background: #0D1117;
   border-color: #F0D000;
   border-width: 3px;
+  box-shadow: none;
 }
 .image-option.selected .option-svg {
-  /* Keep normal appearance for selected state */
   filter: none;
 }
 
