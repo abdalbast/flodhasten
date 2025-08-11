@@ -42,6 +42,9 @@ async function playSwedish(word) {
 
 // WordFall: Tetris-style spelling game
 function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
+  // Filter for beginner words (difficulty 1) and ensure we have enough words
+  const beginnerWords = words.filter(word => word.difficulty === 1);
+  const gameWords = beginnerWords.length >= 10 ? beginnerWords : words;
   const [gameState, setGameState] = useState('ready'); // ready, playing, paused, gameOver
   const [fallingWords, setFallingWords] = useState([]);
   const [input, setInput] = useState('');
@@ -62,9 +65,9 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
 
   // Generate a new falling word
   const generateWord = useCallback(() => {
-    if (words.length === 0) return;
+    if (gameWords.length === 0) return;
     
-    const randomWord = words[Math.floor(Math.random() * words.length)];
+    const randomWord = gameWords[Math.floor(Math.random() * gameWords.length)];
     const newWord = {
       id: Date.now() + Math.random(),
       swedish: randomWord.swedish,
@@ -76,7 +79,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     };
     
     setFallingWords(prev => [...prev, newWord]);
-  }, [words, level]);
+  }, [gameWords, level]);
 
   // Game loop for moving words
   const gameLoop = useCallback(() => {
@@ -211,8 +214,8 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     }
   }, [score, onLessonComplete]);
 
-  if (!words.length) {
-    return <div style={{textAlign:'center',marginTop:'2rem'}}>No words to practice!</div>;
+  if (!gameWords.length) {
+    return <div style={{textAlign:'center',marginTop:'2rem'}}>No beginner words available for practice!</div>;
   }
 
   return (
@@ -227,6 +230,19 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       border: `1px solid ${borderColor}`
     }}>
       <h2 style={{color: titleColor}}>Word Fall</h2>
+      
+      {/* Word Count Info */}
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '1rem',
+        fontSize: '0.9rem',
+        color: isDarkMode ? '#ccc' : '#666',
+        background: isDarkMode ? '#444' : '#f0f0f0',
+        padding: '0.5rem',
+        borderRadius: 6
+      }}>
+        Practising with {gameWords.length} beginner Swedish words
+      </div>
       
       {/* Game Stats */}
       <div style={{

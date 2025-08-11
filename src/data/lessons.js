@@ -167,6 +167,190 @@ export const LESSONS = [
         options: ['hej', 'tack', 'ja', 'nej']
       }
     ]
+  },
+  {
+    id: 'lesson3',
+    name: 'Family',
+    description: 'Learn family words',
+    iconSet: 'feather',
+    difficulty: 'beginner',
+    xpReward: 20,
+    requiredLevel: 3,
+    words: [
+      { 
+        swedish: 'mamma', 
+        english: 'mother',
+        pronunciation: 'mah-mah',
+        difficulty: 1,
+        category: 'family'
+      },
+      { 
+        swedish: 'pappa', 
+        english: 'father',
+        pronunciation: 'pah-pah',
+        difficulty: 1,
+        category: 'family'
+      },
+      { 
+        swedish: 'barn', 
+        english: 'child',
+        pronunciation: 'barn',
+        difficulty: 1,
+        category: 'family'
+      },
+      { 
+        swedish: 'flicka', 
+        english: 'girl',
+        pronunciation: 'flee-kah',
+        difficulty: 1,
+        category: 'family'
+      },
+      { 
+        swedish: 'pojke', 
+        english: 'boy',
+        pronunciation: 'poy-keh',
+        difficulty: 1,
+        category: 'family'
+      }
+    ]
+  },
+  {
+    id: 'lesson4',
+    name: 'Numbers',
+    description: 'Learn to count',
+    iconSet: 'mono',
+    difficulty: 'beginner',
+    xpReward: 25,
+    requiredLevel: 4,
+    words: [
+      { 
+        swedish: 'ett', 
+        english: 'one',
+        pronunciation: 'et',
+        difficulty: 1,
+        category: 'numbers'
+      },
+      { 
+        swedish: 'två', 
+        english: 'two',
+        pronunciation: 'tvoh',
+        difficulty: 1,
+        category: 'numbers'
+      },
+      { 
+        swedish: 'tre', 
+        english: 'three',
+        pronunciation: 'treh',
+        difficulty: 1,
+        category: 'numbers'
+      },
+      { 
+        swedish: 'fyra', 
+        english: 'four',
+        pronunciation: 'fee-rah',
+        difficulty: 1,
+        category: 'numbers'
+      },
+      { 
+        swedish: 'fem', 
+        english: 'five',
+        pronunciation: 'fem',
+        difficulty: 1,
+        category: 'numbers'
+      }
+    ]
+  },
+  {
+    id: 'lesson5',
+    name: 'Animals',
+    description: 'Learn animal names',
+    iconSet: 'flat',
+    difficulty: 'beginner',
+    xpReward: 30,
+    requiredLevel: 5,
+    words: [
+      { 
+        swedish: 'hund', 
+        english: 'dog',
+        pronunciation: 'hund',
+        difficulty: 1,
+        category: 'animals'
+      },
+      { 
+        swedish: 'katt', 
+        english: 'cat',
+        pronunciation: 'kaht',
+        difficulty: 1,
+        category: 'animals'
+      },
+      { 
+        swedish: 'fågel', 
+        english: 'bird',
+        pronunciation: 'foh-gel',
+        difficulty: 1,
+        category: 'animals'
+      },
+      { 
+        swedish: 'fisk', 
+        english: 'fish',
+        pronunciation: 'fisk',
+        difficulty: 1,
+        category: 'animals'
+      },
+      { 
+        swedish: 'häst', 
+        english: 'horse',
+        pronunciation: 'hest',
+        difficulty: 1,
+        category: 'animals'
+      }
+    ]
+  },
+  {
+    id: 'lesson6',
+    name: 'Colours',
+    description: 'Learn basic colours',
+    iconSet: 'duotone',
+    difficulty: 'beginner',
+    xpReward: 35,
+    requiredLevel: 6,
+    words: [
+      { 
+        swedish: 'röd', 
+        english: 'red',
+        pronunciation: 'rud',
+        difficulty: 1,
+        category: 'colours'
+      },
+      { 
+        swedish: 'blå', 
+        english: 'blue',
+        pronunciation: 'bloh',
+        difficulty: 1,
+        category: 'colours'
+      },
+      { 
+        swedish: 'gul', 
+        english: 'yellow',
+        pronunciation: 'gool',
+        difficulty: 1,
+        category: 'colours'
+      },
+      { 
+        swedish: 'grön', 
+        english: 'green',
+        pronunciation: 'grun',
+        difficulty: 1,
+        category: 'colours'
+      },
+      { 
+        swedish: 'vit', 
+        english: 'white',
+        pronunciation: 'veet',
+        difficulty: 1,
+        category: 'colours'
+      }
+    ]
   }
 ];
 
