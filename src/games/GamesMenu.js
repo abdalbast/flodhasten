@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdFlip, MdCompareArrows, MdSpellcheck, MdQuiz, MdVolumeUp, MdHighlightOff } from 'react-icons/md';
+import { MdFlip, MdCompareArrows, MdSpellcheck, MdQuiz, MdVolumeUp, MdHighlightOff, MdKeyboardArrowDown } from 'react-icons/md';
 
 // Menu to pick a game
 function GamesMenu({ setGame, isDarkMode }) {
@@ -206,6 +206,37 @@ function GamesMenu({ setGame, isDarkMode }) {
           e.target.style.boxShadow = '0 4px 12px rgba(216, 27, 96, 0.3)';
         }}
         ><MdHighlightOff style={{verticalAlign:'middle',marginRight:6}}/>Odd One Out</button>
+        
+        <button onClick={()=>setGame('wordfall')} style={{
+          background:'#e67e22',
+          color:'#fff',
+          border:'none',
+          borderRadius:8,
+          padding:'0.8rem',
+          fontWeight:'bold',
+          fontSize:16,
+          cursor:'pointer',
+          transition:'all 0.2s ease',
+          transform:'translateY(0)',
+          boxShadow:'0 2px 6px rgba(0,0,0,0.1)'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 4px 12px rgba(230, 126, 34, 0.3)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+        }}
+        onMouseDown={(e) => {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+        }}
+        onMouseUp={(e) => {
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 4px 12px rgba(230, 126, 34, 0.3)';
+        }}
+        ><MdKeyboardArrowDown style={{verticalAlign:'middle',marginRight:6}}/>Word Fall</button>
       </div>
     </div>
   );
