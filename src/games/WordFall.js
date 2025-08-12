@@ -64,14 +64,42 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const titleColor = isDarkMode ? '#64b5f6' : '#0288d1';
   const borderColor = isDarkMode ? '#555555' : 'transparent';
 
+  // Tetris-style block colors and shapes
+  const tetrisColors = [
+    '#FF6B6B', // Red
+    '#4ECDC4', // Teal
+    '#45B7D1', // Blue
+    '#96CEB4', // Green
+    '#FFEAA7', // Yellow
+    '#DDA0DD', // Plum
+    '#FFB347', // Orange
+    '#87CEEB', // Sky Blue
+    '#98FB98', // Pale Green
+    '#F0E68C'  // Khaki
+  ];
+
+  // Tetris-style block shapes (different widths and heights)
+  const tetrisShapes = [
+    { width: 100, height: 40, type: 'I' },      // Long horizontal
+    { width: 80, height: 50, type: 'O' },       // Square
+    { width: 120, height: 35, type: 'T' },      // Wide
+    { width: 70, height: 45, type: 'L' },       // Tall
+    { width: 90, height: 40, type: 'S' },       // Medium
+    { width: 110, height: 30, type: 'Z' }       // Extra wide
+  ];
+
   // Generate a new falling word
   const generateWord = useCallback(() => {
     if (gameWords.length === 0) return;
     
     const randomWord = gameWords[Math.floor(Math.random() * gameWords.length)];
     
+    // Select random Tetris-style properties
+    const randomColor = tetrisColors[Math.floor(Math.random() * tetrisColors.length)];
+    const randomShape = tetrisShapes[Math.floor(Math.random() * tetrisShapes.length)];
+    
     // Calculate available positions to avoid overlap
-    const wordWidth = 120; // Approximate word width including padding
+    const wordWidth = randomShape.width;
     const gameAreaWidth = 320;
     const maxX = gameAreaWidth - wordWidth;
     
@@ -107,7 +135,9 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       x: Math.max(0, Math.min(newX, maxX)), // Ensure within bounds
       y: newY,
       speed: 1 + (level * 0.2), // Speed increases with level
-      answered: false
+      answered: false,
+      color: randomColor,
+      shape: randomShape
     };
     
     setFallingWords(prev => [...prev, newWord]);
@@ -122,7 +152,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         ...word,
         y: word.y + word.speed,
         // Ensure words stay within horizontal bounds
-        x: Math.max(0, Math.min(word.x, 320 - 120))
+        x: Math.max(0, Math.min(word.x, 320 - (word.shape?.width || 120)))
       }));
       
       // Remove words that have fallen off screen or been answered
@@ -263,7 +293,16 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       textAlign: 'center',
       border: `1px solid ${borderColor}`
     }}>
-      <h2 style={{color: titleColor}}>Word Fall</h2>
+      <h2 style={{
+        color: titleColor,
+        textAlign: 'center',
+        marginBottom: '1rem',
+        fontSize: '2rem',
+        fontWeight: 'bold',
+        textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+      }}>
+        🎮 WORD FALL 🎮
+      </h2>
       
       {/* Word Count Info */}
       <div style={{
@@ -279,33 +318,51 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         Practising with {gameWords.length} beginner Swedish words
       </div>
       
-      {/* Game Stats */}
+      {/* Game Stats - Tetris Style */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         marginBottom: '1rem',
         fontSize: '0.9rem',
-        color: isDarkMode ? '#ccc' : '#666'
+        color: isDarkMode ? '#ccc' : '#666',
+        background: isDarkMode ? '#333' : '#e8e8e8',
+        padding: '0.8rem',
+        borderRadius: 8,
+        border: `2px solid ${isDarkMode ? '#555' : '#ccc}`,
+        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
       }}>
-        <span>Score: {score}</span>
-        <span>Level: {level}</span>
-        <span>Lives: {'❤️'.repeat(lives)}</span>
+        <span style={{fontWeight: 'bold', color: '#FF6B6B'}}>Score: {score}</span>
+        <span style={{fontWeight: 'bold', color: '#4ECDC4'}}>Level: {level}</span>
+        <span style={{fontWeight: 'bold', color: '#FFEAA7'}}>Lives: {'❤️'.repeat(lives)}</span>
       </div>
 
       {/* Game Controls */}
       {gameState === 'ready' && (
         <button onClick={startGame} style={{
-          background: '#2193b0',
+          background: 'linear-gradient(135deg, #FF6B6B, #4ECDC4)',
           color: '#fff',
           border: 'none',
-          borderRadius: 8,
+          borderRadius: 12,
           padding: '1rem 2rem',
           fontWeight: 'bold',
           fontSize: 18,
           cursor: 'pointer',
-          marginBottom: '1rem'
-        }}>
-          Start Game
+          marginBottom: '1rem',
+          boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+          transition: 'all 0.3s ease',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+          border: '2px solid rgba(255,255,255,0.2)'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.transform = 'translateY(-3px)';
+          e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+        }}
+        >
+          🚀 START GAME 🚀
         </button>
       )}
 
@@ -355,6 +412,36 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         overflow: 'hidden',
         boxShadow: 'inset 0 0 10px rgba(0,0,0,0.1)'
       }}>
+        {/* Tetris-style grid lines */}
+        {Array.from({ length: 8 }, (_, i) => (
+          <div
+            key={`grid-${i}`}
+            style={{
+              position: 'absolute',
+              left: `${(i * 40)}px`,
+              top: 0,
+              width: '1px',
+              height: '100%',
+              background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+              pointerEvents: 'none'
+            }}
+          />
+        ))}
+        {Array.from({ length: 10 }, (_, i) => (
+          <div
+            key={`grid-h-${i}`}
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: `${(i * 40)}px`,
+              width: '100%',
+              height: '1px',
+              background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+              pointerEvents: 'none'
+            }}
+          />
+        ))}
+        
         {/* Danger zone indicator */}
         <div style={{
           position: 'absolute',
@@ -380,23 +467,29 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
             key={word.id}
             style={{
               position: 'absolute',
-              left: Math.max(0, Math.min(word.x, 320 - 120)), // Ensure within bounds
+              left: Math.max(0, Math.min(word.x, 320 - (word.shape?.width || 120))), // Ensure within bounds
               top: word.y,
-              background: word.answered ? '#27ae60' : '#e74c3c',
+              background: word.answered ? '#27ae60' : (word.color || '#e74c3c'),
               color: '#fff',
               padding: '0.5rem',
-              borderRadius: 6,
+              borderRadius: word.shape?.type === 'O' ? '50%' : '8px', // Round for square blocks
               fontSize: '0.9rem',
               fontWeight: 'bold',
-              minWidth: '80px',
-              maxWidth: '120px',
+              width: word.shape?.width || 120,
+              height: word.shape?.height || 40,
               textAlign: 'center',
               transition: 'all 0.1s ease',
               opacity: word.answered ? 0.7 : 1,
               transform: word.answered ? 'scale(0.9)' : 'scale(1)',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis'
+              textOverflow: 'ellipsis',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 4px 8px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2)`,
+              border: `2px solid ${word.answered ? '#27ae60' : (word.color || '#e74c3c')}`,
+              textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
             }}
           >
             {word.swedish}
