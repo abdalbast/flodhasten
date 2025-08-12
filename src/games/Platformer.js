@@ -60,12 +60,17 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState('');
   const [showConfetti, setShowConfetti] = useState(false);
+  const [particles, setParticles] = useState([]);
   
   const gameLoopRef = useRef(null);
   const keysPressed = useRef(new Set());
-  const gravity = 0.8;
-  const jumpPower = -15;
-  const moveSpeed = 5;
+  const gravity = 0.6;
+  const jumpPower = -18;
+  const moveSpeed = 6;
+  const maxFallSpeed = 12;
+  const friction = 0.85;
+  const airResistance = 0.95;
+  const jumpHoldBonus = 0.8;
   
   const containerBg = isDarkMode ? '#2d2d2d' : '#e1f5fe';
   const containerShadow = isDarkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px #81d4fa';
@@ -75,11 +80,11 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   // Generate level elements
   const generateLevel = useCallback((level) => {
     const newPlatforms = [
-      { x: 0, y: 350, width: 800, height: 50, type: 'ground' },
-      { x: 200, y: 250, width: 100, height: 20, type: 'platform' },
-      { x: 400, y: 200, width: 100, height: 20, type: 'platform' },
-      { x: 600, y: 150, width: 100, height: 20, type: 'platform' },
-      { x: 800, y: 100, width: 100, height: 20, type: 'platform' }
+      { x: 0, y: 350, width: 800, height: 50, type: 'ground', bouncy: false },
+      { x: 200, y: 250, width: 100, height: 20, type: 'platform', bouncy: false },
+      { x: 400, y: 200, width: 100, height: 20, type: 'platform', bouncy: true },
+      { x: 600, y: 150, width: 100, height: 20, type: 'platform', bouncy: false },
+      { x: 800, y: 100, width: 100, height: 20, type: 'platform', bouncy: true }
     ];
     
     const newCollectibles = [
@@ -123,64 +128,154 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     if (gameState !== 'playing') return;
     
     setPlayer(prev => {
-      let newVx = 0;
+      let newVx = prev.vx;
       let newVy = prev.vy + gravity;
       let newX = prev.x;
       let newY = prev.y;
       let newOnGround = false;
       let newDirection = prev.direction;
       
-      // Handle movement
+      // Handle movement with momentum
       if (keysPressed.current.has('ArrowLeft') || keysPressed.current.has('KeyA')) {
-        newVx = -moveSpeed;
+        newVx = Math.max(newVx - moveSpeed * 0.5, -moveSpeed);
         newDirection = -1;
-      }
-      if (keysPressed.current.has('ArrowRight') || keysPressed.current.has('KeyD')) {
-        newVx = moveSpeed;
+      } else if (keysPressed.current.has('ArrowRight') || keysPressed.current.has('KeyD')) {
+        newVx = Math.min(newVx + moveSpeed * 0.5, moveSpeed);
         newDirection = 1;
+      } else {
+        // Apply friction when no keys pressed
+        if (prev.onGround) {
+          newVx *= friction;
+        } else {
+          newVx *= airResistance;
+        }
       }
+      
+      // Enhanced jumping with variable jump height
       if ((keysPressed.current.has('Space') || keysPressed.current.has('ArrowUp') || keysPressed.current.has('KeyW')) && prev.onGround) {
         newVy = jumpPower;
         newOnGround = false;
+      } else if ((keysPressed.current.has('Space') || keysPressed.current.has('ArrowUp') || keysPressed.current.has('KeyW')) && newVy < 0) {
+        // Variable jump height - hold jump for higher jumps
+        newVy += jumpHoldBonus;
       }
+      
+      // Limit fall speed
+      newVy = Math.min(newVy, maxFallSpeed);
       
       // Update position
       newX += newVx;
       newY += newVy;
       
-      // Check platform collisions
+      // Enhanced collision detection with better physics
+      let collisionDetected = false;
       platforms.forEach(platform => {
         if (newX < platform.x + platform.width && 
             newX + 30 > platform.x && 
             newY < platform.y + platform.height && 
             newY + 30 > platform.y) {
           
+          collisionDetected = true;
+          
           if (newVy > 0 && newY < platform.y) {
             // Landing on platform
             newY = platform.y - 30;
-            newVy = 0;
+            if (platform.bouncy) {
+              newVy = -jumpPower * 0.6; // Bounce effect
+              newVx *= 1.2; // Increase horizontal speed on bouncy platforms
+            } else {
+              newVy = 0;
+              newVx *= 0.8; // Reduce horizontal speed when landing
+            }
             newOnGround = true;
           } else if (newVy < 0 && newY + 30 > platform.y + platform.height) {
             // Hitting platform from below
             newY = platform.y + platform.height;
-            newVy = 0;
+            if (platform.bouncy) {
+              newVy = Math.abs(newVy) * 0.8; // Bounce back down
+            } else {
+              newVy = 0;
+            }
+            newVx *= 0.9; // Slight speed reduction when hitting head
           } else if (newVx > 0 && newX < platform.x) {
             // Hitting platform from left
             newX = platform.x - 30;
+            if (platform.bouncy) {
+              newVx = -Math.abs(newVx) * 0.7; // Bounce back
+            } else {
+              newVx = 0;
+            }
           } else if (newVx < 0 && newX + 30 > platform.x + platform.width) {
             // Hitting platform from right
             newX = platform.x + platform.width;
+            if (platform.bouncy) {
+              newVx = Math.abs(newVx) * 0.7; // Bounce back
+            } else {
+              newVx = 0;
+            }
           }
         }
       });
       
-      // Check boundaries
-      if (newX < 0) newX = 0;
-      if (newX > 770) newX = 770;
+      // Wall sliding and wall jumping mechanics
+      if (!prev.onGround && collisionDetected && (newVx > 0 || newVx < 0)) {
+        // Wall slide
+        newVy = Math.min(newVy, 2);
+        if (keysPressed.current.has('Space') || keysPressed.current.has('ArrowUp') || keysPressed.current.has('KeyW')) {
+          // Wall jump
+          newVy = jumpPower * 0.7;
+          newVx = newDirection * -moveSpeed * 0.8;
+          newOnGround = false;
+        }
+      }
+      
+      // Check boundaries with bounce effect
+      if (newX < 0) {
+        newX = 0;
+        newVx = Math.abs(newVx) * 0.3; // Bounce off left wall
+      }
+      if (newX > 770) {
+        newX = 770;
+        newVx = -Math.abs(newVx) * 0.3; // Bounce off right wall
+      }
       if (newY > 320) {
         newY = 320;
         newVy = 0;
         newOnGround = true;
+        newVx *= 0.7; // Reduce speed when hitting ground
+      }
+      
+      // Stop very small movements
+      if (Math.abs(newVx) < 0.1) newVx = 0;
+      if (Math.abs(newVy) < 0.1) newVy = 0;
+      
+      // Create landing particles
+      if (prev.onGround && !newOnGround && newVy < 0) {
+        // Player just left ground
+        const newParticles = Array.from({ length: 3 }, (_, i) => ({
+          id: Date.now() + i,
+          x: newX + 15,
+          y: newY + 30,
+          vx: (Math.random() - 0.5) * 4,
+          vy: Math.random() * 2,
+          life: 30,
+          color: '#8B4513'
+        }));
+        setParticles(prev => [...prev, ...newParticles]);
+      }
+      
+      // Create wall hit particles
+      if (Math.abs(newVx) > 3 && (newX === 0 || newX === 770)) {
+        const newParticles = Array.from({ length: 2 }, (_, i) => ({
+          id: Date.now() + i + 100,
+          x: newX + (newX === 0 ? 0 : 30),
+          y: newY + 15,
+          vx: (newX === 0 ? 1 : -1) * Math.random() * 3,
+          vy: (Math.random() - 0.5) * 2,
+          life: 25,
+          color: '#654321'
+        }));
+        setParticles(prev => [...prev, ...newParticles]);
       }
       
       return {
@@ -232,6 +327,15 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         setGameState('paused');
       }
     });
+    
+    // Update particles
+    setParticles(prev => prev.map(particle => ({
+      ...particle,
+      x: particle.x + particle.vx,
+      y: particle.y + particle.vy,
+      vy: particle.vy + 0.2, // Gravity for particles
+      life: particle.life - 1
+    })).filter(particle => particle.life > 0));
     
     // Check if player fell off
     if (player.y > 400) {
@@ -489,9 +593,11 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
               top: platform.y,
               width: platform.width,
               height: platform.height,
-              background: platform.type === 'ground' ? '#8B4513' : '#228B22',
-              border: '2px solid #654321',
-              borderRadius: platform.type === 'ground' ? 0 : 4
+              background: platform.type === 'ground' ? '#8B4513' : (platform.bouncy ? '#FFD700' : '#228B22'),
+              border: `2px solid ${platform.bouncy ? '#FF8C00' : '#654321'}`,
+              borderRadius: platform.type === 'ground' ? 0 : 4,
+              boxShadow: platform.bouncy ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none',
+              animation: platform.bouncy ? 'bounce 2s infinite' : 'none'
             }}
           />
         ))}
@@ -541,7 +647,25 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
           </div>
         ))}
         
-        {/* Player */}
+        {/* Particles */}
+        {particles.map(particle => (
+          <div
+            key={particle.id}
+            style={{
+              position: 'absolute',
+              left: particle.x,
+              top: particle.y,
+              width: 4,
+              height: 4,
+              background: particle.color,
+              borderRadius: '50%',
+              opacity: particle.life / 30,
+              transform: `scale(${particle.life / 30})`
+            }}
+          />
+        ))}
+        
+        {/* Player with enhanced physics effects */}
         <div
           style={{
             position: 'absolute',
@@ -549,11 +673,28 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
             top: player.y,
             width: 30,
             height: 30,
-            background: '#FF6B6B',
+            background: player.onGround ? '#FF6B6B' : '#FF8E8E',
             borderRadius: '50%',
-            border: '2px solid #8B0000',
+            border: `2px solid ${player.onGround ? '#8B0000' : '#CC0000'}`,
             transform: `scaleX(${player.direction})`,
-            transition: 'transform 0.1s ease'
+            transition: 'transform 0.1s ease',
+            boxShadow: player.onGround ? '0 2px 4px rgba(0,0,0,0.3)' : '0 4px 8px rgba(0,0,0,0.4)',
+            filter: player.onGround ? 'none' : 'brightness(1.1)'
+          }}
+        />
+        
+        {/* Player shadow */}
+        <div
+          style={{
+            position: 'absolute',
+            left: player.x + 5,
+            top: player.y + 32,
+            width: 20,
+            height: 8,
+            background: 'rgba(0,0,0,0.2)',
+            borderRadius: '50%',
+            transform: `scaleX(${1 - Math.abs(player.vy) * 0.02})`,
+            opacity: 0.6
           }}
         />
         
@@ -717,6 +858,9 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         <p style={{marginTop: '1rem', marginBottom: 0}}>
           Collect coins and gems by answering language questions, unlock doors with grammar challenges!
         </p>
+        <div style={{marginTop: '0.5rem', fontSize: '0.8rem', color: '#888'}}>
+          <strong>Physics Features:</strong> Momentum, friction, wall jumping, bouncy platforms, particle effects
+        </div>
       </div>
 
       {/* Game Over */}
