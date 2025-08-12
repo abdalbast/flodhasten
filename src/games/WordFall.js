@@ -57,6 +57,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const gameLoopRef = useRef(null);
   const lastWordTimeRef = useRef(0);
   const wordSpeedRef = useRef(2000); // Time between new words in ms
+  const maxWordsRef = useRef(5); // Maximum number of words on screen at once
   
   const containerBg = isDarkMode ? '#2d2d2d' : '#e1f5fe';
   const containerShadow = isDarkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px #81d4fa';
@@ -68,18 +69,49 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     if (gameWords.length === 0) return;
     
     const randomWord = gameWords[Math.floor(Math.random() * gameWords.length)];
+    
+    // Calculate available positions to avoid overlap
+    const wordWidth = 120; // Approximate word width including padding
+    const gameAreaWidth = 320;
+    const maxX = gameAreaWidth - wordWidth;
+    
+    // Find a position that doesn't overlap with existing words
+    let attempts = 0;
+    let newX, newY;
+    
+    // Try to distribute words more evenly across the screen
+    const columns = 3; // Divide screen into 3 columns
+    const columnWidth = maxX / columns;
+    const preferredColumn = Math.floor(Math.random() * columns);
+    
+    do {
+      // Start with preferred column, then try others
+      const column = attempts < columns ? (preferredColumn + attempts) % columns : Math.floor(Math.random() * columns);
+      newX = (column * columnWidth) + (Math.random() * (columnWidth - wordWidth));
+      newY = -50; // Start above the game area
+      attempts++;
+      
+      // Check if this position overlaps with existing words
+      const overlaps = fallingWords.some(word => 
+        Math.abs(word.x - newX) < wordWidth && 
+        Math.abs(word.y - newY) < 40
+      );
+      
+      if (!overlaps || attempts > 15) break;
+    } while (attempts < 15);
+    
     const newWord = {
       id: Date.now() + Math.random(),
       swedish: randomWord.swedish,
       english: randomWord.english,
-      x: Math.random() * 280, // Random horizontal position
-      y: -50, // Start above the game area
+      x: Math.max(0, Math.min(newX, maxX)), // Ensure within bounds
+      y: newY,
       speed: 1 + (level * 0.2), // Speed increases with level
       answered: false
     };
     
     setFallingWords(prev => [...prev, newWord]);
-  }, [gameWords, level]);
+  }, [gameWords, level, fallingWords]);
 
   // Game loop for moving words
   const gameLoop = useCallback(() => {
@@ -88,7 +120,9 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     setFallingWords(prev => {
       const updated = prev.map(word => ({
         ...word,
-        y: word.y + word.speed
+        y: word.y + word.speed,
+        // Ensure words stay within horizontal bounds
+        x: Math.max(0, Math.min(word.x, 320 - 120))
       }));
       
       // Remove words that have fallen off screen or been answered
@@ -111,9 +145,9 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       return prev;
     });
     
-    // Generate new words periodically
+    // Generate new words periodically, but limit the number on screen
     const now = Date.now();
-    if (now - lastWordTimeRef.current > wordSpeedRef.current) {
+    if (now - lastWordTimeRef.current > wordSpeedRef.current && fallingWords.length < maxWordsRef.current) {
       generateWord();
       lastWordTimeRef.current = now;
     }
@@ -239,7 +273,8 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         color: isDarkMode ? '#ccc' : '#666',
         background: isDarkMode ? '#444' : '#f0f0f0',
         padding: '0.5rem',
-        borderRadius: 6
+        borderRadius: 6,
+        border: `1px solid ${isDarkMode ? '#555' : '#ddd'}`
       }}>
         Practising with {gameWords.length} beginner Swedish words
       </div>
@@ -317,15 +352,35 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         margin: '0 auto 1rem',
         background: isDarkMode ? '#1a1a1a' : '#f8f9fa',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxShadow: 'inset 0 0 10px rgba(0,0,0,0.1)'
       }}>
+        {/* Danger zone indicator */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '50px',
+          background: 'rgba(231, 76, 60, 0.15)',
+          borderTop: `2px solid #e74c3c`,
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#e74c3c',
+          fontSize: '0.8rem',
+          fontWeight: 'bold'
+        }}>
+          DANGER ZONE - Don't let words reach here!
+        </div>
         {/* Falling Words */}
         {fallingWords.map(word => (
           <div
             key={word.id}
             style={{
               position: 'absolute',
-              left: word.x,
+              left: Math.max(0, Math.min(word.x, 320 - 120)), // Ensure within bounds
               top: word.y,
               background: word.answered ? '#27ae60' : '#e74c3c',
               color: '#fff',
@@ -334,10 +389,14 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
               fontSize: '0.9rem',
               fontWeight: 'bold',
               minWidth: '80px',
+              maxWidth: '120px',
               textAlign: 'center',
               transition: 'all 0.1s ease',
               opacity: word.answered ? 0.7 : 1,
-              transform: word.answered ? 'scale(0.9)' : 'scale(1)'
+              transform: word.answered ? 'scale(0.9)' : 'scale(1)',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis'
             }}
           >
             {word.swedish}
