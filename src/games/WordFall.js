@@ -328,7 +328,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         background: isDarkMode ? '#333' : '#e8e8e8',
         padding: '0.8rem',
         borderRadius: 8,
-        border: `2px solid ${isDarkMode ? '#555' : '#ccc}`,
+        border: `2px solid ${isDarkMode ? '#555' : '#ccc'}`,
         boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
       }}>
         <span style={{fontWeight: 'bold', color: '#FF6B6B'}}>Score: {score}</span>

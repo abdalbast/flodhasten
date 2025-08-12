@@ -45,7 +45,7 @@ const Matching = React.lazy(() => import('./games/Matching'));
 const Spelling = React.lazy(() => import('./games/Spelling'));
 const WordFall = React.lazy(() => import('./games/WordFall'));
 const Platformer = React.lazy(() => import('./games/Platformer'));
-const MarioLanguage = React.lazy(() => import('./games/MarioLanguage'));
+
 const MultipleChoice = React.lazy(() => import('./games/MultipleChoice'));
 const AudioRecall = React.lazy(() => import('./games/AudioRecall'));
 const OddOneOut = React.lazy(() => import('./games/OddOneOut'));
@@ -1119,9 +1119,7 @@ function App() {
       else if (game === 'platformer') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Platformer Adventure..." isDarkMode={isDarkMode} />}>
         <Platformer words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
       </Suspense>;
-      else if (game === 'mario') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Mario Language..." isDarkMode={isDarkMode} />}>
-        <MarioLanguage words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
-      </Suspense>;
+
       else if (game === 'multiple') gameComp = <Suspense fallback={<LoadingSpinner message="Loading Multiple Choice..." isDarkMode={isDarkMode} />}>
         <MultipleChoice words={gameWords} onWordStatUpdate={handleWordStatUpdate} onLessonComplete={onLessonComplete} isDarkMode={isDarkMode} />
       </Suspense>;

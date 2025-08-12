@@ -62,7 +62,7 @@ async function playSwedish(word) {
 }
 
 // Memoized option button component
-const OptionButton = React.memo(({ option, isCorrect, isSelected, isRevealed, onClick, disabled }) => {
+const OptionButton = React.memo(({ option, isCorrect, isSelected, isRevealed, onClick, disabled, iconSet = 'sketch' }) => {
   const getButtonStyle = useMemo(() => {
     let bg = '#fff', color = '#1976d2';
     if (isRevealed) {
@@ -78,6 +78,40 @@ const OptionButton = React.memo(({ option, isCorrect, isSelected, isRevealed, on
     return { background: bg, color };
   }, [isCorrect, isSelected, isRevealed]);
 
+  // Map English words to icon IDs
+  const getIconId = (englishWord) => {
+    const wordToIconMap = {
+      // Food & Drink
+      'water': 'water',
+      'milk': 'milk',
+      'coffee': 'coffee',
+      'bread': 'bread',
+      'tea': 'coffee', // Use coffee icon for tea
+      
+      // Greetings & Basics
+      'hello': 'water', // Use water icon as placeholder
+      'thank you': 'milk', // Use milk icon as placeholder
+      'yes': 'coffee', // Use coffee icon as placeholder
+      'no': 'bread', // Use bread icon as placeholder
+      'goodbye': 'water', // Use water icon as placeholder
+      
+      // People & Pronouns
+      'i': 'water', // Use water icon as placeholder
+      'you': 'milk', // Use milk icon as placeholder
+      'he': 'coffee', // Use coffee icon as placeholder
+      'she': 'bread', // Use bread icon as placeholder
+      'we': 'water', // Use water icon as placeholder
+      
+      // Default fallback
+      'default': 'water'
+    };
+    return wordToIconMap[englishWord.toLowerCase()] || wordToIconMap['default'];
+  };
+
+  const iconId = getIconId(option);
+  // Use direct path for development - simpler and more reliable
+  const iconPath = `/icons/sketch/${iconId}.svg`;
+
   return (
     <button 
       onClick={onClick} 
@@ -90,9 +124,25 @@ const OptionButton = React.memo(({ option, isCorrect, isSelected, isRevealed, on
         fontWeight: 'bold',
         fontSize: 16,
         cursor: disabled ? 'not-allowed' : 'pointer',
-        boxShadow: '0 1px 4px #90caf9'
+        boxShadow: '0 1px 4px #90caf9',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        justifyContent: 'flex-start'
       }}
     >
+      <img 
+        src={iconPath} 
+        alt={`${option} icon`}
+        style={{
+          width: '32px',
+          height: '32px',
+          flexShrink: 0,
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          backgroundColor: '#f5f5f5'
+        }}
+      />
       {option}
     </button>
   );
@@ -144,7 +194,7 @@ const Confetti = React.memo(() => (
 ));
 
 // Multiple Choice game: pick correct English meaning for Swedish word
-function MultipleChoice({ words, onWordStatUpdate, onLessonComplete, isDarkMode, onGamePlayed, onPerfectScore }) {
+function MultipleChoice({ words, onWordStatUpdate, onLessonComplete, isDarkMode, onGamePlayed, onPerfectScore, iconSet = 'sketch' }) {
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState('');
@@ -287,6 +337,7 @@ function MultipleChoice({ words, onWordStatUpdate, onLessonComplete, isDarkMode,
             isRevealed={answerReveal}
             onClick={() => handleOptionClick(opt)}
             disabled={answerReveal}
+            iconSet={iconSet}
           />
         ))}
       </div>
