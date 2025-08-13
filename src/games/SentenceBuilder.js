@@ -156,10 +156,13 @@ const SentenceBuilder = React.memo(({ words, onWordStatUpdate, onLessonComplete,
     
     setGrammarScore(grammarPoints);
     
-    // Update word statistics
+    // Update word statistics using provided words list for English mapping when available
     if (onWordStatUpdate) {
-      sentence.forEach(word => {
-        onWordStatUpdate({ swedish: word, english: '' }, isCorrect ? 'correct' : 'incorrect');
+      sentence.forEach(wordToken => {
+        const found = words.find(w => w.swedish.toLowerCase() === wordToken.toLowerCase());
+        const swedish = wordToken;
+        const english = found ? found.english : '';
+        onWordStatUpdate(swedish, english, isCorrect ? 'correct' : 'incorrect');
       });
     }
     

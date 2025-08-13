@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FaPlay, FaPause, FaRedo, FaVolumeUp, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaPlay, FaRedo, FaVolumeUp, FaCheck } from 'react-icons/fa';
 
 const WordChain = React.memo(({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) => {
   const [currentWord, setCurrentWord] = useState(null);
@@ -42,7 +42,7 @@ const WordChain = React.memo(({ words, onWordStatUpdate, onLessonComplete, isDar
       }, 1000);
     }
     return () => clearTimeout(timer);
-  }, [isPlaying, timeLeft]);
+  }, [isPlaying, timeLeft, endGame]);
 
   const startGame = useCallback(() => {
     setGameState('playing');
@@ -60,7 +60,7 @@ const WordChain = React.memo(({ words, onWordStatUpdate, onLessonComplete, isDar
     // Update word statistics
     if (onWordStatUpdate) {
       userChain.forEach(word => {
-        onWordStatUpdate(word, 'correct');
+        onWordStatUpdate(word.swedish, word.english, 'correct');
       });
     }
   }, [userChain, onWordStatUpdate]);
@@ -80,11 +80,12 @@ const WordChain = React.memo(({ words, onWordStatUpdate, onLessonComplete, isDar
     setUserChain(prev => [...prev, word]);
     setScore(prev => prev + (10 * chainMultiplier));
     setChainMultiplier(prev => Math.min(prev + 0.5, 3));
-    setLastLetter(word.swedish.charAt(word.swedish.length - 1));
+    const nextLast = word.swedish.charAt(word.swedish.length - 1);
+    setLastLetter(nextLast);
 
     // Find next word that starts with the last letter
     const nextWords = words.filter(w => 
-      w.swedish.charAt(0).toLowerCase() === lastLetter.toLowerCase()
+      w.swedish.charAt(0).toLowerCase() === nextLast.toLowerCase()
     );
     
     if (nextWords.length > 0) {
@@ -92,7 +93,7 @@ const WordChain = React.memo(({ words, onWordStatUpdate, onLessonComplete, isDar
     }
 
     return true;
-  }, [isPlaying, userChain, words, lastLetter, chainMultiplier]);
+  }, [isPlaying, userChain, words, chainMultiplier]);
 
   const playSwedish = useCallback((word) => {
     const utterance = new SpeechSynthesisUtterance(word);

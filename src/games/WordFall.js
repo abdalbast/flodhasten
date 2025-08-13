@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { MdVolumeUp, MdPause, MdPlayArrow, MdRefresh } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 
@@ -42,9 +42,11 @@ async function playSwedish(word) {
 
 // WordFall: Tetris-style spelling game
 function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
-  // Filter for beginner words (difficulty 1) and ensure we have enough words
-  const beginnerWords = words.filter(word => word.difficulty === 1);
-  const gameWords = beginnerWords.length >= 10 ? beginnerWords : words;
+  // Filter for beginner words (difficulty 1) and memoise to avoid extra work
+  const gameWords = useMemo(() => {
+    const beginner = (words || []).filter(w => w.difficulty === 1);
+    return beginner.length >= 10 ? beginner : (words || []);
+  }, [words]);
   const [gameState, setGameState] = useState('ready'); // ready, playing, paused, gameOver
   const [fallingWords, setFallingWords] = useState([]);
   const [input, setInput] = useState('');
@@ -89,7 +91,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   ];
 
   // Generate a new falling word
-  const generateWord = useCallback(() => {
+  const generateWord = useCallback(() => { if (!gameState) return;
     if (gameWords.length === 0) return;
     
     const randomWord = gameWords[Math.floor(Math.random() * gameWords.length)];
@@ -120,9 +122,9 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       attempts++;
       
       // Check if this position overlaps with existing words
-      const overlaps = fallingWords.some(word => 
-        Math.abs(word.x - newX) < wordWidth && 
-        Math.abs(word.y - newY) < 40
+      const overlaps = fallingWords.some(existing => 
+        Math.abs(existing.x - newX) < wordWidth && 
+        Math.abs(existing.y - newY) < 40
       );
       
       if (!overlaps || attempts > 15) break;
@@ -141,7 +143,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     };
     
     setFallingWords(prev => [...prev, newWord]);
-  }, [gameWords, level, fallingWords]);
+  }, [gameWords, level, fallingWords, tetrisColors, tetrisShapes]);
 
   // Game loop for moving words
   const gameLoop = useCallback(() => {
@@ -182,12 +184,18 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       lastWordTimeRef.current = now;
     }
     
-    // Level up every 10 points
+    // Level up every 10 points (only once per threshold)
     if (score > 0 && score % 10 === 0) {
-      setLevel(prev => prev + 1);
-      wordSpeedRef.current = Math.max(800, wordSpeedRef.current - 100); // Faster word generation
+      setLevel(prev => {
+        const expectedLevel = Math.floor(score / 10) + 1;
+        if (prev < expectedLevel) {
+          wordSpeedRef.current = Math.max(800, wordSpeedRef.current - 100); // Faster word generation
+          return expectedLevel;
+        }
+        return prev;
+      });
     }
-  }, [gameState, level, score, generateWord]);
+  }, [gameState, score, generateWord, fallingWords.length]);
 
   // Start game loop
   useEffect(() => {
