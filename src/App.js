@@ -532,10 +532,9 @@ function App() {
   const updateUserStats = useCallback((updates) => {
     setUserStats(prev => {
       const newStats = { ...prev, ...updates };
-      debouncedSaveToStorage('userStats', newStats);
       return newStats;
     });
-  }, [debouncedSaveToStorage]);
+  }, []);
 
   const checkAndUnlockAchievements = useCallback((previousStats, currentStats) => {
     const newlyUnlocked = getNewlyUnlockedAchievements(previousStats, currentStats);
@@ -555,18 +554,25 @@ function App() {
       // Update unlocked achievements
       setUnlockedAchievements(prev => {
         const newUnlocked = [...prev, ...newlyUnlocked.map(a => a.id)];
-        debouncedSaveToStorage('unlockedAchievements', newUnlocked);
         return newUnlocked;
       });
     }
-  }, [debouncedSaveToStorage]);
+  }, []);
 
-  // Save states to localStorage
+  // Save userStats to localStorage whenever it changes
   useEffect(() => {
     debouncedSaveToStorage('userStats', userStats);
+  }, [userStats, debouncedSaveToStorage]);
+
+  // Save unlockedAchievements to localStorage whenever it changes
+  useEffect(() => {
     debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
+  }, [unlockedAchievements, debouncedSaveToStorage]);
+
+  // Save culturalProgress to localStorage whenever it changes
+  useEffect(() => {
     debouncedSaveToStorage('culturalProgress', culturalProgress);
-  }, [userStats, unlockedAchievements, culturalProgress, debouncedSaveToStorage]);
+  }, [culturalProgress, debouncedSaveToStorage]);
 
   // Handle cultural lesson completion
   const handleCulturalLessonComplete = useCallback((lessonId, score) => {
@@ -579,16 +585,6 @@ function App() {
     // Update user stats for cultural lessons
     updateUserStats({ cultural_lessons_completed: (userStats.cultural_lessons_completed || 0) + 1 });
   }, [userStats.cultural_lessons_completed, updateUserStats, debouncedSaveToStorage]);
-
-  // Save userStats to localStorage whenever it changes
-  useEffect(() => {
-    debouncedSaveToStorage('userStats', userStats);
-  }, [userStats, debouncedSaveToStorage]);
-
-  // Save unlockedAchievements to localStorage whenever it changes
-  useEffect(() => {
-    debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
-  }, [unlockedAchievements, debouncedSaveToStorage]);
 
   // Daily Challenges tracking functions
   const updateChallengeProgress = useCallback((updates) => {
@@ -644,6 +640,11 @@ function App() {
   useEffect(() => {
     debouncedSaveToStorage('challengeProgress', challengeProgress);
   }, [challengeProgress, debouncedSaveToStorage]);
+
+  // Persist skillProgress
+  useEffect(() => {
+    debouncedSaveToStorage('skillProgress', skillProgress);
+  }, [skillProgress, debouncedSaveToStorage]);
 
   // Generate new daily challenges at midnight
   useEffect(() => {
@@ -745,7 +746,7 @@ function App() {
   const completeSkill = useCallback((skillId) => {
     setSkillProgress(prev => ({
       ...prev,
-      [skillId]: { completed: true, completedAt: new Date().toISOString() }
+      [skillId]: 100
     }));
     
     // Track lesson completion for achievements and challenges
