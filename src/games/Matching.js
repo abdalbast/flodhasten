@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MdVolumeUp } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 
@@ -70,6 +70,24 @@ function Matching({ words, onWordStatUpdate, onLessonComplete }) {
   const [matches, setMatches] = useState([]); // [{swedish, english}]
   const [wrong, setWrong] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const timeoutRefs = useRef([]); // Track all active timeouts
+
+  // Cleanup function to clear all timeouts
+  const clearAllTimeouts = () => {
+    timeoutRefs.current.forEach(timeoutId => clearTimeout(timeoutId));
+    timeoutRefs.current = [];
+  };
+
+  // Helper to add timeout to tracking
+  const addTimeout = (callback, delay) => {
+    const timeoutId = setTimeout(() => {
+      callback();
+      // Remove this timeout from tracking array
+      timeoutRefs.current = timeoutRefs.current.filter(id => id !== timeoutId);
+    }, delay);
+    timeoutRefs.current.push(timeoutId);
+    return timeoutId;
+  };
 
   // Handle selection
   function select(type, value) {
@@ -83,7 +101,7 @@ function Matching({ words, onWordStatUpdate, onLessonComplete }) {
             if (onWordStatUpdate) onWordStatUpdate(next.swedish, next.english, 'correct');
             if (newMatches.length === words.length) {
               setShowConfetti(true);
-              setTimeout(() => {
+              addTimeout(() => {
                 setShowConfetti(false);
                 if (typeof onLessonComplete === 'function') onLessonComplete();
               }, 1500);
@@ -94,7 +112,7 @@ function Matching({ words, onWordStatUpdate, onLessonComplete }) {
           setWrong(false);
         } else {
           setWrong(true);
-          setTimeout(() => {
+          addTimeout(() => {
             setSelected({ swedish: null, english: null });
             setWrong(false);
           }, 700);

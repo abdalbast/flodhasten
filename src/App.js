@@ -532,10 +532,10 @@ function App() {
   const updateUserStats = useCallback((updates) => {
     setUserStats(prev => {
       const newStats = { ...prev, ...updates };
-      debouncedSaveToStorage('userStats', newStats);
+      // Remove redundant manual save - will be handled by useEffect below
       return newStats;
     });
-  }, [debouncedSaveToStorage]);
+  }, []);
 
   const checkAndUnlockAchievements = useCallback((previousStats, currentStats) => {
     const newlyUnlocked = getNewlyUnlockedAchievements(previousStats, currentStats);
@@ -561,7 +561,7 @@ function App() {
     }
   }, [debouncedSaveToStorage]);
 
-  // Save states to localStorage
+  // Save states to localStorage - consolidated to avoid redundant saves
   useEffect(() => {
     debouncedSaveToStorage('userStats', userStats);
     debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
@@ -572,23 +572,13 @@ function App() {
   const handleCulturalLessonComplete = useCallback((lessonId, score) => {
     setCulturalProgress(prev => {
       const newProgress = { ...prev, [lessonId]: { score, completedAt: new Date().toISOString() } };
-      debouncedSaveToStorage('culturalProgress', newProgress);
+      // Remove redundant manual save - will be handled by useEffect above
       return newProgress;
     });
     
     // Update user stats for cultural lessons
     updateUserStats({ cultural_lessons_completed: (userStats.cultural_lessons_completed || 0) + 1 });
-  }, [userStats.cultural_lessons_completed, updateUserStats, debouncedSaveToStorage]);
-
-  // Save userStats to localStorage whenever it changes
-  useEffect(() => {
-    debouncedSaveToStorage('userStats', userStats);
-  }, [userStats, debouncedSaveToStorage]);
-
-  // Save unlockedAchievements to localStorage whenever it changes
-  useEffect(() => {
-    debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
-  }, [unlockedAchievements, debouncedSaveToStorage]);
+  }, [userStats.cultural_lessons_completed, updateUserStats]);
 
   // Daily Challenges tracking functions
   const updateChallengeProgress = useCallback((updates) => {
@@ -713,14 +703,19 @@ function App() {
 
   // Purchase item with coins - memoized
   const handlePurchase = useCallback((item) => {
-    if (userData.coins >= item.price) {
-      setUserData(prev => ({
-        ...prev,
-        coins: prev.coins - item.price,
-        ownedMerchandise: [...prev.ownedMerchandise, item.id]
-      }));
-    }
-  }, [userData.coins]);
+    setUserData(prev => {
+      // Check if user has enough coins with current state
+      if (prev.coins >= item.price) {
+        return {
+          ...prev,
+          coins: prev.coins - item.price,
+          ownedMerchandise: [...prev.ownedMerchandise, item.id]
+        };
+      }
+      // Return previous state unchanged if insufficient funds
+      return prev;
+    });
+  }, []); // Remove userData.coins dependency to prevent stale closure
 
   // Change avatar - memoized
   const handleAvatarChange = useCallback((avatarId) => {
