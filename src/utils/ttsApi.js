@@ -33,13 +33,12 @@ class SwedishTTSApi {
       }
 
       const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
       
-      // Cache the result
-      this.cache.set(cacheKey, audioUrl);
+      // Cache the Blob, not the object URL, to avoid leaks and allow reuse
+      this.cache.set(cacheKey, audioBlob);
       
       console.log(`TTS generated successfully using service: ${response.headers.get('X-Used-Service')}`);
-      return audioUrl;
+      return audioBlob;
 
     } catch (error) {
       console.error('TTS API Error:', error);
@@ -65,7 +64,8 @@ class SwedishTTSApi {
     // Fallback to API if browser TTS fails
     try {
       console.log('🔄 Using TTS API as fallback for:', text);
-      const audioUrl = await this.generateAudio(text, service);
+      const audioBlob = await this.generateAudio(text, service);
+      const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
       
       // Clean up the URL after playing
