@@ -23,6 +23,8 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
   const [translatingIdx, setTranslatingIdx] = useState(null);
   const [translatingAll, setTranslatingAll] = useState(false);
   
+  const TRANSLATE_API_BASE = process.env.REACT_APP_TRANSLATE_API_URL || 'https://flodhasten-tts-api.onrender.com';
+  
   // Add word form state
   const [showAddForm, setShowAddForm] = useState(false);
   const [newSwedish, setNewSwedish] = useState('');
@@ -86,7 +88,7 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
   async function handleTranslate(idx, swedish) {
     setTranslatingIdx(idx);
     try {
-      const res = await fetch('http://localhost:4000/api/translate', {
+      const res = await fetch(`${TRANSLATE_API_BASE}/api/translate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ swedishArray: [swedish] })
@@ -122,7 +124,7 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
       return;
     }
     try {
-      const res = await fetch('http://localhost:4000/api/translate', {
+      const res = await fetch(`${TRANSLATE_API_BASE}/api/translate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ swedishArray: swedishWords })

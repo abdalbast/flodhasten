@@ -173,21 +173,36 @@ class PerformanceMonitor {
       window.SLOW_CONNECTION = true;
     }
   }
+
+  // Start periodic memory monitoring
+  startMemoryMonitoring(intervalMs = 30000) {
+    if (this._memoryIntervalId) return; // already started
+    this._memoryIntervalId = setInterval(() => {
+      this.monitorMemory();
+    }, intervalMs);
+  }
+
+  // Stop periodic memory monitoring
+  stopMemoryMonitoring() {
+    if (this._memoryIntervalId) {
+      clearInterval(this._memoryIntervalId);
+      this._memoryIntervalId = null;
+    }
+  }
 }
 
 // Create singleton instance
 const performanceMonitor = new PerformanceMonitor();
 
-// Initialize monitoring
-performanceMonitor.monitorCoreWebVitals();
-performanceMonitor.optimizeForSlowConnection();
-
-// Monitor memory usage periodically
-setInterval(() => {
-  performanceMonitor.monitorMemory();
-}, 30000); // Every 30 seconds
+// Initialize one-time monitors on demand to avoid running in test or SSR
+function initializePerformanceMonitoring() {
+  performanceMonitor.monitorCoreWebVitals();
+  performanceMonitor.optimizeForSlowConnection();
+}
 
 export default performanceMonitor;
+
+export { initializePerformanceMonitoring };
 
 // Export individual functions for convenience
 export const {
