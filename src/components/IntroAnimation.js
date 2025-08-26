@@ -6,6 +6,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
   const [error, setError] = useState(null);
   const [isOutro, setIsOutro] = useState(false);
   const videoRef = useRef(null);
+  const timeoutRef = useRef(null); // Add ref to track timeout
 
   useEffect(() => {
     // Test video accessibility
@@ -15,25 +16,32 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         if (!response.ok) {
           console.error('Video file not accessible:', response.status, response.statusText);
           setError('Video file not accessible');
-          setTimeout(() => startOutro(), 2000);
+          timeoutRef.current = setTimeout(() => startOutro(), 2000);
           return;
         }
         console.log('Video file is accessible');
       } catch (err) {
         console.error('Error testing video:', err);
         setError('Network error');
-        setTimeout(() => startOutro(), 2000);
+        timeoutRef.current = setTimeout(() => startOutro(), 2000);
       }
     };
     
     testVideo();
+    
+    // Cleanup function to clear timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   const startOutro = () => {
     console.log('Starting outro transition');
     setIsOutro(true);
     // Wait for outro animation to complete before calling onComplete
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       console.log('Outro complete, calling onComplete');
       onComplete();
     }, 1500); // Match the CSS transition duration
@@ -61,7 +69,7 @@ function IntroAnimation({ onComplete, isDarkMode }) {
   const handleError = (e) => {
     console.error('Video error:', e);
     setError('Video failed to load');
-    setTimeout(() => startOutro(), 2000);
+    timeoutRef.current = setTimeout(() => startOutro(), 2000);
   };
 
   const handleLoadStart = () => {
