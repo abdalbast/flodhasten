@@ -1,3 +1,4 @@
+import React from 'react';
 // Image optimization utilities for better mobile performance
 
 // Lazy loading utility
