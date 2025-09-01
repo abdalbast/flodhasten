@@ -42,6 +42,7 @@ const LessonCard = React.memo(({
   // Debug logging
   if (backgroundImage) {
     console.log(`Lesson ${lesson.id} background image:`, backgroundImage);
+    console.log(`Lesson ${lesson.id} lesson object:`, lesson);
   }
   
 
@@ -212,7 +213,7 @@ const LessonCard = React.memo(({
             justifyContent: 'center',
             padding: '1.5rem',
             background: backgroundImage 
-              ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${backgroundImage})`
+              ? `url(${backgroundImage})`
               : cardBackground,
             backgroundSize: backgroundImage ? 'cover' : 'auto',
             backgroundPosition: backgroundImage ? 'center' : 'auto',
@@ -409,7 +410,7 @@ const LessonCard = React.memo(({
         height: '320px',
         padding: '1.5rem',
         background: backgroundImage 
-          ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${backgroundImage})`
+          ? `url(${backgroundImage})`
           : cardBackground,
         backgroundSize: backgroundImage ? 'cover' : 'auto',
         backgroundPosition: backgroundImage ? 'center' : 'auto',
