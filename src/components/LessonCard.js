@@ -166,12 +166,12 @@ const LessonCard = React.memo(({
           style={{
             width: '100%',
             height: 'auto',
-            minHeight: '280px',
+            minHeight: '200px',
             perspective: '800px',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: 'stretch',
+            justifyContent: 'stretch',
             cursor: isUnlocked ? 'pointer' : 'not-allowed',
             opacity: isUnlocked ? 1 : 0.6,
           }}

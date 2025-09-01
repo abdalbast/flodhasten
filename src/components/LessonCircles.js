@@ -36,8 +36,9 @@ const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode 
           return (
             <div key={skill.id} style={{
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'stretch'
+              justifyContent: 'stretch',
+              alignItems: 'stretch',
+              width: '100%'
             }}>
               <LessonCard
                 lesson={skill}
