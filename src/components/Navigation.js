@@ -2,6 +2,9 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './Navigation.css';
 import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdStore, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics, MdExtension } from 'react-icons/md';
 
+// Version constant - should match the one in App.js
+const APP_VERSION = '1.0.1-1756729133544';
+
 const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage }) => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showMoreDropdown, setShowMoreDropdown] = useState(false);
@@ -286,6 +289,13 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
               </div>
             )}
           </div>
+        </div>
+        
+        {/* Version Display */}
+        <div className="version-display">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            v{APP_VERSION}
+          </span>
         </div>
       </nav>
     </>
