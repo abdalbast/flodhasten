@@ -403,7 +403,11 @@ const LessonCard = React.memo(({
         justifyContent: 'center',
         height: '320px',
         padding: '1.5rem',
-        background: cardBackground,
+        background: backgroundImage 
+          ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${backgroundImage})`
+          : cardBackground,
+        backgroundSize: backgroundImage ? 'cover' : 'auto',
+        backgroundPosition: backgroundImage ? 'center' : 'auto',
         borderRadius: '20px',
         border: `3px solid ${isCompleted ? completedColor : isUnlocked ? lessonColor : borderColor}`,
         cursor: isUnlocked ? 'pointer' : 'not-allowed',
@@ -563,7 +567,8 @@ const LessonCard = React.memo(({
       <h3 style={{
         fontSize: '1.4rem',
         fontWeight: '700',
-        color: textColor,
+        color: backgroundImage ? '#ffffff' : textColor,
+        textShadow: backgroundImage ? '0 2px 4px rgba(0, 0, 0, 0.9)' : 'none',
         margin: '0 0 0.5rem 0',
         textAlign: 'center',
         lineHeight: '1.2',
@@ -584,7 +589,8 @@ const LessonCard = React.memo(({
         {/* Progress Status Icon */}
         <span style={{
           fontSize: '1rem',
-          color: isCompleted ? completedColor : isUnlocked ? lessonColor : '#9ca3af'
+          color: backgroundImage ? '#ffffff' : (isCompleted ? completedColor : isUnlocked ? lessonColor : '#9ca3af'),
+          textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none'
         }}>
           {isCompleted ? '✓' : isInProgress ? '⏳' : isUnlocked ? '▶' : '🔒'}
         </span>
@@ -592,7 +598,8 @@ const LessonCard = React.memo(({
         {/* Progress Text - Reduced Size for Better Hierarchy */}
         <p style={{
           fontSize: '0.8rem',
-          color: isDarkMode ? '#a0aec0' : '#4a5568',
+          color: backgroundImage ? '#ffffff' : (isDarkMode ? '#a0aec0' : '#4a5568'),
+          textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none',
           margin: '0',
           textAlign: 'center',
           fontFamily: '"Georgia", serif',
