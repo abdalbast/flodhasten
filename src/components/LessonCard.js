@@ -39,6 +39,11 @@ const LessonCard = React.memo(({
 
   const backgroundImage = getBackgroundImage();
   
+  // Debug logging
+  if (backgroundImage) {
+    console.log(`Lesson ${lesson.id} background image:`, backgroundImage);
+  }
+  
 
 
   // All hooks must be called at the top level
@@ -408,6 +413,7 @@ const LessonCard = React.memo(({
           : cardBackground,
         backgroundSize: backgroundImage ? 'cover' : 'auto',
         backgroundPosition: backgroundImage ? 'center' : 'auto',
+        backgroundRepeat: backgroundImage ? 'no-repeat' : 'repeat',
         borderRadius: '20px',
         border: `3px solid ${isCompleted ? completedColor : isUnlocked ? lessonColor : borderColor}`,
         cursor: isUnlocked ? 'pointer' : 'not-allowed',
