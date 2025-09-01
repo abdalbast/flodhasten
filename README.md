@@ -49,8 +49,21 @@ Flodhasten/
 - **State Management**: React useState, useCallback, useMemo
 - **Voice Recognition**: Web Speech API
 - **Text-to-Speech**: Browser SpeechSynthesis API
+- **Translation**: Azure Cognitive Services Translator API
 - **Deployment**: GitHub Pages
 - **Performance**: React.memo, code splitting, lazy loading
+
+## 🔐 Environment Variables
+
+The application requires the following environment variables for full functionality:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `AZURE_TRANSLATION_KEY` | Azure Cognitive Services Translator API key | Yes (for translation features) |
+| `AZURE_TRANSLATION_REGION` | Azure region (default: westeurope) | No |
+| `PORT` | Server port (default: 4000) | No |
+
+**Security Note**: Never commit your `.env` file to version control. The `.env.example` file is provided as a template.
 
 ## 🚀 Getting Started
 
@@ -70,12 +83,24 @@ Flodhasten/
    npm install
    ```
 
-3. Start the development server:
+3. Set up environment variables (for translation features):
+   ```bash
+   # Option 1: Use the setup script (recommended)
+   npm run setup-env
+   
+   # Option 2: Manual setup
+   cp .env.example .env
+   
+   # Edit .env and add your Azure Translation API key
+   # Get your key from: https://portal.azure.com/
+   ```
+
+4. Start the development server:
    ```bash
    npm start
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📦 Available Scripts
 
@@ -84,6 +109,7 @@ Flodhasten/
 - `npm run deploy` - Deploy to GitHub Pages
 - `npm test` - Run tests
 - `npm run lighthouse` - Run performance audit
+- `npm run setup-env` - Set up environment variables
 
 ## 🎯 Key Components
 

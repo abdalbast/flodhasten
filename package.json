@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
     "node-fetch": "^3.3.2",
@@ -27,7 +28,8 @@
     "deploy": "gh-pages -d build",
     "lighthouse": "npx lighthouse https://abdalbast.github.io/flodhasten --output=html --output-path=./lighthouse-report.html",
     "audit": "npm audit && npm audit fix",
-    "optimize": "npm run build && npm run lighthouse"
+    "optimize": "npm run build && npm run lighthouse",
+    "setup-env": "node setup-env.js"
   },
   "eslintConfig": {
     "extends": [
