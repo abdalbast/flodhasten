@@ -20,15 +20,13 @@ const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode 
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div style={{ textAlign: 'center', padding: '0' }}>
       {/* Lesson Cards Grid - Matching Flodhästen hero section dimensions */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr',
         gap: '1.5rem',
-        maxWidth: '64rem', // Match max-w-5xl from hero section
-        margin: '0 auto',
-        padding: '1rem' // Match px-4 from hero section
+        width: '100%'
       }}>
         {skills.map((skill, index) => {
           const { isUnlocked, isCompleted, progressValue, isInProgress } = getLessonStatus(skill.id);
@@ -36,7 +34,7 @@ const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode 
           return (
             <div key={skill.id} style={{
               display: 'flex',
-              justifyContent: 'stretch',
+              justifyContent: 'center',
               alignItems: 'stretch',
               width: '100%'
             }}>
