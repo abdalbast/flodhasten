@@ -25,7 +25,7 @@ const GamifiedLearning = React.lazy(() => import('./components/GamifiedLearning'
 const LessonView = React.lazy(() => import('./components/LessonView'));
 
 // Version tracking utility
-const CACHE_VERSION = '1.0.1-1756729133544';
+const CACHE_VERSION = '1.0.1-1756729203499';
 const checkForUpdates = () => {
   // Track app version for debugging
   const currentVersion = localStorage.getItem('appVersion');

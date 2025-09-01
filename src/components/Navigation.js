@@ -3,7 +3,7 @@ import './Navigation.css';
 import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdStore, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics, MdExtension } from 'react-icons/md';
 
 // Version constant - should match the one in App.js
-const APP_VERSION = '1.0.1-1756729133544';
+const APP_VERSION = '1.0.1-1756729203499';
 
 const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage }) => {
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
