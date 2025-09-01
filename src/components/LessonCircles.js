@@ -21,13 +21,11 @@ const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode 
 
   return (
     <div style={{ textAlign: 'center', padding: '2rem' }}>
-      {/* Lesson Circles Grid - Moomin-inspired */}
+      {/* Lesson Cards Grid - Matching Flodhästen hero section dimensions */}
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        gap: 'clamp(1rem, 4vw, 2rem)', // Responsive gap
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '1.5rem',
         maxWidth: '1200px',
         margin: '0 auto',
         padding: 'clamp(0.5rem, 2vw, 1rem)' // Responsive padding
@@ -37,9 +35,6 @@ const LessonCircles = React.memo(({ skills, progress, onSelectSkill, isDarkMode 
           
           return (
             <div key={skill.id} style={{
-              flex: '0 1 clamp(250px, 30vw, 350px)', // Responsive sizing
-              minWidth: 'clamp(200px, 25vw, 250px)',
-              maxWidth: 'clamp(280px, 35vw, 350px)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'stretch'

@@ -197,16 +197,16 @@ const LessonCard = React.memo(({
           style={{
             width: '100%',
             height: '100%',
-            minHeight: '280px',
+            minHeight: '200px',
             rotateX,
             rotateY,
             scale,
             position: 'relative',
             transformStyle: 'preserve-3d',
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
-            padding: '2rem',
+            padding: '1.5rem',
             background: backgroundImage 
               ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${backgroundImage})`
               : cardBackground,
@@ -266,28 +266,29 @@ const LessonCard = React.memo(({
             className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-full"
             style={{
               position: 'relative',
-              width: '100px',
-              height: '100px',
+              width: '80px',
+              height: '80px',
               borderRadius: '50%',
               background: isCompleted ? completedColor : isUnlocked ? lessonColor : lockedColor,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: '1.5rem',
+              marginRight: '1.5rem',
               border: `4px solid ${isDarkMode ? '#fff' : '#000'}`,
               boxShadow: isCompleted 
                 ? '0 0 30px rgba(39, 174, 96, 0.7)' 
                 : isUnlocked 
                   ? '0 0 30px rgba(230, 126, 34, 0.5)' 
                   : '0 0 15px rgba(156, 163, 175, 0.3)',
-              filter: isUnlocked ? 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))' : 'none'
+              filter: isUnlocked ? 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))' : 'none',
+              flexShrink: 0
             }}
             whileHover={isUnlocked ? { scale: 1.05 } : {}}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
             {/* Lesson Number - Enhanced Typography */}
             <span style={{
-              fontSize: '2.2rem',
+              fontSize: '1.8rem',
               fontWeight: '800',
               color: isDarkMode ? '#fff' : '#000',
               fontFamily: '"Georgia", serif',
@@ -303,19 +304,19 @@ const LessonCard = React.memo(({
                   position: 'absolute',
                   top: '-4px',
                   left: '-4px',
-                  width: '98px',
-                  height: '98px',
+                  width: '78px',
+                  height: '78px',
                   transform: 'rotate(-90deg)'
                 }}
               >
                 <circle
-                  cx="49"
-                  cy="49"
-                  r="40"
+                  cx="39"
+                  cy="39"
+                  r="32"
                   fill="none"
                   stroke={moominYellow}
-                  strokeWidth="4"
-                  strokeDasharray={`${2 * Math.PI * 40 * progress / 100} ${2 * Math.PI * 40}`}
+                  strokeWidth="3"
+                  strokeDasharray={`${2 * Math.PI * 32 * progress / 100} ${2 * Math.PI * 32}`}
                 />
               </svg>
             )}
@@ -343,50 +344,56 @@ const LessonCard = React.memo(({
             )}
           </motion.div>
           
-          {/* Lesson Name - Enhanced Visual Hierarchy */}
-          <h3 className="font-bold text-[1.4rem]" style={{
-            fontWeight: '700',
-            color: backgroundImage ? '#ffffff' : textColor,
-            margin: '0 0 0.5rem 0',
-            textAlign: 'center',
-            lineHeight: '1.2',
-            fontFamily: '"Georgia", serif',
-            textShadow: backgroundImage ? '0 2px 4px rgba(0, 0, 0, 0.9)' : 'none',
-            letterSpacing: '0.02em'
-          }}>
-            {lesson.name}
-          </h3>
-          
-          {/* Progress Indicator - Enhanced Visual Prominence */}
+          {/* Text Content Container */}
           <div style={{
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
             justifyContent: 'center',
-            gap: '0.5rem',
-            marginBottom: '0.5rem'
+            flex: 1
           }}>
-            {/* Progress Status Icon */}
-            <span style={{
-              fontSize: '1rem',
-              color: backgroundImage ? '#ffffff' : (isCompleted ? completedColor : isUnlocked ? lessonColor : '#9ca3af'),
-              textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none'
-            }}>
-              {isCompleted ? '✓' : isInProgress ? '⏳' : isUnlocked ? '▶' : '🔒'}
-            </span>
-            
-            {/* Progress Text - Reduced Size for Better Hierarchy */}
-            <p className="text-[0.8rem] text-white/80" style={{
-              color: backgroundImage ? '#ffffff' : (isDarkMode ? '#a0aec0' : '#4a5568'),
-              margin: '0',
-              textAlign: 'center',
+            {/* Lesson Name - Enhanced Visual Hierarchy */}
+            <h3 className="font-bold text-[1.4rem]" style={{
+              fontWeight: '700',
+              color: backgroundImage ? '#ffffff' : textColor,
+              margin: '0 0 0.5rem 0',
+              textAlign: 'left',
+              lineHeight: '1.2',
               fontFamily: '"Georgia", serif',
-              fontStyle: 'italic',
-              fontWeight: '500',
-              textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none',
-              opacity: 0.95
+              textShadow: backgroundImage ? '0 2px 4px rgba(0, 0, 0, 0.9)' : 'none',
+              letterSpacing: '0.02em'
             }}>
-              {isCompleted ? 'Completed' : isInProgress ? `${progress}% Complete` : isUnlocked ? 'Ready to Start' : 'Locked'}
-            </p>
+              {lesson.name}
+            </h3>
+            
+            {/* Progress Indicator - Enhanced Visual Prominence */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              {/* Progress Status Icon */}
+              <span style={{
+                fontSize: '1rem',
+                color: backgroundImage ? '#ffffff' : (isCompleted ? completedColor : isUnlocked ? lessonColor : '#9ca3af'),
+                textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none'
+              }}>
+                {isCompleted ? '✓' : isInProgress ? '⏳' : isUnlocked ? '▶' : '🔒'}
+              </span>
+              
+              {/* Progress Text - Reduced Size for Better Hierarchy */}
+              <p className="text-[0.8rem] text-white/80" style={{
+                color: backgroundImage ? '#ffffff' : (isDarkMode ? '#a0aec0' : '#4a5568'),
+                margin: '0',
+                textAlign: 'left',
+                fontFamily: '"Georgia", serif',
+                fontStyle: 'italic',
+                fontWeight: '500',
+                textShadow: backgroundImage ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none',
+                opacity: 0.95
+              }}>
+                {isCompleted ? 'Completed' : isInProgress ? `${progress}% Complete` : isUnlocked ? 'Ready to Start' : 'Locked'}
+              </p>
+            </div>
           </div>
         </motion.div>
       </figure>
