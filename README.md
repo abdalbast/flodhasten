@@ -120,11 +120,31 @@ This repository has been audited for secrets and follows security best practices
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## 🚀 Deployment Guide
+
+### Staging Deployment (GitHub Pages)
+```bash
+# Deploy to staging
+npm run deploy:staging
+```
+
+### Production Deployment (Vercel)
+```bash
+# Install Vercel CLI (if not already installed)
+npm i -g vercel
+
+# Deploy to production
+npm run deploy:production
+```
+
+**Note**: Production deployment requires Vercel account setup and environment variables configuration in Vercel dashboard.
+
 ## 📦 Available Scripts
 
 - `npm start` - Start development server
 - `npm run build` - Build for production
-- `npm run deploy` - Deploy to GitHub Pages
+- `npm run deploy:staging` - Deploy to GitHub Pages (staging)
+- `npm run deploy:production` - Deploy to Vercel (production)
 - `npm test` - Run tests
 - `npm run lighthouse` - Run performance audit
 - `npm run setup-env` - Set up environment variables
@@ -166,8 +186,22 @@ Based on the Moomin design system with:
 
 ## 🌐 Deployment
 
-The app is deployed on GitHub Pages at:
+### Production (Vercel)
+The app is deployed on Vercel with enhanced security headers:
+**https://flodhasten.vercel.app/**
+
+### Staging (GitHub Pages)
+The staging version is deployed on GitHub Pages at:
 **https://abdalbast.github.io/flodhasten/**
+
+### Security Headers
+Production deployment includes comprehensive security headers:
+- **Content Security Policy**: Restricts resource loading to trusted sources
+- **Permissions Policy**: Controls microphone access, blocks geolocation/camera
+- **Strict Transport Security**: Enforces HTTPS with preloading
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-Content-Type-Options**: Prevents MIME type sniffing
+- **X-XSS-Protection**: Additional XSS protection layer
 
 ## 📱 Mobile Experience
 

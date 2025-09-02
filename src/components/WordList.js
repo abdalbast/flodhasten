@@ -3,6 +3,7 @@ import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
 import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 import ttsApi from '../utils/ttsApi';
+import API_CONFIG from '../utils/config';
 
 // Play Swedish word with TTS API (browser TTS primary, API fallback)
 async function playSwedish(word) {
@@ -82,11 +83,11 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     setTimeout(() => setAddMessage(''), 1200);
   };
 
-  // Translate Swedish to English using local proxy (single word)
+  // Translate Swedish to English using API (single word)
   async function handleTranslate(idx, swedish) {
     setTranslatingIdx(idx);
     try {
-      const res = await fetch('http://localhost:4000/api/translate', {
+      const res = await fetch(API_CONFIG.translateEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ swedishArray: [swedish] })
@@ -122,7 +123,7 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
       return;
     }
     try {
-      const res = await fetch('http://localhost:4000/api/translate', {
+      const res = await fetch(API_CONFIG.translateEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ swedishArray: swedishWords })
