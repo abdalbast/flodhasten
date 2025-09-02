@@ -88,6 +88,9 @@ The Vercel deployment includes comprehensive security headers:
 - Rate limiting implemented
 - Input validation
 - Error handling without exposing internals
+- HMAC signature verification
+- Timestamp validation (60s expiry)
+- Origin-based access control
 
 ## 📊 Monitoring
 

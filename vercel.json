@@ -59,7 +59,7 @@
     "NODE_ENV": "production"
   },
   "functions": {
-    "api/translate.js": {
+    "api/translate.ts": {
       "runtime": "nodejs18.x"
     }
   }

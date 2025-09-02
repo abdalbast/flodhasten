@@ -63,6 +63,8 @@ The application requires the following environment variables for full functional
 | `AZURE_TRANSLATION_REGION` | Azure region for Translator service | No | `westeurope` |
 | `PORT` | Server port for translation proxy | No | `4000` |
 | `NODE_ENV` | Environment mode | No | `development` |
+| `TRANSLATE_SECRET` | Server-side HMAC secret for API security | Yes (for secure translations) | - |
+| `REACT_APP_TRANSLATE_SECRET` | Client-side HMAC secret for signing requests | Yes (for secure translations) | - |
 
 ### 🔒 Security Requirements
 
@@ -79,6 +81,8 @@ This repository has been audited for secrets and follows security best practices
 - ✅ No real secrets are tracked in version control
 - ✅ Environment variables are properly documented
 - ✅ Placeholder values are used in examples
+- ✅ HMAC-based API security implemented
+- ✅ CORS protection for API endpoints
 
 ## 🚀 Getting Started
 

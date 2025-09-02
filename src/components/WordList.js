@@ -3,7 +3,7 @@ import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
 import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 import ttsApi from '../utils/ttsApi';
-import API_CONFIG from '../utils/config';
+import { translateText, translateBatch } from '../lib/translate';
 
 // Play Swedish word with TTS API (browser TTS primary, API fallback)
 async function playSwedish(word) {
@@ -83,28 +83,20 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     setTimeout(() => setAddMessage(''), 1200);
   };
 
-  // Translate Swedish to English using API (single word)
+  // Translate Swedish to English using secure API (single word)
   async function handleTranslate(idx, swedish) {
     setTranslatingIdx(idx);
     try {
-      const res = await fetch(API_CONFIG.translateEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ swedishArray: [swedish] })
-      });
-      const data = await res.json();
-      if (data.translations && data.translations[0]) {
-        onEdit(idx, { swedish, english: data.translations[0] });
-      } else {
-        setImportMsg('Translation failed.');
-      }
+      const translated = await translateText(swedish, 'sv', 'en');
+      onEdit(idx, { swedish, english: translated });
     } catch (e) {
-      setImportMsg('Translation error.');
+      console.error('Translation error:', e);
+      setImportMsg('Translation failed.');
     }
     setTranslatingIdx(null);
   }
 
-  // Batch translate all unknowns using local proxy
+  // Batch translate all unknowns using secure API
   async function handleTranslateAll() {
     setTranslatingAll(true);
     setImportMsg('');
@@ -123,22 +115,14 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
       return;
     }
     try {
-      const res = await fetch(API_CONFIG.translateEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ swedishArray: swedishWords })
-      });
-      const data = await res.json();
-      if (data.translations && data.translations.length === swedishWords.length) {
-        for (let j = 0; j < indices.length; j++) {
-          onEdit(indices[j], { swedish: swedishWords[j], english: data.translations[j] });
-        }
-        setImportMsg('Batch translation complete!');
-      } else {
-        setImportMsg('Batch translation failed.');
+      const translations = await translateBatch(swedishWords, 'sv', 'en');
+      for (let j = 0; j < indices.length; j++) {
+        onEdit(indices[j], { swedish: swedishWords[j], english: translations[j] });
       }
+      setImportMsg('Batch translation complete!');
     } catch (e) {
-      setImportMsg('Batch translation error.');
+      console.error('Batch translation error:', e);
+      setImportMsg('Batch translation failed.');
     }
     setTranslatingIdx(null);
     setTranslatingAll(false);
