@@ -57,13 +57,28 @@ Flodhasten/
 
 The application requires the following environment variables for full functionality:
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `AZURE_TRANSLATION_KEY` | Azure Cognitive Services Translator API key | Yes (for translation features) |
-| `AZURE_TRANSLATION_REGION` | Azure region (default: westeurope) | No |
-| `PORT` | Server port (default: 4000) | No |
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `AZURE_TRANSLATION_KEY` | Azure Cognitive Services Translator API key | Yes (for translation features) | - |
+| `AZURE_TRANSLATION_REGION` | Azure region for Translator service | No | `westeurope` |
+| `PORT` | Server port for translation proxy | No | `4000` |
+| `NODE_ENV` | Environment mode | No | `development` |
 
-**Security Note**: Never commit your `.env` file to version control. The `.env.example` file is provided as a template.
+### 🔒 Security Requirements
+
+- **Never commit `.env` files to version control**
+- **Keep API keys secure and private**
+- **Rotate keys regularly**
+- **Use different keys for development and production**
+- **The `.env.example` file is provided as a template only**
+
+### 🚨 Secret Management
+
+This repository has been audited for secrets and follows security best practices:
+- ✅ `.env` files are ignored by git
+- ✅ No real secrets are tracked in version control
+- ✅ Environment variables are properly documented
+- ✅ Placeholder values are used in examples
 
 ## 🚀 Getting Started
 
@@ -93,6 +108,9 @@ The application requires the following environment variables for full functional
    
    # Edit .env and add your Azure Translation API key
    # Get your key from: https://portal.azure.com/
+   # 1. Create a Translator resource
+   # 2. Go to Keys and Endpoint section
+   # 3. Copy Key 1 or Key 2
    ```
 
 4. Start the development server:
