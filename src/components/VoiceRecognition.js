@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaMicrophone, FaMicrophoneSlash, FaPlay, FaVolumeUp, FaStar, FaChartLine, FaTrophy } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaPlay, FaVolumeUp, FaStar, FaChartLine, FaTrophy, FaQuestionCircle } from 'react-icons/fa';
 import { 
   analyzePronunciation, 
   getRandomPronunciationWord, 
@@ -8,6 +8,7 @@ import {
   PRONUNCIATION_LEVELS 
 } from '../data/voiceRecognition';
 import ttsApi from '../utils/ttsApi';
+import { useSpeechSupport } from '../features/speech/useSpeechSupport';
 
 const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDarkMode }) => {
   const [isListening, setIsListening] = useState(false);
@@ -17,56 +18,56 @@ const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDark
   const [showResult, setShowResult] = useState(false);
   const [difficulty, setDifficulty] = useState('all');
   const [recognition, setRecognition] = useState(null);
-  const [isSupported, setIsSupported] = useState(false);
   const [stats, setStats] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const audioRef = useRef(null);
+  const speechSupport = useSpeechSupport();
 
   // Initialize speech recognition
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (SpeechRecognition) {
-      const recognitionInstance = new SpeechRecognition();
-      recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = false;
-      recognitionInstance.lang = 'sv-SE'; // Swedish language
+    if (speechSupport.isSupported && speechSupport.isAvailable) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       
-      recognitionInstance.onstart = () => {
-        setIsListening(true);
-      };
-      
-      recognitionInstance.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setSpokenText(transcript);
+      if (SpeechRecognition) {
+        const recognitionInstance = new SpeechRecognition();
+        recognitionInstance.continuous = false;
+        recognitionInstance.interimResults = false;
+        recognitionInstance.lang = 'sv-SE'; // Swedish language
         
-        if (currentWord) {
-          const result = analyzePronunciation(transcript, currentWord.word);
-          setPronunciationResult(result);
-          setShowResult(true);
+        recognitionInstance.onstart = () => {
+          setIsListening(true);
+        };
+        
+        recognitionInstance.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          setSpokenText(transcript);
           
-          // Track pronunciation attempt
-          if (onPronunciationAttempt) {
-            onPronunciationAttempt(result);
+          if (currentWord) {
+            const result = analyzePronunciation(transcript, currentWord.word);
+            setPronunciationResult(result);
+            setShowResult(true);
+            
+            // Track pronunciation attempt
+            if (onPronunciationAttempt) {
+              onPronunciationAttempt(result);
+            }
           }
-        }
-      };
-      
-      recognitionInstance.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-      };
-      
-      recognitionInstance.onend = () => {
-        setIsListening(false);
-      };
-      
-      setRecognition(recognitionInstance);
-      setIsSupported(true);
-    } else {
-      setIsSupported(false);
+        };
+        
+        recognitionInstance.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+        
+        recognitionInstance.onend = () => {
+          setIsListening(false);
+        };
+        
+        setRecognition(recognitionInstance);
+      }
     }
-  }, [currentWord, onPronunciationAttempt]);
+  }, [currentWord, onPronunciationAttempt, speechSupport.isSupported, speechSupport.isAvailable]);
 
   // Load initial word and stats
   useEffect(() => {
@@ -122,7 +123,14 @@ const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDark
   const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
   const accentColor = isDarkMode ? '#3498db' : '#3498db';
 
-  if (!isSupported) {
+  // Show help page if requested
+  if (showHelp) {
+    const VoiceSupportHelp = require('../routes/help/voice').default;
+    return <VoiceSupportHelp />;
+  }
+
+  // Show unsupported message with fallback options
+  if (!speechSupport.isSupported || !speechSupport.isAvailable) {
     return (
       <div style={{
         padding: '2rem',
@@ -134,15 +142,66 @@ const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDark
           margin: '0 0 1rem 0',
           fontFamily: '"Georgia", serif'
         }}>
-          Voice Recognition Not Supported
+          Voice Recognition Not Available
         </h2>
         <p style={{
-          margin: '0',
+          margin: '0 0 1rem 0',
           fontFamily: '"Georgia", serif',
           opacity: 0.8
         }}>
-          Your browser doesn't support speech recognition. Try using Chrome or Edge.
+          {speechSupport.fallbackMode === 'multiple-choice' 
+            ? 'Your browser doesn\'t support voice recognition. Try the multiple choice exercises instead.'
+            : 'Your browser doesn\'t support voice recognition. Try using Chrome or Edge.'
+          }
         </p>
+        
+        <div style={{ marginBottom: '1.5rem' }}>
+          <button
+            onClick={() => setShowHelp(true)}
+            style={{
+              background: accentColor,
+              color: '#fff',
+              border: 'none',
+              borderRadius: '25px',
+              padding: '0.8rem 1.5rem',
+              cursor: 'pointer',
+              fontFamily: '"Georgia", serif',
+              fontSize: '0.9rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              margin: '0 auto'
+            }}
+          >
+            <FaQuestionCircle />
+            Learn More About Voice Support
+          </button>
+        </div>
+
+        {speechSupport.fallbackMode === 'multiple-choice' && (
+          <div style={{
+            background: cardBackground,
+            border: `2px solid ${borderColor}`,
+            borderRadius: '15px',
+            padding: '1.5rem',
+            marginTop: '1rem'
+          }}>
+            <h3 style={{
+              margin: '0 0 1rem 0',
+              fontFamily: '"Georgia", serif',
+              color: accentColor
+            }}>
+              Alternative Learning Methods
+            </h3>
+            <p style={{
+              margin: '0',
+              fontFamily: '"Georgia", serif',
+              opacity: 0.8
+            }}>
+              Try the multiple choice exercises to practice Swedish vocabulary and pronunciation.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
@@ -362,36 +421,70 @@ const VoiceRecognition = React.memo(({ userStats, onPronunciationAttempt, isDark
               Listen
             </button>
             
-            <button
-              onClick={startListening}
-              disabled={isListening}
-              style={{
-                background: isListening ? '#e74c3c' : '#27ae60',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '25px',
-                padding: '0.8rem 1.5rem',
-                cursor: isListening ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: '"Georgia", serif',
-                fontSize: '0.9rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                opacity: isListening ? 0.7 : 1
-              }}
-              onMouseEnter={(e) => {
-                if (!isListening) {
-                  e.target.style.transform = 'scale(1.05)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)';
-              }}
-            >
-              {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
-              {isListening ? 'Listening...' : 'Speak'}
-            </button>
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <button
+                onClick={startListening}
+                disabled={isListening}
+                style={{
+                  background: isListening ? '#e74c3c' : '#27ae60',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '25px',
+                  padding: '0.8rem 1.5rem',
+                  cursor: isListening ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: '"Georgia", serif',
+                  fontSize: '0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  opacity: isListening ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isListening) {
+                    e.target.style.transform = 'scale(1.05)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                }}
+                title="Click to start voice recognition. Click the help icon for more information."
+              >
+                {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
+                {isListening ? 'Listening...' : 'Speak'}
+              </button>
+              
+              <button
+                onClick={() => setShowHelp(true)}
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  background: accentColor,
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '24px',
+                  height: '24px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                }}
+                title="Voice recognition help and troubleshooting"
+              >
+                <FaQuestionCircle />
+              </button>
+            </div>
           </div>
 
           {/* Pronunciation Guide */}
