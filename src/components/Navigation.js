@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './Navigation.css';
-import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdStore, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics, MdExtension } from 'react-icons/md';
+import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdStore, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics, MdExtension, MdSettings } from 'react-icons/md';
 
 // Version constant - should match the one in App.js
 const APP_VERSION = '1.0.1-1756732567308';
@@ -87,7 +87,8 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { screen: 'cultural-integration', icon: <MdPublic />, label: 'Cultural Integration' },
     { screen: 'social-features', icon: <MdPeople />, label: 'Social Features' },
     { screen: 'advanced-analytics', icon: <MdAnalytics />, label: 'Advanced Analytics' },
-    { screen: 'gamified-learning', icon: <MdExtension />, label: 'Gamified Learning' }
+    { screen: 'gamified-learning', icon: <MdExtension />, label: 'Gamified Learning' },
+    { screen: 'settings', icon: <MdSettings />, label: 'Settings' }
   ];
 
   return (

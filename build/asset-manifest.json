@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/flodhasten/static/css/main.393f55b4.css",
-    "main.js": "/flodhasten/static/js/main.2cc4aff7.js",
+    "main.css": "/flodhasten/static/css/main.bb04fc30.css",
+    "main.js": "/flodhasten/static/js/main.9f77d960.js",
     "static/js/825.59920bd8.chunk.js": "/flodhasten/static/js/825.59920bd8.chunk.js",
     "static/js/699.cf707cc1.chunk.js": "/flodhasten/static/js/699.cf707cc1.chunk.js",
     "static/js/972.19a489fb.chunk.js": "/flodhasten/static/js/972.19a489fb.chunk.js",
@@ -19,6 +19,7 @@
     "static/js/776.fd131ea0.chunk.js": "/flodhasten/static/js/776.fd131ea0.chunk.js",
     "static/js/646.f5409b7b.chunk.js": "/flodhasten/static/js/646.f5409b7b.chunk.js",
     "static/js/431.6a88a2f6.chunk.js": "/flodhasten/static/js/431.6a88a2f6.chunk.js",
+    "static/js/809.8568e68f.chunk.js": "/flodhasten/static/js/809.8568e68f.chunk.js",
     "static/js/424.c9fcc0ae.chunk.js": "/flodhasten/static/js/424.c9fcc0ae.chunk.js",
     "static/js/241.d00ecb9d.chunk.js": "/flodhasten/static/js/241.d00ecb9d.chunk.js",
     "static/js/50.13e8ca30.chunk.js": "/flodhasten/static/js/50.13e8ca30.chunk.js",
@@ -39,7 +40,7 @@
     "index.html": "/flodhasten/index.html"
   },
   "entrypoints": [
-    "static/css/main.393f55b4.css",
-    "static/js/main.2cc4aff7.js"
+    "static/css/main.bb04fc30.css",
+    "static/js/main.9f77d960.js"
   ]
 }

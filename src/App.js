@@ -27,6 +27,7 @@ const LessonView = React.lazy(() => import('./components/LessonView'));
 const Review = React.lazy(() => import('./components/Review'));
 const Privacy = React.lazy(() => import('./routes/legal/privacy'));
 const Terms = React.lazy(() => import('./routes/legal/terms'));
+const Settings = React.lazy(() => import('./components/Settings'));
 
 // Version tracking utility
 const CACHE_VERSION = '1.0.1-1756732567308';
@@ -1119,6 +1120,12 @@ function App() {
       onBack={() => setScreen('home')}
     />
   </Suspense>;
+  else if (screen === 'settings') content = <Suspense fallback={<LoadingSpinner message="Loading Settings..." isDarkMode={isDarkMode} />}>
+    <Settings
+      isDarkMode={isDarkMode}
+      onBack={() => setScreen('home')}
+    />
+  </Suspense>;
   else if (screen === 'games') {
     if (!game) {
       content = <Suspense fallback={<LoadingSpinner message="Loading Games Menu..." isDarkMode={isDarkMode} />}>
@@ -1169,6 +1176,10 @@ function App() {
 
   return (
     <ErrorBoundary isDarkMode={isDarkMode}>
+      {/* Skip to main content link for screen readers */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <div 
         className="moomin-app-container"
         style={{ 
@@ -1200,7 +1211,7 @@ function App() {
           </Suspense>
         )}
         <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
-        <main style={{ paddingTop: '60px', minHeight: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
+        <main id="main-content" style={{ paddingTop: '60px', minHeight: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ flex: 1 }}>
             {content}
           </div>
