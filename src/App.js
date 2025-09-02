@@ -5,6 +5,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import AchievementNotification from './components/AchievementNotification';
 import UserFeedback from './components/UserFeedback';
+import Footer from './components/Footer';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
@@ -23,6 +24,9 @@ const SocialFeatures = React.lazy(() => import('./components/SocialFeatures'));
 const AdvancedAnalytics = React.lazy(() => import('./components/AdvancedAnalytics'));
 const GamifiedLearning = React.lazy(() => import('./components/GamifiedLearning'));
 const LessonView = React.lazy(() => import('./components/LessonView'));
+const Review = React.lazy(() => import('./components/Review'));
+const Privacy = React.lazy(() => import('./routes/legal/privacy'));
+const Terms = React.lazy(() => import('./routes/legal/terms'));
 
 // Version tracking utility
 const CACHE_VERSION = '1.0.1-1756732567308';
@@ -1097,6 +1101,24 @@ function App() {
       isDarkMode={isDarkMode} 
     />
   </Suspense>;
+  else if (screen === 'review') content = <Suspense fallback={<LoadingSpinner message="Loading Review..." isDarkMode={isDarkMode} />}>
+    <Review
+      isDarkMode={isDarkMode}
+      onBack={() => setScreen('home')}
+    />
+  </Suspense>;
+  else if (screen === 'privacy') content = <Suspense fallback={<LoadingSpinner message="Loading Privacy Policy..." isDarkMode={isDarkMode} />}>
+    <Privacy
+      isDarkMode={isDarkMode}
+      onBack={() => setScreen('home')}
+    />
+  </Suspense>;
+  else if (screen === 'terms') content = <Suspense fallback={<LoadingSpinner message="Loading Terms of Service..." isDarkMode={isDarkMode} />}>
+    <Terms
+      isDarkMode={isDarkMode}
+      onBack={() => setScreen('home')}
+    />
+  </Suspense>;
   else if (screen === 'games') {
     if (!game) {
       content = <Suspense fallback={<LoadingSpinner message="Loading Games Menu..." isDarkMode={isDarkMode} />}>
@@ -1178,8 +1200,11 @@ function App() {
           </Suspense>
         )}
         <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
-        <main style={{ paddingTop: '60px' }}>
-          {content}
+        <main style={{ paddingTop: '60px', minHeight: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1 }}>
+            {content}
+          </div>
+          <Footer isDarkMode={isDarkMode} setScreen={setScreen} />
         </main>
         
         {/* Achievement Notification */}
