@@ -74,4 +74,15 @@ jspm_packages/
 .tern-port
 
 # React app build artifacts
-# src/ is now tracked
+build/
+
+# OS / editor noise
+.DS_Store
+**/.DS_Store
+
+# Local nested repositories / caches
+api/.git/
+
+# Backup files
+*.backup
+*.backup*
