@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 function IntroAnimation({ onComplete, isDarkMode }) {
   const [showSkip, setShowSkip] = useState(false);
@@ -7,6 +7,16 @@ function IntroAnimation({ onComplete, isDarkMode }) {
   const [isOutro, setIsOutro] = useState(false);
   const [showTapToSkip, setShowTapToSkip] = useState(false);
   const videoRef = useRef(null);
+
+  const startOutro = useCallback(() => {
+    console.log('Starting outro transition');
+    setIsOutro(true);
+    // Wait for outro animation to complete before calling onComplete
+    setTimeout(() => {
+      console.log('Outro complete, calling onComplete');
+      onComplete();
+    }, 1500); // Match the CSS transition duration
+  }, [onComplete]);
 
   useEffect(() => {
     // Test video accessibility
@@ -40,23 +50,18 @@ function IntroAnimation({ onComplete, isDarkMode }) {
           startOutro();
         }
       }, 5000);
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(autoSkip);
-      };
+      return { timer, autoSkip };
     };
-    testVideo();
-  }, []);
+    let timeoutHandles;
+    testVideo().then(handles => {
+      timeoutHandles = handles;
+    });
 
-  const startOutro = () => {
-    console.log('Starting outro transition');
-    setIsOutro(true);
-    // Wait for outro animation to complete before calling onComplete
-    setTimeout(() => {
-      console.log('Outro complete, calling onComplete');
-      onComplete();
-    }, 1500); // Match the CSS transition duration
-  };
+    return () => {
+      if (timeoutHandles?.timer) clearTimeout(timeoutHandles.timer);
+      if (timeoutHandles?.autoSkip) clearTimeout(timeoutHandles.autoSkip);
+    };
+  }, [startOutro]);
 
   const handlePlay = () => {
     console.log('Video started playing');
@@ -284,7 +289,6 @@ function IntroAnimation({ onComplete, isDarkMode }) {
         left: '20px',
         color: '#ffffff',
         fontSize: '12px',
-        opacity: 0.7,
         opacity: isOutro ? 0 : 0.7,
         transition: 'opacity 0.5s ease'
       }}>

@@ -58,7 +58,9 @@ const ProfileCard = ({
         padding: '2rem',
         color: 'white',
         cursor: 'pointer',
-        ...style
+        ...style,
+        transformStyle: 'preserve-3d',
+        perspective: '1000px'
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -67,18 +69,13 @@ const ProfileCard = ({
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
       }}
       transition={{ 
-        type: "spring", 
+        type: 'spring', 
         stiffness: 300, 
         damping: 20 
       }}
       animate={{
         rotateX: enableTilt && (enableMobileTilt || window.innerWidth > 768) ? springRotateX : 0,
         rotateY: enableTilt && (enableMobileTilt || window.innerWidth > 768) ? springRotateY : 0,
-      }}
-      style={{
-        ...style,
-        transformStyle: "preserve-3d",
-        perspective: "1000px"
       }}
     >
       {/* Glow effect */}
@@ -188,7 +185,7 @@ const ProfileCard = ({
           )}
         </>
       )}
-    </div>
+    </motion.div>
   );
 };
 

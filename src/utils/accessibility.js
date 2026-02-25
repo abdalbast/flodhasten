@@ -290,8 +290,8 @@ export const colorScheme = {
       return black;
     } else {
       // If both work, prefer the one with higher contrast
-      const whiteRatio = getContrastRatio(backgroundColor, white);
-      const blackRatio = getContrastRatio(backgroundColor, black);
+      const whiteRatio = this.getContrastRatio(backgroundColor, white);
+      const blackRatio = this.getContrastRatio(backgroundColor, black);
       return whiteRatio > blackRatio ? white : black;
     }
   },
@@ -339,7 +339,6 @@ export const formAccessibility = {
     
     // Check for description
     const ariaDescribedBy = field.getAttribute('aria-describedby');
-    const description = document.getElementById(ariaDescribedBy);
     results.hasDescription = !!ariaDescribedBy;
     
     // Check for error state
@@ -388,7 +387,7 @@ export const formAccessibility = {
 };
 
 // Export all utilities
-export default {
+const accessibilityUtils = {
   hasSufficientContrast,
   focusManager,
   screenReader,
@@ -396,3 +395,5 @@ export default {
   colorScheme,
   formAccessibility
 };
+
+export default accessibilityUtils;

@@ -47,12 +47,12 @@ async function playSwedish(word) {
 
 const WordOfDay = React.memo(({ wordOfTheDay, currentLanguage, isDarkMode }) => {
   const styles = getHomeStyles(isDarkMode);
-  
-  if (!wordOfTheDay) return null;
-
   const handlePlayAudio = React.useCallback(() => {
+    if (!wordOfTheDay) return;
     playSwedish(wordOfTheDay.swedish);
   }, [wordOfTheDay]);
+
+  if (!wordOfTheDay) return null;
 
   return (
     <div style={styles.wordOfDaySection}>

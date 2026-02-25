@@ -2,6 +2,28 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { MdVolumeUp, MdPause, MdPlayArrow, MdRefresh } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 
+const TETRIS_COLORS = [
+  '#FF6B6B',
+  '#4ECDC4',
+  '#45B7D1',
+  '#96CEB4',
+  '#FFEAA7',
+  '#DDA0DD',
+  '#FFB347',
+  '#87CEEB',
+  '#98FB98',
+  '#F0E68C'
+];
+
+const TETRIS_SHAPES = [
+  { width: 100, height: 40, type: 'I' },
+  { width: 80, height: 50, type: 'O' },
+  { width: 120, height: 35, type: 'T' },
+  { width: 70, height: 45, type: 'L' },
+  { width: 90, height: 40, type: 'S' },
+  { width: 110, height: 30, type: 'Z' }
+];
+
 // Play Swedish word with TTS API
 async function playSwedish(word) {
   try {
@@ -66,39 +88,15 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const titleColor = isDarkMode ? '#64b5f6' : '#0288d1';
   const borderColor = isDarkMode ? '#555555' : 'transparent';
 
-  // Tetris-style block colors and shapes
-  const tetrisColors = [
-    '#FF6B6B', // Red
-    '#4ECDC4', // Teal
-    '#45B7D1', // Blue
-    '#96CEB4', // Green
-    '#FFEAA7', // Yellow
-    '#DDA0DD', // Plum
-    '#FFB347', // Orange
-    '#87CEEB', // Sky Blue
-    '#98FB98', // Pale Green
-    '#F0E68C'  // Khaki
-  ];
-
-  // Tetris-style block shapes (different widths and heights)
-  const tetrisShapes = [
-    { width: 100, height: 40, type: 'I' },      // Long horizontal
-    { width: 80, height: 50, type: 'O' },       // Square
-    { width: 120, height: 35, type: 'T' },      // Wide
-    { width: 70, height: 45, type: 'L' },       // Tall
-    { width: 90, height: 40, type: 'S' },       // Medium
-    { width: 110, height: 30, type: 'Z' }       // Extra wide
-  ];
-
   // Generate a new falling word
-  const generateWord = useCallback(() => { if (!gameState) return;
+  const generateWord = useCallback(() => {
     if (gameWords.length === 0) return;
     
     const randomWord = gameWords[Math.floor(Math.random() * gameWords.length)];
     
     // Select random Tetris-style properties
-    const randomColor = tetrisColors[Math.floor(Math.random() * tetrisColors.length)];
-    const randomShape = tetrisShapes[Math.floor(Math.random() * tetrisShapes.length)];
+    const randomColor = TETRIS_COLORS[Math.floor(Math.random() * TETRIS_COLORS.length)];
+    const randomShape = TETRIS_SHAPES[Math.floor(Math.random() * TETRIS_SHAPES.length)];
     
     // Calculate available positions to avoid overlap
     const wordWidth = randomShape.width;
@@ -122,10 +120,13 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
       attempts++;
       
       // Check if this position overlaps with existing words
-      const overlaps = fallingWords.some(existing => 
-        Math.abs(existing.x - newX) < wordWidth && 
-        Math.abs(existing.y - newY) < 40
-      );
+      let overlaps = false;
+      for (const existing of fallingWords) {
+        if (Math.abs(existing.x - newX) < wordWidth && Math.abs(existing.y - newY) < 40) {
+          overlaps = true;
+          break;
+        }
+      }
       
       if (!overlaps || attempts > 15) break;
     } while (attempts < 15);
@@ -143,7 +144,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     };
     
     setFallingWords(prev => [...prev, newWord]);
-  }, [gameWords, level, fallingWords, tetrisColors, tetrisShapes]);
+  }, [gameWords, level, fallingWords]);
 
   // Game loop for moving words
   const gameLoop = useCallback(() => {
@@ -349,7 +350,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         <button onClick={startGame} style={{
           background: 'linear-gradient(135deg, #FF6B6B, #4ECDC4)',
           color: '#fff',
-          border: 'none',
+          border: '2px solid rgba(255,255,255,0.2)',
           borderRadius: 12,
           padding: '1rem 2rem',
           fontWeight: 'bold',
@@ -358,8 +359,7 @@ function WordFall({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
           marginBottom: '1rem',
           boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
-          border: '2px solid rgba(255,255,255,0.2)'
+          textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
         }}
         onMouseEnter={(e) => {
           e.target.style.transform = 'translateY(-3px)';

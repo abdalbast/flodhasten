@@ -1,13 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import crypto from 'crypto';
-
-// Types for the request and response
 interface TranslateRequest {
   text: string;
   from: string;
   to: string;
-  ts: number;
-  sig: string;
 }
 
 interface TranslateResponse {
@@ -22,33 +17,36 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000' // For development
 ];
 
-// HMAC verification function
-function verifyHMAC(text: string, from: string, to: string, ts: number, sig: string): boolean {
-  const serverSecret = process.env.TRANSLATE_SECRET;
-  if (!serverSecret) {
-    console.error('TRANSLATE_SECRET environment variable not set');
-    return false;
-  }
+const ALLOWED_LANGS = new Set(['sv', 'en', 'ku', 'ku-lat']);
+const MAX_TEXT_LENGTH = 500;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 30;
+const requestLog = new Map<string, number[]>();
 
-  // Create the message to verify
-  const message = `${text}|${from}|${to}|${ts}`;
-  
-  // Create HMAC
-  const hmac = crypto.createHmac('sha256', serverSecret);
-  hmac.update(message);
-  const expectedSig = hmac.digest('hex');
-  
-  return crypto.timingSafeEqual(
-    Buffer.from(sig, 'hex'),
-    Buffer.from(expectedSig, 'hex')
-  );
+function getClientKey(req: VercelRequest): string {
+  const forwardedFor = req.headers['x-forwarded-for'];
+  const realIp = req.headers['x-real-ip'];
+  const rawIp = Array.isArray(forwardedFor)
+    ? forwardedFor[0]
+    : (forwardedFor || realIp || req.socket?.remoteAddress || 'unknown');
+  const ip = String(rawIp).split(',')[0].trim();
+  return ip || 'unknown';
 }
 
-// Check if timestamp is within 60 seconds
-function isTimestampValid(ts: number): boolean {
-  const now = Math.floor(Date.now() / 1000);
-  const diff = Math.abs(now - ts);
-  return diff <= 60; // 60 seconds tolerance
+function isRateLimited(clientKey: string): { limited: boolean; retryAfterSeconds?: number } {
+  const now = Date.now();
+  const recent = (requestLog.get(clientKey) || []).filter(ts => now - ts < RATE_LIMIT_WINDOW_MS);
+  requestLog.set(clientKey, recent);
+
+  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
+    const oldest = recent[0];
+    const retryAfterSeconds = Math.max(1, Math.ceil((RATE_LIMIT_WINDOW_MS - (now - oldest)) / 1000));
+    return { limited: true, retryAfterSeconds };
+  }
+
+  recent.push(now);
+  requestLog.set(clientKey, recent);
+  return { limited: false };
 }
 
 // CORS helper
@@ -89,23 +87,41 @@ export default async function handler(
   if (!setCORSHeaders(req, res)) return;
 
   try {
-    const { text, from, to, ts, sig }: TranslateRequest = req.body;
+    const clientKey = getClientKey(req);
+    const rateLimit = isRateLimited(clientKey);
+    if (rateLimit.limited) {
+      if (rateLimit.retryAfterSeconds) {
+        res.setHeader('Retry-After', String(rateLimit.retryAfterSeconds));
+      }
+      res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' });
+      return;
+    }
+
+    const { text, from, to }: TranslateRequest = req.body;
 
     // Validate required fields
-    if (!text || !from || !to || !ts || !sig) {
+    if (!text || !from || !to) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
 
-    // Validate timestamp
-    if (!isTimestampValid(ts)) {
-      res.status(400).json({ error: 'Request expired or invalid timestamp' });
+    if (typeof text !== 'string' || typeof from !== 'string' || typeof to !== 'string') {
+      res.status(400).json({ error: 'Invalid request payload' });
       return;
     }
 
-    // Verify HMAC signature
-    if (!verifyHMAC(text, from, to, ts, sig)) {
-      res.status(401).json({ error: 'Invalid signature' });
+    if (text.length > MAX_TEXT_LENGTH) {
+      res.status(400).json({ error: `Text too long (max ${MAX_TEXT_LENGTH} chars)` });
+      return;
+    }
+
+    if (!ALLOWED_LANGS.has(from) || !ALLOWED_LANGS.has(to)) {
+      res.status(400).json({ error: 'Unsupported language pair' });
+      return;
+    }
+
+    if (from === to) {
+      res.status(400).json({ error: 'Source and target languages must be different' });
       return;
     }
 

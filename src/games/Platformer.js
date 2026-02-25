@@ -50,7 +50,7 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
   const [player, setPlayer] = useState({ x: 50, y: 300, vx: 0, vy: 0, onGround: false, direction: 1 });
   const [platforms, setPlatforms] = useState([]);
   const [collectibles, setCollectibles] = useState([]);
-  const [enemies, setEnemies] = useState([]);
+  const [, setEnemies] = useState([]);
   const [doors, setDoors] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(1);
   const [score, setScore] = useState(0);
@@ -353,7 +353,7 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
     if (player.x > 950) {
       setGameState('levelComplete');
     }
-  }, [gameState, player, platforms, collectibles, doors, lives]);
+  }, [gameState, player, platforms, doors, jumpPower]);
 
   // Start game loop
   useEffect(() => {
@@ -512,7 +512,7 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
         <button onClick={startGame} style={{
           background: 'linear-gradient(135deg, #FF6B6B, #4ECDC4)',
           color: '#fff',
-          border: 'none',
+          border: '2px solid rgba(255,255,255,0.2)',
           borderRadius: 12,
           padding: '1rem 2rem',
           fontWeight: 'bold',
@@ -521,8 +521,7 @@ function Platformer({ words, onWordStatUpdate, onLessonComplete, isDarkMode }) {
           marginBottom: '1rem',
           boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
-          border: '2px solid rgba(255,255,255,0.2)'
+          textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
         }}
         onMouseEnter={(e) => {
           e.target.style.transform = 'translateY(-3px)';

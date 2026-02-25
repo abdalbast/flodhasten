@@ -39,14 +39,6 @@ const LessonCard = React.memo(({
 
   const backgroundImage = getBackgroundImage();
   
-  // Debug logging
-  if (backgroundImage) {
-    console.log(`Lesson ${lesson.id} background image:`, backgroundImage);
-    console.log(`Lesson ${lesson.id} lesson object:`, lesson);
-  }
-  
-
-
   // All hooks must be called at the top level
   const ref = useRef(null);
   const x = useMotionValue();

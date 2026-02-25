@@ -442,13 +442,6 @@ function getInitialUserData() {
   };
 }
 
-// Helper: calculate level from XP
-function calculateLevel(xp) {
-  return Math.floor(xp / 100) + 1;
-}
-
-
-
 function App() {
   const [screen, setScreen] = useState('home');
   const [selectedSkillId, setSelectedSkillId] = useState('lesson1');
@@ -612,7 +605,7 @@ function App() {
       debouncedSaveToStorage('userStats', newStats);
       return newStats;
     });
-  }, [debouncedSaveToStorage]);
+  }, []);
 
   const checkAndUnlockAchievements = useCallback((previousStats, currentStats) => {
     const newlyUnlocked = getNewlyUnlockedAchievements(previousStats, currentStats);
@@ -636,7 +629,7 @@ function App() {
         return newUnlocked;
       });
     }
-  }, [debouncedSaveToStorage]);
+  }, []);
 
   // Save states to localStorage - optimized with useMemo
   const saveData = useMemo(() => ({
@@ -661,17 +654,17 @@ function App() {
     
     // Update user stats for cultural lessons
     updateUserStats({ cultural_lessons_completed: (userStats.cultural_lessons_completed || 0) + 1 });
-  }, [userStats.cultural_lessons_completed, updateUserStats, debouncedSaveToStorage]);
+  }, [userStats.cultural_lessons_completed, updateUserStats]);
 
   // Save userStats to localStorage whenever it changes
   useEffect(() => {
     debouncedSaveToStorage('userStats', userStats);
-  }, [userStats, debouncedSaveToStorage]);
+  }, [userStats]);
 
   // Save unlockedAchievements to localStorage whenever it changes
   useEffect(() => {
     debouncedSaveToStorage('unlockedAchievements', unlockedAchievements);
-  }, [unlockedAchievements, debouncedSaveToStorage]);
+  }, [unlockedAchievements]);
 
   // Daily Challenges tracking functions
   const updateChallengeProgress = useCallback((updates) => {
@@ -680,7 +673,7 @@ function App() {
       debouncedSaveToStorage('challengeProgress', newProgress);
       return newProgress;
     });
-  }, [debouncedSaveToStorage]);
+  }, []);
 
   const checkAndCompleteChallenges = useCallback(() => {
     const newlyCompleted = [];
@@ -721,12 +714,12 @@ function App() {
   // Save dailyChallenges to localStorage whenever it changes
   useEffect(() => {
     debouncedSaveToStorage('dailyChallenges', dailyChallenges);
-  }, [dailyChallenges, debouncedSaveToStorage]);
+  }, [dailyChallenges]);
 
   // Save challengeProgress to localStorage whenever it changes
   useEffect(() => {
     debouncedSaveToStorage('challengeProgress', challengeProgress);
-  }, [challengeProgress, debouncedSaveToStorage]);
+  }, [challengeProgress]);
 
   // Generate new daily challenges at midnight
   useEffect(() => {
@@ -744,19 +737,19 @@ function App() {
   
   useEffect(() => {
     debouncedSaveToStorage('progress', progress);
-  }, [progress, debouncedSaveToStorage]);
+  }, [progress]);
   
   useEffect(() => {
     debouncedSaveToStorage('userData', userData);
-  }, [userData, debouncedSaveToStorage]);
+  }, [userData]);
   
   useEffect(() => {
     debouncedSaveToStorage('customWords', customWords);
-  }, [customWords, debouncedSaveToStorage]);
+  }, [customWords]);
   
   useEffect(() => {
     debouncedSaveToStorage('isDarkMode', isDarkMode);
-  }, [isDarkMode, debouncedSaveToStorage]);
+  }, [isDarkMode]);
   
   useEffect(() => {
     localStorage.setItem('currentLanguage', currentLanguage);
@@ -782,18 +775,6 @@ function App() {
   }, []);
 
   // Add XP to user - memoized
-  const addXP = useCallback((amount) => {
-    setUserData(prev => {
-      const newXP = prev.xp + amount;
-      const newLevel = calculateLevel(newXP);
-      return {
-        ...prev,
-        xp: newXP,
-        level: newLevel
-      };
-    });
-  }, []);
-
   // Purchase item with coins - memoized
   const handlePurchase = useCallback((item) => {
     if (userData.coins >= item.price) {

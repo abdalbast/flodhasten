@@ -1,5 +1,4 @@
-// Client-side translation library with HMAC signing
-import { generateHMAC, getCurrentTimestamp } from './crypto';
+// Client-side translation library
 
 // Types for translation requests and responses (JSDoc comments)
 /**
@@ -7,8 +6,6 @@ import { generateHMAC, getCurrentTimestamp } from './crypto';
  * @property {string} text - Text to translate
  * @property {string} from - Source language code
  * @property {string} to - Target language code
- * @property {number} ts - Timestamp
- * @property {string} sig - HMAC signature
  */
 
 /**
@@ -18,8 +15,7 @@ import { generateHMAC, getCurrentTimestamp } from './crypto';
  */
 
 // Configuration
-const API_ENDPOINT = '/api/translate';
-const CLIENT_SECRET = process.env.REACT_APP_TRANSLATE_SECRET || '';
+const API_ENDPOINT = process.env.REACT_APP_TRANSLATE_API_URL || '/api/translate';
 
 // Error class for translation errors
 export class TranslationError extends Error {
@@ -31,7 +27,7 @@ export class TranslationError extends Error {
 }
 
 /**
- * Translate text using the secure API
+ * Translate text using the translation API
  * @param {string} text - Text to translate
  * @param {string} from - Source language code (e.g., 'sv')
  * @param {string} to - Target language code (e.g., 'en')
@@ -44,23 +40,12 @@ export async function translateText(text, from = 'sv', to = 'en') {
       throw new TranslationError('Invalid text provided');
     }
 
-    if (!CLIENT_SECRET) {
-      throw new TranslationError('Translation secret not configured');
-    }
-
-    // Generate timestamp
-    const ts = getCurrentTimestamp();
-
-    // Generate HMAC signature
-    const sig = await generateHMAC(text, from, to, ts, CLIENT_SECRET);
-
     // Prepare request
-    const request: TranslateRequest = {
+    /** @type {TranslateRequest} */
+    const request = {
       text,
       from,
-      to,
-      ts,
-      sig
+      to
     };
 
     // Make API call
@@ -80,7 +65,8 @@ export async function translateText(text, from = 'sv', to = 'en') {
       );
     }
 
-    const data: TranslateResponse = await response.json();
+    /** @type {TranslateResponse} */
+    const data = await response.json();
     
     if (data.error) {
       throw new TranslationError(data.error);
@@ -110,7 +96,8 @@ export async function translateText(text, from = 'sv', to = 'en') {
  * @returns {Promise<string[]>} - Array of translated texts
  */
 export async function translateBatch(texts, from = 'sv', to = 'en') {
-  const results: string[] = [];
+  /** @type {string[]} */
+  const results = [];
   
   for (const text of texts) {
     try {
