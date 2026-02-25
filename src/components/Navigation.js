@@ -6,13 +6,10 @@ import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook,
 const APP_VERSION = '1.0.1-1756732567308';
 
 const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleDarkMode, onToggleLanguage, currentLanguage }) => {
-  const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
-  const [showMoreDropdown, setShowMoreDropdown] = useState(false);
+  const [showMainMenu, setShowMainMenu] = useState(false);
   
-  // Refs for dropdown containers
-  const settingsDropdownRef = useRef(null);
-  const desktopMoreDropdownRef = useRef(null);
-  const mobileMoreDropdownRef = useRef(null);
+  // Ref for main menu dropdown
+  const mainMenuRef = useRef(null);
 
   const languages = useMemo(() => [
     { code: 'sv', name: 'Svenska', flag: process.env.PUBLIC_URL + '/swedish_flag.png' },
@@ -20,27 +17,16 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
     { code: 'ku-lat', name: 'Sorani', flag: process.env.PUBLIC_URL + '/kurdish_flag.png' }
   ], []);
 
-  // Handle clicks outside dropdowns
+  // Handle clicks outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Close settings dropdown if clicked outside
-      if (showSettingsDropdown && settingsDropdownRef.current && !settingsDropdownRef.current.contains(event.target)) {
-        setShowSettingsDropdown(false);
-      }
-      
-      // Close more dropdown if clicked outside (check both desktop and mobile)
-      if (showMoreDropdown) {
-        const isOutsideDesktop = !desktopMoreDropdownRef.current?.contains(event.target);
-        const isOutsideMobile = !mobileMoreDropdownRef.current?.contains(event.target);
-        
-        if (isOutsideDesktop && isOutsideMobile) {
-          setShowMoreDropdown(false);
-        }
+      if (showMainMenu && mainMenuRef.current && !mainMenuRef.current.contains(event.target)) {
+        setShowMainMenu(false);
       }
     };
 
-    // Add event listener if any dropdown is open
-    if (showSettingsDropdown || showMoreDropdown) {
+    // Add event listener if dropdown is open
+    if (showMainMenu) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
@@ -50,89 +36,95 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [showSettingsDropdown, showMoreDropdown]);
+  }, [showMainMenu]);
 
   const handleLanguageChange = (languageCode) => {
     onToggleLanguage(languageCode);
-    setShowSettingsDropdown(false);
+    setShowMainMenu(false);
   };
 
   const handleDarkModeToggle = () => {
     onToggleDarkMode();
-    setShowSettingsDropdown(false);
+    setShowMainMenu(false);
   };
 
   const handleNavigationClick = (screen) => {
     setScreen(screen);
-    setShowSettingsDropdown(false);
-    setShowMoreDropdown(false);
+    setShowMainMenu(false);
   };
 
-  // Main navigation items (only 4 tabs)
-  const primaryNavItems = [
-    { screen: 'home', icon: <MdHome />, label: 'Home' },
-    { screen: 'list', icon: <MdList />, label: 'Word List' },
-    { screen: 'games', icon: <MdGames />, label: 'Games' },
-    { screen: 'explore', icon: <MdLocationOn />, label: 'Explore' }
+  // All navigation items - now in one unified menu
+  const allNavItems = [
+    { screen: 'home', icon: <MdHome />, label: 'Home', category: 'main' },
+    { screen: 'list', icon: <MdList />, label: 'Word List', category: 'main' },
+    { screen: 'games', icon: <MdGames />, label: 'Games', category: 'main' },
+    { screen: 'explore', icon: <MdLocationOn />, label: 'Explore', category: 'main' },
+    { screen: 'story', icon: <MdBook />, label: 'Stories', category: 'content' },
+    { screen: 'avatar-shop', icon: <MdStore />, label: 'Shop', category: 'content' },
+    { screen: 'achievements', icon: <MdEmojiEvents />, label: 'Achievements', category: 'progress' },
+    { screen: 'challenges', icon: <MdFlag />, label: 'Daily Challenges', category: 'progress' },
+    { screen: 'voice-recognition', icon: <MdMic />, label: 'Voice Recognition', category: 'tools' },
+    { screen: 'testing-hub', icon: <MdScience />, label: 'Testing Hub', category: 'tools' },
+    { screen: 'cultural-integration', icon: <MdPublic />, label: 'Cultural Integration', category: 'tools' },
+    { screen: 'social-features', icon: <MdPeople />, label: 'Social Features', category: 'social' },
+    { screen: 'advanced-analytics', icon: <MdAnalytics />, label: 'Advanced Analytics', category: 'social' },
+    { screen: 'gamified-learning', icon: <MdExtension />, label: 'Gamified Learning', category: 'social' },
+    { screen: 'settings', icon: <MdSettings />, label: 'Settings', category: 'system' }
   ];
 
-  // Dropdown menu items
-  const dropdownItems = [
-    { screen: 'story', icon: <MdBook />, label: 'Stories' },
-    { screen: 'avatar-shop', icon: <MdStore />, label: 'Shop' },
-    { screen: 'achievements', icon: <MdEmojiEvents />, label: 'Achievements' },
-    { screen: 'challenges', icon: <MdFlag />, label: 'Daily Challenges' },
-    { screen: 'voice-recognition', icon: <MdMic />, label: 'Voice Recognition' },
-    { screen: 'testing-hub', icon: <MdScience />, label: 'Testing Hub' },
-    { screen: 'cultural-integration', icon: <MdPublic />, label: 'Cultural Integration' },
-    { screen: 'social-features', icon: <MdPeople />, label: 'Social Features' },
-    { screen: 'advanced-analytics', icon: <MdAnalytics />, label: 'Advanced Analytics' },
-    { screen: 'gamified-learning', icon: <MdExtension />, label: 'Gamified Learning' },
-    { screen: 'settings', icon: <MdSettings />, label: 'Settings' }
-  ];
+  // Group navigation items by category for better organization
+  const groupedNavItems = allNavItems.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+
+  const categoryLabels = {
+    main: 'Main',
+    content: 'Content',
+    progress: 'Progress',
+    tools: 'Tools',
+    social: 'Social',
+    system: 'System'
+  };
 
   return (
     <>
-      {/* Desktop Navigation Bar */}
-      <nav className={`sticky top-0 z-30 w-full bg-blue-600 dark:bg-blue-900 text-white shadow-md`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-          {/* Main navigation buttons */}
-          <div className="flex space-x-1 sm:space-x-4">
-            {primaryNavItems.map(({ screen, icon, label }) => (
+      {/* Unified Navigation Header */}
+      <nav className="sticky top-0 z-30 w-full bg-blue-600 dark:bg-blue-900 text-white shadow-lg border-b border-blue-500 dark:border-blue-800">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo/App Name */}
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg">F</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Flodhästen</h1>
+                <p className="text-xs text-blue-200">Learn Swedish</p>
+              </div>
+            </div>
+            
+            {/* Current Page Indicator (Desktop) */}
+            <div className="hidden md:flex items-center space-x-2">
+              <span className="text-blue-200 text-sm">Current:</span>
+              <span className="bg-blue-800 dark:bg-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                {allNavItems.find(item => item.screen === currentScreen)?.label || 'Unknown'}
+              </span>
+            </div>
+            
+            {/* Right side controls */}
+            <div className="flex items-center space-x-2">
+              {/* Language selector */}
               <button
-                key={screen}
-                className={`px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-200
-                  ${currentScreen === screen 
-                    ? 'bg-blue-800 dark:bg-blue-700 text-white' 
-                    : 'text-blue-100 hover:bg-blue-700 dark:hover:bg-blue-800 hover:text-white'
-                  }
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
-                onClick={() => handleNavigationClick(screen)}
-                aria-label={`Navigate to ${label}`}
-                aria-current={currentScreen === screen ? 'page' : undefined}
-                type="button"
-              >
-                <span className="text-xl mr-2">{icon}</span> 
-                <span className="hidden sm:block">{label}</span>
-              </button>
-            ))}
-          </div>
-          
-          {/* Right side controls */}
-          <div className="flex items-center space-x-2">
-            {/* Language selector */}
-            <div className="relative" ref={settingsDropdownRef}>
-              <button
-                className={`p-2 rounded-full flex items-center justify-center transition-colors duration-200
-                  ${showSettingsDropdown 
-                    ? 'bg-blue-800 dark:bg-blue-700' 
-                    : 'hover:bg-blue-700 dark:hover:bg-blue-800'
-                  }
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
-                onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
-                aria-label="Select language"
-                aria-expanded={showSettingsDropdown}
-                aria-haspopup="true"
+                className="p-2 rounded-full hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2"
+                onClick={() => {
+                  const nextLang = languages.find(l => l.code !== currentLanguage);
+                  if (nextLang) handleLanguageChange(nextLang.code);
+                }}
+                aria-label="Switch language"
                 type="button"
               >
                 <img
@@ -141,162 +133,91 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
                   className="w-5 h-4 object-cover rounded-sm"
                 />
               </button>
-              {showSettingsDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                  <button 
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700"
-                    onClick={handleDarkModeToggle}
-                    aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
-                    type="button"
-                  >
-                    <span className="text-xl mr-2">{isDarkMode ? <MdLightMode /> : <MdDarkMode />}</span>
-                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                  </button>
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                  {languages.map(({ code, name, flag }) => (
-                    <button
-                      key={code}
-                      onClick={() => handleLanguageChange(code)}
-                      className={`flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
-                        ${currentLanguage === code 
-                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
-                        }
-                        focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
-                      aria-label={`Switch to ${name}`}
-                      aria-pressed={currentLanguage === code}
-                      type="button"
-                    >
-                      <img src={flag} alt="" className="w-4 h-3 mr-2 object-cover rounded-sm" />
-                      {name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Hamburger menu */}
-            <div className="relative" ref={desktopMoreDropdownRef}>
+              {/* Dark mode toggle */}
               <button
-                className={`p-2 rounded-full flex items-center justify-center transition-colors duration-200
-                  ${showMoreDropdown 
-                    ? 'bg-blue-800 dark:bg-blue-700' 
-                    : 'hover:bg-blue-700 dark:hover:bg-blue-800'
-                  }
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 dark:focus-visible:ring-offset-blue-900`}
-                onClick={() => setShowMoreDropdown(!showMoreDropdown)}
-                aria-label="More options"
-                aria-expanded={showMoreDropdown}
-                aria-haspopup="true"
+                className="p-2 rounded-full hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2"
+                onClick={handleDarkModeToggle}
+                aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
                 type="button"
               >
-                <div className="w-5 h-5 flex flex-col justify-between">
-                  <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? 'rotate-45 translate-y-2' : ''}`}></span>
-                  <span className={`block w-5 h-0.5 bg-white transition-opacity duration-300 ${showMoreDropdown ? 'opacity-0' : ''}`}></span>
-                  <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? '-rotate-45 -translate-y-2' : ''}`}></span>
-                </div>
+                <span className="text-xl">
+                  {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
+                </span>
               </button>
-              {showMoreDropdown && (
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                  <div className="max-h-96 overflow-y-auto">
-                    {dropdownItems.map(({ screen, icon, label }) => (
-                      <button
-                        key={screen}
-                        className={`flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
-                          ${currentScreen === screen 
-                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
-                          }
-                          focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
-                        onClick={() => handleNavigationClick(screen)}
-                        aria-label={`Navigate to ${label}`}
-                        type="button"
-                      >
-                        <span className="text-xl mr-2">{icon}</span>
-                        {label}
-                      </button>
-                    ))}
+
+              {/* Hamburger Menu */}
+              <div className="relative" ref={mainMenuRef}>
+                <button
+                  className={`p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    showMainMenu 
+                      ? 'bg-blue-800 dark:bg-blue-700 rotate-90' 
+                      : 'hover:bg-blue-700 dark:hover:bg-blue-800'
+                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2`}
+                  onClick={() => setShowMainMenu(!showMainMenu)}
+                  aria-label="Main menu"
+                  aria-expanded={showMainMenu}
+                  aria-haspopup="true"
+                  type="button"
+                >
+                  <div className="w-6 h-6 flex flex-col justify-between">
+                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? 'rotate-45 translate-y-2.5' : ''}`}></span>
+                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? 'opacity-0' : ''}`}></span>
+                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
                   </div>
-                </div>
-              )}
+                </button>
+
+                {/* Main Menu Dropdown */}
+                {showMainMenu && (
+                  <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl shadow-2xl py-2 z-50 border border-gray-200 dark:border-gray-700 max-h-[80vh] overflow-y-auto">
+                    {Object.entries(groupedNavItems).map(([category, items]) => (
+                      <div key={category} className="mb-1">
+                        {/* Category Header */}
+                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700">
+                          {categoryLabels[category]}
+                        </div>
+                        
+                        {/* Category Items */}
+                        <div className="py-1">
+                          {items.map(({ screen, icon, label }) => (
+                            <button
+                              key={screen}
+                              className={`flex items-center w-full px-4 py-3 text-sm transition-colors duration-200 ${
+                                currentScreen === screen 
+                                  ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-r-2 border-blue-500' 
+                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                              } focus-visible:outline-none focus-visible:bg-gray-50 dark:focus-visible:bg-gray-700`}
+                              onClick={() => handleNavigationClick(screen)}
+                              aria-label={`Navigate to ${label}`}
+                              aria-current={currentScreen === screen ? 'page' : undefined}
+                              type="button"
+                            >
+                              <span className="text-xl mr-3 flex-shrink-0">{icon}</span>
+                              <span className="font-medium">{label}</span>
+                              {currentScreen === screen && (
+                                <span className="ml-auto text-blue-500 dark:text-blue-400">
+                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {/* Version info at bottom */}
+                    <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2 px-4">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Version {APP_VERSION.split('-')[0]}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
-
-      {/* Mobile Bottom Navigation */}
-      <nav className={`fixed bottom-0 left-0 right-0 z-30 bg-blue-600 dark:bg-blue-900 text-white border-t border-blue-700 dark:border-blue-800 md:hidden`}>
-        <div className="flex justify-between items-center h-16">
-          {primaryNavItems.map(({ screen, icon, label }) => (
-            <button
-              key={screen}
-              className={`flex-1 flex flex-col items-center justify-center h-full transition-colors duration-200 py-1
-                ${currentScreen === screen 
-                  ? 'bg-blue-700 dark:bg-blue-800 text-white' 
-                  : 'text-blue-100 hover:bg-blue-700/50 dark:hover:bg-blue-800/50 hover:text-white'
-                }
-                focus-visible:outline-none focus-visible:bg-blue-700/50 dark:focus-visible:bg-blue-800/50`}
-              onClick={() => handleNavigationClick(screen)}
-              aria-label={`Navigate to ${label}`}
-              aria-current={currentScreen === screen ? 'page' : undefined}
-              type="button"
-            >
-              <span className="text-xl mb-1">{icon}</span>
-              <span className="text-xs">{label}</span>
-            </button>
-          ))}
-          
-          {/* Mobile More button */}
-          <div className="flex-1 relative" ref={mobileMoreDropdownRef}>
-            <button
-              className={`flex flex-col items-center justify-center w-full h-full transition-colors duration-200 py-1
-                ${showMoreDropdown 
-                  ? 'bg-blue-700 dark:bg-blue-800 text-white' 
-                  : 'text-blue-100 hover:bg-blue-700/50 dark:hover:bg-blue-800/50 hover:text-white'
-                }
-                focus-visible:outline-none focus-visible:bg-blue-700/50 dark:focus-visible:bg-blue-800/50`}
-              onClick={() => setShowMoreDropdown(!showMoreDropdown)}
-              aria-label="More options"
-              aria-expanded={showMoreDropdown}
-              aria-haspopup="true"
-              type="button"
-            >
-              <div className="w-5 h-5 flex flex-col justify-between mb-1">
-                <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? 'rotate-45 translate-y-2' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-white transition-opacity duration-300 ${showMoreDropdown ? 'opacity-0' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-white transition-transform duration-300 ${showMoreDropdown ? '-rotate-45 -translate-y-2' : ''}`}></span>
-              </div>
-              <span className="text-xs">More</span>
-            </button>
-            {showMoreDropdown && (
-              <div className="absolute bottom-full right-0 left-0 mb-2 bg-white dark:bg-gray-800 rounded-t-lg shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700 max-h-[70vh] overflow-y-auto">
-                {dropdownItems.map(({ screen, icon, label }) => (
-                  <button
-                    key={screen}
-                    className={`flex items-center w-full px-4 py-3 text-sm transition-colors duration-200
-                      ${currentScreen === screen 
-                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }
-                      focus-visible:outline-none focus-visible:bg-gray-100 dark:focus-visible:bg-gray-700`}
-                    onClick={() => handleNavigationClick(screen)}
-                    aria-label={`Navigate to ${label}`}
-                    type="button"
-                  >
-                    <span className="text-xl mr-3">{icon}</span>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Version Display */}
-        <div className="version-display">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            v{APP_VERSION}
-          </span>
         </div>
       </nav>
     </>
