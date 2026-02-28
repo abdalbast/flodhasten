@@ -6,6 +6,7 @@ import { WiMoonWaningCrescent6 } from 'react-icons/wi';
 import { MdVolumeUp } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 import LessonCircles from './LessonCircles';
+import { Button, Surface, Text } from '../design/components';
 
 import './Home.css';
 
@@ -53,20 +54,6 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
     }
   }, [selectedSkill, hasUserClickedLesson]);
 
-  // Moomin-inspired colour palette
-  const textColor = isDarkMode ? '#f5f5f5' : '#2c3e50';
-  const backgroundColor = isDarkMode ? '#2d2d2d' : '#f8f9fa';
-  const cardBackground = isDarkMode ? '#3d3d3d' : '#ffffff';
-  const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
-  const wordOfDayBg = isDarkMode ? '#2d2d2d' : '#fff8e1';
-  const wordOfDayBorder = isDarkMode ? '#555555' : '#ffd54f';
-  
-  // Moomin-inspired accent colours
-  const moominBlue = '#3498db';
-  const moominGreen = '#27ae60';
-  const moominYellow = '#f1c40f';
-  const moominOrange = '#e67e22';
-
   const playSwedish = async (word) => {
     try {
       await ttsApi.playSwedish(word);
@@ -78,7 +65,17 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
   return (
     <div className="home-container max-w-5xl mx-auto px-4">
       {/* Title and subtitle at the very top - Moomin-inspired */}
-      <div className={`title-container relative overflow-hidden rounded-2xl py-12 px-4 mb-8 ${isDarkMode ? 'bg-gray-800' : 'bg-blue-50'}`}>
+      <Surface
+        elevation="medium"
+        bordered
+        className="title-container relative overflow-hidden py-12 px-4 mb-8"
+        style={{
+          background: isDarkMode
+            ? 'linear-gradient(180deg, rgba(42,39,34,0.95), rgba(36,33,29,0.95))'
+            : 'linear-gradient(180deg, rgba(255,255,255,0.88), rgba(147,191,190,0.08))',
+          borderColor: isDarkMode ? 'var(--fd-border-default)' : 'rgba(147,191,190,0.28)'
+        }}
+      >
         {/* Decorative background elements - Moomin-inspired */}
         <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] animate-[float_8s_ease-in-out_infinite]" 
           style={{
@@ -90,7 +87,16 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
         
         {/* User Avatar and Level Display */}
         <div className="flex items-center justify-center gap-4 mb-6 relative z-10">
-          <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center text-5xl text-white border-4 border-white dark:border-gray-700 shadow-lg">
+          <Surface
+            elevation="low"
+            bordered
+            className="w-20 h-20 rounded-full flex items-center justify-center text-5xl border-4"
+            style={{
+              background: 'linear-gradient(180deg, var(--fd-accent), var(--fd-accent-strong))',
+              color: '#fff',
+              borderColor: isDarkMode ? 'rgba(255,255,255,0.12)' : '#fff'
+            }}
+          >
             {userData?.currentAvatar === 'snufkin' ? <FaHatCowboy /> : 
              userData?.currentAvatar === 'snorkmaiden' ? <GiDress /> : 
              userData?.currentAvatar === 'little-my' ? <BsPersonHeart /> : 
@@ -100,154 +106,208 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
              userData?.currentAvatar === 'moominpappa' ? <FaUserTie /> : 
              userData?.currentAvatar === 'ninny' ? <WiMoonWaningCrescent6 /> : 
              userData?.currentAvatar === 'sniff' ? <BsPersonBoundingBox /> : <BsPersonFill />}
-          </div>
+          </Surface>
           <div className="text-left">
-            <h3 className="m-0 text-yellow-500 dark:text-yellow-400 text-xl font-serif">
+            <Text as="h3" variant="section" serif weight="medium" className="m-0" style={{ color: '#d4a017' }}>
               Level {userData?.level || 1}
-            </h3>
-            <p className="m-0 text-gray-600 dark:text-gray-400 text-sm italic">
+            </Text>
+            <Text as="p" variant="caption" color="secondary" className="m-0" style={{ fontStyle: 'italic' }}>
               {userData?.xp || 0} XP
-            </p>
+            </Text>
           </div>
         </div>
         
-        <h1 className="main-title text-4xl md:text-5xl font-bold text-center text-blue-600 dark:text-blue-400 font-serif mb-2">
+        <Text
+          as="h1"
+          variant="display"
+          serif
+          weight="medium"
+          align="center"
+          className="main-title mb-2"
+          style={{ color: isDarkMode ? '#a8ccff' : 'var(--fd-accent-strong)' }}
+        >
           Flodhästen
-        </h1>
+        </Text>
         
-        <p className="subtitle text-xl text-center text-gray-600 dark:text-gray-300 font-serif">
+        <Text
+          as="p"
+          variant="bodyLg"
+          serif
+          color="secondary"
+          align="center"
+          className="subtitle"
+          style={{ fontStyle: 'italic' }}
+        >
           Learn Swedish with the River Horse
-        </p>
+        </Text>
         
         {/* Moomin-inspired decorative elements */}
         <div className="absolute top-5 right-8 w-10 h-10 bg-yellow-400 dark:bg-yellow-500 rounded-full animate-[gentleGlow_3s_ease-in-out_infinite]" />
         <div className="absolute bottom-8 left-10 w-6 h-6 bg-green-500 dark:bg-green-600 rounded-full animate-[gentleGlow_4s_ease-in-out_infinite_1s]" />
-      </div>
+      </Surface>
       
       <LessonCircles skills={skills} progress={skillProgress} onSelectSkill={handleLessonSelection} isDarkMode={isDarkMode} />
       
       {/* Lesson Content Area - This is where we scroll to */}
       <div ref={lessonContentRef} className="mt-8">
         {selectedSkill && (
-          <div className={`bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg border-2 ${isDarkMode ? 'border-gray-700' : 'border-blue-100'} mb-8`}>
-            <h2 className="text-blue-600 dark:text-blue-400 text-2xl md:text-3xl font-serif text-center mb-6">
+          <Surface
+            elevation="medium"
+            bordered
+            padding="lg"
+            className="mb-8"
+            style={{
+              borderColor: isDarkMode ? 'var(--fd-border-default)' : 'rgba(147,191,190,0.28)'
+            }}
+          >
+            <Text as="h2" variant="title" serif weight="medium" align="center" className="mb-6" style={{ color: 'var(--fd-accent-strong)' }}>
               {currentLanguage === 'ku' ? selectedSkill.name : selectedSkill.name}
-            </h2>
+            </Text>
             
             {/* Words Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               {selectedSkill.words.map((word, index) => (
-                <div key={index} className={`bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-100'} text-center transition-all duration-300 hover:shadow-md`}>
-                  <div className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2 font-serif">
+                <Surface
+                  key={index}
+                  elevation="low"
+                  bordered
+                  padding="md"
+                  interactive
+                  className="text-center"
+                  style={{
+                    borderRadius: '16px',
+                    background: isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.86)'
+                  }}
+                >
+                  <Text as="div" variant="section" serif weight="medium" className="mb-2">
                     {word.swedish}
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-400 italic">
+                  </Text>
+                  <Text as="div" variant="caption" color="secondary" style={{ fontStyle: 'italic' }}>
                     {currentLanguage === 'ku' ? word.kurdish : 
                      currentLanguage === 'ku-lat' ? word.kurdish : 
                      word.english}
-                  </div>
-                </div>
+                  </Text>
+                </Surface>
               ))}
             </div>
             
             {/* Start Lesson Buttons */}
             <div className="flex flex-wrap justify-center gap-4">
-              <button
+              <Button
                 onClick={onStartLesson}
-                className="start-lesson-button bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-full transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                variant="primary"
               >
                 Start Lesson
-              </button>
+              </Button>
               
               {/* Add Duolingo-style lesson button for the first lesson */}
               {selectedSkill.id === 'lesson1' && (
-                <button
+                <Button
                   onClick={() => onStartDuolingoLesson('lesson1')}
-                  className="bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold py-3 px-6 rounded-full transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                  variant="secondary"
+                  style={{
+                    background: 'linear-gradient(180deg, #34a853, #2f9a4c)',
+                    color: '#fff',
+                    borderColor: 'transparent'
+                  }}
                 >
                   🎯 Duolingo Style
-                </button>
+                </Button>
               )}
             </div>
-          </div>
+          </Surface>
         )}
       </div>
 
       {/* Word of the Day */}
       {wordOfTheDay && (
-        <div className={`mx-auto my-8 p-6 ${isDarkMode ? 'bg-amber-900/20' : 'bg-amber-50'} rounded-xl shadow-lg max-w-md border-2 ${isDarkMode ? 'border-amber-700/50' : 'border-amber-200'} relative overflow-hidden`}>
+        <Surface
+          elevation="medium"
+          bordered
+          padding="lg"
+          className="mx-auto my-8 max-w-md relative overflow-hidden"
+          tone="warning"
+          style={{ borderColor: isDarkMode ? 'rgba(245, 158, 11, 0.35)' : '#f2d39a' }}
+        >
           <div className="absolute top-[-10px] right-[-10px] w-8 h-8 bg-yellow-400 dark:bg-yellow-500 rounded-full animate-[gentleGlow_2s_ease-in-out_infinite]" />
           
-          <h3 className="text-xl font-serif font-medium text-gray-800 dark:text-gray-100 mb-4">
+          <Text as="h3" variant="section" serif weight="medium" className="mb-4">
             Word of the Day
-          </h3>
+          </Text>
           
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-2 font-serif">
+          <Text as="div" variant="title" serif weight="medium" className="mb-2">
             {wordOfTheDay.swedish}
-          </div>
+          </Text>
           
-          <div className="text-gray-600 dark:text-gray-400 italic">
+          <Text as="div" variant="body" color="secondary" style={{ fontStyle: 'italic' }}>
             {currentLanguage === 'ku' ? wordOfTheDay.kurdish : 
              currentLanguage === 'ku-lat' ? wordOfTheDay.kurdish : 
              wordOfTheDay.english}
-          </div>
+          </Text>
           
-          <button 
+          <Button 
             onClick={() => playSwedish(wordOfTheDay.swedish)}
-            className="mt-4 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+            className="mt-4"
+            variant="ghost"
+            leftIcon={<MdVolumeUp />}
             aria-label={`Play pronunciation of ${wordOfTheDay.swedish}`}
           >
-            <MdVolumeUp className="text-xl mr-1" />
-            <span className="text-sm">Listen</span>
-          </button>
-        </div>
+            Listen
+          </Button>
+        </Surface>
       )}
 
       {/* Progress Summary */}
-      <div className={`mx-auto my-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 ${isDarkMode ? 'border-gray-700' : 'border-blue-100'} max-w-2xl`}>
-        <h3 className="text-xl font-serif text-blue-600 dark:text-blue-400 mb-4">
+      <Surface
+        elevation="medium"
+        bordered
+        padding="lg"
+        className="mx-auto my-8 max-w-2xl"
+        style={{ borderColor: isDarkMode ? 'var(--fd-border-default)' : 'rgba(147,191,190,0.28)' }}
+      >
+        <Text as="h3" variant="section" serif weight="medium" className="mb-4" style={{ color: 'var(--fd-accent-strong)' }}>
           Your Progress
-        </h3>
+        </Text>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+          <Surface tone="success" bordered padding="md" className="text-center" style={{ borderRadius: '16px' }}>
+            <Text as="div" variant="title" weight="medium" className="mb-2" style={{ color: 'var(--fd-color-success)' }}>
               {numWords}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            </Text>
+            <Text as="div" variant="caption" color="secondary">
               Words Learned
-            </div>
-          </div>
-          <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-800">
-            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">
+            </Text>
+          </Surface>
+          <Surface tone="warning" bordered padding="md" className="text-center" style={{ borderRadius: '16px' }}>
+            <Text as="div" variant="title" weight="medium" className="mb-2" style={{ color: 'var(--fd-color-warning)' }}>
               {progress.gamesPlayed}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            </Text>
+            <Text as="div" variant="caption" color="secondary">
               Games Played
-            </div>
-          </div>
-          <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+            </Text>
+          </Surface>
+          <Surface bordered padding="md" className="text-center" style={{ borderRadius: '16px', background: isDarkMode ? 'rgba(255,255,255,0.03)' : '#fff7ed', borderColor: '#fed7aa' }}>
+            <Text as="div" variant="title" weight="medium" className="mb-2" style={{ color: '#c2410c' }}>
               {progress.streak}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            </Text>
+            <Text as="div" variant="caption" color="secondary">
               Day Streak
-            </div>
-          </div>
+            </Text>
+          </Surface>
         </div>
-      </div>
+      </Surface>
 
       {/* Reset Progress and Erase Buttons */}
       <div className="text-center my-8">
         <div className="flex gap-4 justify-center flex-wrap">
-          <button
+          <Button
             onClick={onResetProgress}
-            className="flex items-center px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            variant="secondary"
+            leftIcon={<FaUndo />}
           >
-            <FaUndo className="mr-2" />
             Reset Progress
-          </button>
+          </Button>
           
-          <button
+          <Button
             onClick={() => {
               if (window.confirm('Are you sure you want to erase everything? This will completely reset the app as if you\'re using it for the first time.')) {
                 // Clear all localStorage
@@ -256,11 +316,11 @@ const Home = React.memo(({ skills, skillProgress, onSelectSkill, selectedSkill, 
                 window.location.reload();
               }
             }}
-            className="flex items-center px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            variant="destructive"
+            leftIcon={<FaTrash />}
           >
-            <FaTrash className="mr-2" />
             Erase All
-          </button>
+          </Button>
         </div>
       </div>
 

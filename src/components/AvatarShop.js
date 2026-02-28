@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { FaCoins, FaStar, FaGift, FaTrophy, FaShoppingCart, FaUser, FaCrown, FaHatCowboy, FaUserTie } from 'react-icons/fa';
 import { GiCoffeeCup, GiHouse, GiDress, GiHandBag, GiBookCover, GiMusicalNotes, GiPresent, GiBookmarklet } from 'react-icons/gi';

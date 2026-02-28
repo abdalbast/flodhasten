@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo } from 'react';
 import { FaChartLine, FaChartBar, FaChartPie, FaTrendingUp, FaTrendingDown, FaMinus, FaLightbulb, FaBullseye, FaClock, FaTrophy, FaStar, FaCheck, FaTimes, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { 

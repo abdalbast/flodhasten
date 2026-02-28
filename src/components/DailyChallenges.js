@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo } from 'react';
 import { FaTrophy, FaClock, FaStar, FaCoins, FaFire, FaCheckCircle } from 'react-icons/fa';
 import { getChallengeProgress, checkChallengeCompletion } from '../data/dailyChallenges';

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));

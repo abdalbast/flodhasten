@@ -1,115 +1,50 @@
 import React from 'react';
 import { FaHeart, FaShieldAlt, FaGavel } from 'react-icons/fa';
+import { Stack, Text } from '../design/components';
+import '../design/patterns/shared-ui.css';
 
 const Footer = ({ isDarkMode, setScreen }) => {
-  const textColor = isDarkMode ? '#f5f5f5' : '#2c3e50';
-  const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
-  const accentColor = isDarkMode ? '#3498db' : '#3498db';
-
   return (
-    <footer style={{
-      background: isDarkMode ? '#2c3e50' : '#f8f9fa',
-      borderTop: `1px solid ${borderColor}`,
-      padding: '1rem',
-      marginTop: 'auto',
-      textAlign: 'center'
-    }}>
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '0.5rem'
-      }}>
+    <footer className={`fd-footer ${isDarkMode ? 'fd-theme-dark' : ''}`}>
+      <div className="fd-footer-inner">
         {/* Main footer content */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          marginBottom: '0.5rem'
-        }}>
-          <span style={{ fontSize: '0.9rem', color: textColor }}>
+        <div className="fd-footer-row">
+          <Text as="span" variant="caption" color="secondary">
             Made with
-          </span>
-          <FaHeart style={{ color: '#e74c3c', fontSize: '0.9rem' }} />
-          <span style={{ fontSize: '0.9rem', color: textColor }}>
+          </Text>
+          <FaHeart style={{ color: '#e74c3c', fontSize: '0.9rem' }} aria-hidden="true" />
+          <Text as="span" variant="caption" color="secondary">
             for Swedish learners
-          </span>
+          </Text>
         </div>
 
         {/* Legal links */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center'
-        }}>
+        <Stack direction="row" gap="12px" align="center" justify="center" wrap className="fd-footer-row">
           <button
             onClick={() => setScreen('privacy')}
-            style={{
-              background: 'transparent',
-              color: accentColor,
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              padding: '0.3rem 0.6rem',
-              borderRadius: '4px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = isDarkMode ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
-            }}
+            className="fd-footer-link"
+            type="button"
           >
             <FaShieldAlt />
-            Privacy Policy
+            <Text as="span" variant="caption" weight="medium" color="accent">Privacy Policy</Text>
           </button>
 
-          <span style={{ color: textColor, opacity: 0.5 }}>•</span>
+          <Text as="span" variant="caption" color="muted">•</Text>
 
           <button
             onClick={() => setScreen('terms')}
-            style={{
-              background: 'transparent',
-              color: accentColor,
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              padding: '0.3rem 0.6rem',
-              borderRadius: '4px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = isDarkMode ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
-            }}
+            className="fd-footer-link"
+            type="button"
           >
             <FaGavel />
-            Terms of Service
+            <Text as="span" variant="caption" weight="medium" color="accent">Terms of Service</Text>
           </button>
-        </div>
+        </Stack>
 
         {/* Copyright */}
-        <div style={{
-          fontSize: '0.7rem',
-          color: textColor,
-          opacity: 0.7,
-          marginTop: '0.5rem'
-        }}>
+        <Text as="div" variant="micro" color="muted" style={{ marginTop: '0.5rem' }}>
           © {new Date().getFullYear()} Flodhästen. All rights reserved.
-        </div>
+        </Text>
       </div>
     </footer>
   );

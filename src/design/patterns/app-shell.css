@@ -1,0 +1,74 @@
+.fd-app-shell {
+  min-height: 100vh;
+  background: var(--fd-bg-app);
+  color: var(--fd-text-primary);
+  font-family: var(--fd-font-sans);
+  transition: background-color var(--fd-motion-base) var(--fd-ease-standard), color var(--fd-motion-base) var(--fd-ease-standard);
+}
+
+.fd-app-main {
+  padding-top: 60px;
+  min-height: calc(100vh - 120px);
+}
+
+.fd-app-mainStack {
+  min-height: inherit;
+}
+
+.fd-app-mainBody {
+  flex: 1;
+}
+
+.fd-app-loadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: color-mix(in srgb, var(--fd-bg-app) 82%, white 18%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.fd-app-toastAnchor {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+}
+
+.fd-app-challengeToast {
+  width: min(400px, calc(100vw - 40px));
+  border-radius: 20px;
+}
+
+.fd-app-challengeRows {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.fd-app-challengeReward {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (max-width: 600px) {
+  .fd-app-main {
+    padding-top: 56px;
+    padding-bottom: 80px;
+  }
+
+  .fd-app-toastAnchor {
+    right: 12px;
+    left: 12px;
+    top: 12px;
+  }
+
+  .fd-app-challengeToast {
+    width: 100%;
+  }
+}

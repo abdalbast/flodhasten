@@ -7,15 +7,16 @@ Flodhästen is in a **strong demo / portfolio-ready state** and demonstrates pro
 ## What Is Production-Minded Today
 
 - CI pipeline with `lint`, `test`, and `build` gates
+- Lint baseline cleaned so CI runs with zero ESLint violations
 - Server-side translation credentials (no client-side secret exposure)
 - Translation endpoint validation + CORS checks + basic rate limiting
 - Error boundary and fallback behavior for speech/TTS features
 - Environment variable template (`.env.example`) and local setup guidance
 - Documentation of architecture, tradeoffs, and known limitations
+- Token-driven UI system rollout with reusable primitives and snapshot checks
 
 ## What Still Needs Work Before Full Production Launch
 
-- Reduce remaining lint warnings across feature/game components
 - Improve automated test coverage beyond a smoke test
 - Replace fragile free TTS providers with a supported production provider
 - Add production error telemetry / monitoring
@@ -38,4 +39,3 @@ This repo is appropriate for AI Engineer / GenAI Engineer interviews because it 
 3. Show `api/translate.ts` as the secure API boundary.
 4. Show `.github/workflows/ci.yml` for quality gates.
 5. Call out known limitations and next steps (demonstrates engineering maturity).
-

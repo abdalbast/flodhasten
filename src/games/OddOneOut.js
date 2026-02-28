@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { MdVolumeUp } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './Navigation.css';
 import { MdHome, MdList, MdGames, MdLocationOn, MdLightMode, MdDarkMode, MdBook, MdStore, MdEmojiEvents, MdFlag, MdMic, MdScience, MdPublic, MdPeople, MdAnalytics, MdExtension, MdSettings } from 'react-icons/md';
+import { Divider, Stack, Surface, Text, TopBar } from '../design/components';
 
 // Version constant - should match the one in App.js
 const APP_VERSION = '1.0.1-1756732567308';
@@ -92,134 +93,133 @@ const Navigation = React.memo(({ currentScreen, setScreen, isDarkMode, onToggleD
 
   return (
     <>
-      {/* Unified Navigation Header */}
-      <nav className="sticky top-0 z-30 w-full bg-blue-600 dark:bg-blue-900 text-white shadow-lg border-b border-blue-500 dark:border-blue-800">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo/App Name */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">F</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">Flodhästen</h1>
-                <p className="text-xs text-blue-200">Learn Swedish</p>
-              </div>
+      <TopBar
+        className="fd-navBar"
+        leading={(
+          <Stack direction="row" gap="12px" align="center" className="fd-navBrand">
+            <Surface
+              className="fd-navBrandBadge"
+              elevation="low"
+              bordered
+              as="div"
+            >
+              <Text as="span" variant="section" weight="semibold" className="fd-navBrandLetter">
+                F
+              </Text>
+            </Surface>
+            <div className="fd-navBrandText">
+              <Text as="h1" variant="section" serif weight="medium" className="fd-navBrandTitle">
+                Flodhästen
+              </Text>
+              <Text as="p" variant="caption" color="secondary" className="fd-navBrandSubtitle">
+                Learn Swedish
+              </Text>
             </div>
-            
-            {/* Current Page Indicator (Desktop) */}
-            <div className="hidden md:flex items-center space-x-2">
-              <span className="text-blue-200 text-sm">Current:</span>
-              <span className="bg-blue-800 dark:bg-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+          </Stack>
+        )}
+        actions={(
+          <Stack direction="row" gap="8px" align="center" className="fd-navControls">
+            <div className="fd-navCurrentPill" aria-hidden="true">
+              <Text as="span" variant="micro" color="secondary" className="fd-navCurrentLabel">
+                Current
+              </Text>
+              <Text as="span" variant="caption" weight="medium" truncate>
                 {allNavItems.find(item => item.screen === currentScreen)?.label || 'Unknown'}
-              </span>
+              </Text>
             </div>
-            
-            {/* Right side controls */}
-            <div className="flex items-center space-x-2">
-              {/* Language selector */}
-              <button
-                className="p-2 rounded-full hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2"
-                onClick={() => {
-                  const nextLang = languages.find(l => l.code !== currentLanguage);
-                  if (nextLang) handleLanguageChange(nextLang.code);
-                }}
-                aria-label="Switch language"
-                type="button"
-              >
-                <img
-                  src={languages.find(l => l.code === currentLanguage)?.flag}
-                  alt={languages.find(l => l.code === currentLanguage)?.name}
-                  className="w-5 h-4 object-cover rounded-sm"
-                />
-              </button>
 
-              {/* Dark mode toggle */}
+            <button
+              className="fd-navIconButton"
+              onClick={() => {
+                const nextLang = languages.find(l => l.code !== currentLanguage);
+                if (nextLang) handleLanguageChange(nextLang.code);
+              }}
+              aria-label="Switch language"
+              type="button"
+            >
+              <img
+                src={languages.find(l => l.code === currentLanguage)?.flag}
+                alt=""
+                className="fd-navFlag"
+              />
+            </button>
+
+            <button
+              className="fd-navIconButton"
+              onClick={handleDarkModeToggle}
+              aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+              type="button"
+            >
+              <span className="fd-navIconGlyph">
+                {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
+              </span>
+            </button>
+
+            <div className="fd-navMenuWrap" ref={mainMenuRef}>
               <button
-                className="p-2 rounded-full hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2"
-                onClick={handleDarkModeToggle}
-                aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+                className={`fd-navIconButton fd-navMenuButton ${showMainMenu ? 'is-open' : ''}`}
+                onClick={() => setShowMainMenu(!showMainMenu)}
+                aria-label="Main menu"
+                aria-expanded={showMainMenu}
+                aria-haspopup="true"
                 type="button"
               >
-                <span className="text-xl">
-                  {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
+                <span className="fd-navMenuBars" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
                 </span>
               </button>
 
-              {/* Hamburger Menu */}
-              <div className="relative" ref={mainMenuRef}>
-                <button
-                  className={`p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    showMainMenu 
-                      ? 'bg-blue-800 dark:bg-blue-700 rotate-90' 
-                      : 'hover:bg-blue-700 dark:hover:bg-blue-800'
-                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2`}
-                  onClick={() => setShowMainMenu(!showMainMenu)}
+              {showMainMenu && (
+                <Surface
+                  className="fd-navDropdown"
+                  elevation="high"
+                  bordered
+                  padding="sm"
+                  role="menu"
                   aria-label="Main menu"
-                  aria-expanded={showMainMenu}
-                  aria-haspopup="true"
-                  type="button"
                 >
-                  <div className="w-6 h-6 flex flex-col justify-between">
-                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? 'rotate-45 translate-y-2.5' : ''}`}></span>
-                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? 'opacity-0' : ''}`}></span>
-                    <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${showMainMenu ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
-                  </div>
-                </button>
-
-                {/* Main Menu Dropdown */}
-                {showMainMenu && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl shadow-2xl py-2 z-50 border border-gray-200 dark:border-gray-700 max-h-[80vh] overflow-y-auto">
-                    {Object.entries(groupedNavItems).map(([category, items]) => (
-                      <div key={category} className="mb-1">
-                        {/* Category Header */}
-                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700">
-                          {categoryLabels[category]}
-                        </div>
-                        
-                        {/* Category Items */}
-                        <div className="py-1">
-                          {items.map(({ screen, icon, label }) => (
+                  {Object.entries(groupedNavItems).map(([category, items], categoryIndex) => (
+                    <div key={category} className="fd-navDropdownSection">
+                      {categoryIndex > 0 ? <Divider className="fd-navDropdownDivider" /> : null}
+                      <Text as="p" variant="micro" weight="semibold" color="muted" className="fd-navSectionTitle">
+                        {categoryLabels[category]}
+                      </Text>
+                      <Stack direction="column" gap="4px">
+                        {items.map(({ screen, icon, label }) => {
+                          const active = currentScreen === screen;
+                          return (
                             <button
                               key={screen}
-                              className={`flex items-center w-full px-4 py-3 text-sm transition-colors duration-200 ${
-                                currentScreen === screen 
-                                  ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-r-2 border-blue-500' 
-                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-                              } focus-visible:outline-none focus-visible:bg-gray-50 dark:focus-visible:bg-gray-700`}
+                              className={`fd-navMenuItem ${active ? 'is-active' : ''}`}
                               onClick={() => handleNavigationClick(screen)}
                               aria-label={`Navigate to ${label}`}
-                              aria-current={currentScreen === screen ? 'page' : undefined}
+                              aria-current={active ? 'page' : undefined}
                               type="button"
+                              role="menuitem"
                             >
-                              <span className="text-xl mr-3 flex-shrink-0">{icon}</span>
-                              <span className="font-medium">{label}</span>
-                              {currentScreen === screen && (
-                                <span className="ml-auto text-blue-500 dark:text-blue-400">
-                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                  </svg>
-                                </span>
-                              )}
+                              <span className="fd-navMenuItemIcon" aria-hidden="true">{icon}</span>
+                              <Text as="span" variant="body" weight={active ? 'medium' : 'regular'}>
+                                {label}
+                              </Text>
+                              {active ? <span className="fd-navMenuCheck" aria-hidden="true">✓</span> : null}
                             </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {/* Version info at bottom */}
-                    <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2 px-4">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Version {APP_VERSION.split('-')[0]}
-                      </p>
+                          );
+                        })}
+                      </Stack>
                     </div>
-                  </div>
-                )}
-              </div>
+                  ))}
+                  <Divider className="fd-navDropdownDivider" />
+                  <Text as="p" variant="micro" color="muted" className="fd-navVersion">
+                    Version {APP_VERSION.split('-')[0]}
+                  </Text>
+                </Surface>
+              )}
             </div>
-          </div>
-        </div>
-      </nav>
+          </Stack>
+        )}
+      />
     </>
   );
 });

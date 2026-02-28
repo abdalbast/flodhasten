@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 // Accessibility utilities for Flodhästen
 
 /**

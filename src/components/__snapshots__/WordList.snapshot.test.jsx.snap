@@ -1,0 +1,443 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WordList snapshots matches snapshot with sample words 1`] = `
+<div
+  class=""
+  style="max-width: 760px; margin: 2rem auto; padding: 0px 1rem;"
+>
+  <div
+    class="fd-surface fd-surface-elevation-low fd-surface-padded-md fd-surface-bordered fd-card mb-4"
+    style="border-radius: 22px;"
+  >
+    <div
+      class="fd-card-titleRow"
+    >
+      <span
+        aria-hidden="true"
+      >
+        <svg
+          fill="currentColor"
+          height="1em"
+          stroke="currentColor"
+          stroke-width="0"
+          viewBox="0 0 576 512"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M542.22 32.05c-54.8 3.11-163.72 14.43-230.96 55.59-4.64 2.84-7.27 7.89-7.27 13.17v363.87c0 11.55 12.63 18.85 23.28 13.49 69.18-34.82 169.23-44.32 218.7-46.92 16.89-.89 30.02-14.43 30.02-30.66V62.75c.01-17.71-15.35-31.74-33.77-30.7zM264.73 87.64C197.5 46.48 88.58 35.17 33.78 32.05 15.36 31.01 0 45.04 0 62.75V400.6c0 16.24 13.13 29.78 30.02 30.66 49.49 2.6 149.59 12.11 218.77 46.95 10.62 5.35 23.21-1.94 23.21-13.46V100.63c0-5.29-2.62-10.14-7.27-12.99z"
+          />
+        </svg>
+      </span>
+      <div
+        style="min-width: 0; flex: 1;"
+      >
+        <h2
+          class="fd-text fd-text-title fd-text-medium fd-text-primary fd-text-serif"
+        >
+          Saved Words
+        </h2>
+      </div>
+    </div>
+    <div
+      class="fd-stack fd-stack-dir-column"
+      style="gap: 16px;"
+    >
+      <div
+        class="fd-surface fd-surface-elevation-low fd-surface-padded-md fd-surface-bordered fd-surface-tint fd-card"
+      >
+        <div
+          class="fd-card-titleRow"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+              />
+            </svg>
+          </span>
+          <div
+            style="min-width: 0; flex: 1;"
+          >
+            <h3
+              class="fd-text fd-text-section fd-text-medium fd-text-primary fd-text-serif fd-text-truncate"
+            >
+              Add New Word
+            </h3>
+            <p
+              class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+            >
+              Create your own vocabulary entries
+            </p>
+          </div>
+          <button
+            class="fd-button fd-button-secondary"
+            type="button"
+          >
+            <span
+              class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+            >
+              Add Word
+            </span>
+          </button>
+        </div>
+      </div>
+      <div
+        class="fd-surface fd-surface-elevation-low fd-surface-padded-md fd-surface-bordered fd-surface-paper fd-card"
+      >
+        <div
+          class="fd-card-titleRow"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0V0z"
+                fill="none"
+              />
+              <path
+                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.01l1.41 1.41L11 14.84V19h2v-4.16l1.59 1.59L16 15.01 12.01 11z"
+              />
+            </svg>
+          </span>
+          <div
+            style="min-width: 0; flex: 1;"
+          >
+            <h3
+              class="fd-text fd-text-section fd-text-medium fd-text-primary fd-text-serif fd-text-truncate"
+            >
+              Import Words
+            </h3>
+            <p
+              class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+            >
+              Import CSV or TXT files and auto translate unknown words
+            </p>
+          </div>
+        </div>
+        <div
+          class="fd-stack fd-stack-dir-column"
+          style="gap: 12px;"
+        >
+          <label
+            for="wordlist-import-file"
+          >
+            <span
+              class="fd-surface fd-surface-elevation-none fd-surface-padded-md fd-surface-bordered fd-listRow fd-listRow-interactive"
+              style="display: flex; justify-content: center; cursor: pointer;"
+            >
+              <span
+                class="fd-text fd-text-body fd-text-medium fd-text-accent fd-text-sans"
+              >
+                Choose CSV or TXT file
+              </span>
+            </span>
+          </label>
+          <input
+            accept=".csv,.txt"
+            id="wordlist-import-file"
+            style="display: none;"
+            type="file"
+          />
+          <p
+            class="fd-text fd-text-micro fd-text-regular fd-text-secondary fd-text-sans"
+          >
+            Import CSV with Swedish and English columns or TXT with Swedish and English pairs
+          </p>
+          <button
+            class="fd-button fd-button-primary"
+            type="button"
+          >
+            <span
+              class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+            >
+              Translate Unknown Words
+            </span>
+          </button>
+        </div>
+      </div>
+      <ul
+        class="fd-stack fd-stack-dir-column"
+        style="gap: 10px; list-style: none; margin: 0px; padding: 0px;"
+      >
+        <li>
+          <div
+            class="fd-listRow fd-listRow-interactive fd-surface-success"
+          >
+            <span
+              class="fd-listRow-leading"
+            >
+              <button
+                aria-label="Play hej"
+                style="border-radius: 999px; width: 34px; height: 34px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;"
+                type="button"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+                  />
+                </svg>
+              </button>
+            </span>
+            <div
+              class="fd-listRow-body"
+            >
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center; flex-wrap: wrap;"
+              >
+                <span
+                  class="fd-text fd-text-body fd-text-semibold fd-text-primary fd-text-sans"
+                >
+                  hej
+                </span>
+                <span
+                  class="fd-text fd-text-caption fd-text-regular fd-text-muted fd-text-sans"
+                >
+                  to
+                </span>
+                <span
+                  class="fd-text fd-text-body fd-text-regular fd-text-secondary fd-text-sans"
+                >
+                  hello
+                </span>
+                <span
+                  class="fd-chip fd-chip-success"
+                >
+                  Skill
+                </span>
+              </div>
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center; flex-wrap: wrap;"
+              >
+                <span
+                  class="fd-chip fd-chip-success"
+                >
+                  ✓ 
+                  2
+                </span>
+                <span
+                  class="fd-chip fd-chip-danger"
+                >
+                  ✗ 
+                  1
+                </span>
+                <span
+                  class="fd-chip"
+                >
+                  ⏱ 
+                  Never
+                </span>
+              </div>
+            </div>
+            <span
+              class="fd-listRow-trailing"
+            >
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center;"
+              />
+            </span>
+          </div>
+        </li>
+        <li>
+          <div
+            class="fd-listRow fd-listRow-interactive fd-surface-warning"
+          >
+            <span
+              class="fd-listRow-leading"
+            >
+              <button
+                aria-label="Play vatten"
+                style="border-radius: 999px; width: 34px; height: 34px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;"
+                type="button"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+                  />
+                </svg>
+              </button>
+            </span>
+            <div
+              class="fd-listRow-body"
+            >
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center; flex-wrap: wrap;"
+              >
+                <span
+                  class="fd-text fd-text-body fd-text-semibold fd-text-primary fd-text-sans"
+                >
+                  vatten
+                </span>
+                <span
+                  class="fd-text fd-text-caption fd-text-regular fd-text-muted fd-text-sans"
+                >
+                  to
+                </span>
+                <span
+                  class="fd-text fd-text-body fd-text-regular fd-text-secondary fd-text-sans"
+                >
+                  (unknown)
+                </span>
+                <span
+                  class="fd-chip fd-chip-warning"
+                >
+                  Unknown
+                </span>
+              </div>
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center; flex-wrap: wrap;"
+              >
+                <span
+                  class="fd-chip fd-chip-success"
+                >
+                  ✓ 
+                  0
+                </span>
+                <span
+                  class="fd-chip fd-chip-danger"
+                >
+                  ✗ 
+                  0
+                </span>
+                <span
+                  class="fd-chip"
+                >
+                  ⏱ 
+                  Never
+                </span>
+              </div>
+            </div>
+            <span
+              class="fd-listRow-trailing"
+            >
+              <div
+                class="fd-stack fd-stack-dir-row"
+                style="gap: 8px; align-items: center;"
+              >
+                <button
+                  class="fd-button fd-button-secondary"
+                  type="button"
+                >
+                  <span
+                    class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+                  >
+                    Translate
+                  </span>
+                </button>
+                <button
+                  aria-label="Edit word"
+                  class="fd-button fd-button-secondary"
+                  type="button"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 576 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+                  >
+                    Edit
+                  </span>
+                </button>
+                <button
+                  aria-label="Delete word"
+                  class="fd-button fd-button-destructive"
+                  type="button"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 448 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+                  >
+                    Delete
+                  </span>
+                </button>
+              </div>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;

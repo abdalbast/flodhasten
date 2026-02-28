@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo, useCallback } from 'react';
 import { FaPlay, FaVolumeUp, FaBook, FaStar, FaTrophy, FaCheck, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { 

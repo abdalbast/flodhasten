@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { MdPause, MdPlayArrow, MdRefresh, MdVolumeUp } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';

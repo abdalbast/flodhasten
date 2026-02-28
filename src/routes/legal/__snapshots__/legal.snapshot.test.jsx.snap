@@ -1,0 +1,677 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Legal page snapshots matches privacy snapshot 1`] = `
+<div
+  class="fd-legal-page "
+>
+  <header
+    class="fd-topbar fd-topbar-static mb-4"
+  >
+    <div
+      class="fd-topbar-inner"
+    >
+      <div
+        class="fd-topbar-leading"
+      >
+        <button
+          class="fd-button fd-button-ghost"
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"
+              />
+            </svg>
+          </span>
+          <span
+            class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+          >
+            Back
+          </span>
+        </button>
+      </div>
+      <div
+        class="fd-topbar-titleWrap"
+      >
+        <div
+          class="fd-stack fd-stack-dir-row"
+          style="gap: 8px; align-items: center;"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M466.5 83.7l-192-80a48.15 48.15 0 0 0-36.9 0l-192 80C27.7 91.1 16 108.6 16 128c0 198.5 114.5 335.7 221.5 380.3 11.8 4.9 25.1 4.9 36.9 0C360.1 472.6 496 349.3 496 128c0-19.4-11.7-36.9-29.5-44.3zM256.1 446.3l-.1-381 175.9 73.3c-3.3 151.4-82.1 261.1-175.8 307.7z"
+            />
+          </svg>
+          <h1
+            class="fd-text fd-text-title fd-text-medium fd-text-primary fd-text-serif"
+          >
+            Privacy Policy
+          </h1>
+        </div>
+      </div>
+      <div
+        class="fd-topbar-actions"
+      />
+    </div>
+  </header>
+  <div
+    class="fd-surface fd-surface-elevation-low fd-surface-bordered fd-legal-content"
+    style="border-color: #e8f4f8; line-height: 1.6;"
+  >
+    <p
+      class="fd-text fd-text-bodyLg fd-text-regular fd-text-secondary fd-text-sans fd-legal-lastUpdated"
+    >
+      Last updated: 
+    </p>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Data Collection
+      </h2>
+      <p>
+        Flodhästen collects minimal data to provide you with the best learning experience:
+      </p>
+      <ul>
+        <li>
+          <strong>
+            Learning Progress:
+          </strong>
+           Words learned, scores, and lesson completion
+        </li>
+        <li>
+          <strong>
+            User Preferences:
+          </strong>
+           Language settings, difficulty levels, and UI preferences
+        </li>
+        <li>
+          <strong>
+            Technical Data:
+          </strong>
+           Browser type, device information, and error logs
+        </li>
+        <li>
+          <strong>
+            Voice Recognition:
+          </strong>
+           Audio data for pronunciation practice (processed locally when possible)
+        </li>
+      </ul>
+      <p
+        class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+      >
+        We do not collect personal information like names, emails, or addresses unless you choose to provide them.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Data Storage
+      </h2>
+      <p>
+        Your data is stored locally in your browser using:
+      </p>
+      <ul>
+        <li>
+          <strong>
+            localStorage:
+          </strong>
+           Learning progress, settings, and preferences
+        </li>
+        <li>
+          <strong>
+            Session Storage:
+          </strong>
+           Temporary data during your learning session
+        </li>
+        <li>
+          <strong>
+            IndexedDB:
+          </strong>
+           Larger datasets like word lists and audio files
+        </li>
+      </ul>
+      <p
+        class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+      >
+        This means your data stays on your device and is not sent to our servers unless you explicitly choose to sync.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Export Your Data
+      </h2>
+      <p>
+        You can export your learning progress at any time:
+      </p>
+      <div
+        class="fd-surface fd-surface-elevation-none fd-surface-padded-sm fd-surface-bordered fd-surface-paper fd-legal-actionBox"
+      >
+        <button
+          class="fd-button fd-button-primary"
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 512 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+              />
+            </svg>
+          </span>
+          <span
+            class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+          >
+            Export My Data
+          </span>
+        </button>
+      </div>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Delete Your Data
+      </h2>
+      <p>
+        You can delete all your data at any time:
+      </p>
+      <div
+        class="fd-surface fd-surface-elevation-none fd-surface-padded-sm fd-surface-bordered fd-surface-paper fd-legal-actionBox"
+      >
+        <button
+          class="fd-button fd-button-destructive"
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+              />
+            </svg>
+          </span>
+          <span
+            class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+          >
+            Delete All Data
+          </span>
+        </button>
+      </div>
+      <p
+        class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+      >
+        This will permanently remove all your learning progress, settings, and preferences.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Third-Party Services
+      </h2>
+      <p>
+        We use the following third-party services:
+      </p>
+      <ul>
+        <li>
+          <strong>
+            Azure Translator API:
+          </strong>
+           For translation services (Microsoft)
+        </li>
+        <li>
+          <strong>
+            Text-to-Speech API:
+          </strong>
+           For pronunciation audio (browser-native or external)
+        </li>
+        <li>
+          <strong>
+            Analytics:
+          </strong>
+           Anonymous usage statistics (optional)
+        </li>
+      </ul>
+      <p
+        class="fd-text fd-text-caption fd-text-regular fd-text-secondary fd-text-sans"
+      >
+        These services may collect their own data according to their privacy policies.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Contact Us
+      </h2>
+      <p>
+        If you have any questions about this privacy policy or your data:
+      </p>
+      <div
+        class="fd-surface fd-surface-elevation-none fd-surface-padded-sm fd-surface-bordered fd-surface-paper fd-legal-actionBox"
+      >
+        <a
+          href="mailto:privacy@flodhasten.app"
+          style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"
+            />
+          </svg>
+          privacy@flodhasten.app
+        </a>
+      </div>
+    </section>
+    <section
+      class="fd-legal-section"
+      style="margin-bottom: 0px;"
+    >
+      <h2>
+        Changes to This Policy
+      </h2>
+      <p>
+        We may update this privacy policy from time to time. We will notify you of any changes by:
+      </p>
+      <ul>
+        <li>
+          Posting the new policy on this page
+        </li>
+        <li>
+          Updating the "Last updated" date
+        </li>
+        <li>
+          Showing a notification in the app for significant changes
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>
+`;
+
+exports[`Legal page snapshots matches terms snapshot 1`] = `
+<div
+  class="fd-legal-page "
+>
+  <header
+    class="fd-topbar fd-topbar-static mb-4"
+  >
+    <div
+      class="fd-topbar-inner"
+    >
+      <div
+        class="fd-topbar-leading"
+      >
+        <button
+          class="fd-button fd-button-ghost"
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+          >
+            <svg
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"
+              />
+            </svg>
+          </span>
+          <span
+            class="fd-text fd-text-body fd-text-medium fd-text-primary fd-text-sans fd-button-label"
+          >
+            Back
+          </span>
+        </button>
+      </div>
+      <div
+        class="fd-topbar-titleWrap"
+      >
+        <div
+          class="fd-stack fd-stack-dir-row"
+          style="gap: 8px; align-items: center;"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M504.971 199.362l-22.627-22.627c-9.373-9.373-24.569-9.373-33.941 0l-5.657 5.657L329.608 69.255l5.657-5.657c9.373-9.373 9.373-24.569 0-33.941L312.638 7.029c-9.373-9.373-24.569-9.373-33.941 0L154.246 131.48c-9.373 9.373-9.373 24.569 0 33.941l22.627 22.627c9.373 9.373 24.569 9.373 33.941 0l5.657-5.657 39.598 39.598-81.04 81.04-5.657-5.657c-12.497-12.497-32.758-12.497-45.255 0L9.373 412.118c-12.497 12.497-12.497 32.758 0 45.255l45.255 45.255c12.497 12.497 32.758 12.497 45.255 0l114.745-114.745c12.497-12.497 12.497-32.758 0-45.255l-5.657-5.657 81.04-81.04 39.598 39.598-5.657 5.657c-9.373 9.373-9.373 24.569 0 33.941l22.627 22.627c9.373 9.373 24.569 9.373 33.941 0l124.451-124.451c9.372-9.372 9.372-24.568 0-33.941z"
+            />
+          </svg>
+          <h1
+            class="fd-text fd-text-title fd-text-medium fd-text-primary fd-text-serif"
+          >
+            Terms of Service
+          </h1>
+        </div>
+      </div>
+      <div
+        class="fd-topbar-actions"
+      />
+    </div>
+  </header>
+  <div
+    class="fd-surface fd-surface-elevation-low fd-surface-bordered fd-legal-content"
+    style="border-color: #e8f4f8; line-height: 1.6;"
+  >
+    <p
+      class="fd-text fd-text-bodyLg fd-text-regular fd-text-secondary fd-text-sans fd-legal-lastUpdated"
+    >
+      Last updated: 
+    </p>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Acceptance of Terms
+      </h2>
+      <p>
+        By accessing and using Flodhästen, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Description of Service
+      </h2>
+      <p>
+        Flodhästen is an educational application designed to help users learn Swedish through:
+      </p>
+      <ul>
+        <li>
+          Interactive lessons and vocabulary exercises
+        </li>
+        <li>
+          Voice recognition for pronunciation practice
+        </li>
+        <li>
+          Gamified learning experiences
+        </li>
+        <li>
+          Cultural content and context
+        </li>
+        <li>
+          Progress tracking and analytics
+        </li>
+      </ul>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        User Responsibilities
+      </h2>
+      <p>
+        As a user of Flodhästen, you agree to:
+      </p>
+      <ul>
+        <li>
+          Use the service for educational purposes only
+        </li>
+        <li>
+          Not attempt to reverse engineer or hack the application
+        </li>
+        <li>
+          Not use the service for any illegal or unauthorized purpose
+        </li>
+        <li>
+          Respect the intellectual property rights of the content
+        </li>
+        <li>
+          Provide accurate information when using voice recognition features
+        </li>
+        <li>
+          Not interfere with the proper functioning of the service
+        </li>
+      </ul>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Intellectual Property
+      </h2>
+      <p>
+        The content, features, and functionality of Flodhästen are owned by the application developers and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
+      </p>
+      <p>
+        You retain ownership of your learning data and progress, which you can export or delete at any time.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Disclaimers
+      </h2>
+      <div
+        class="fd-surface fd-surface-elevation-none"
+        style="background: rgb(255, 243, 205); border: 1px solid #ffeaa7; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;"
+      >
+        <div
+          style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: rgb(133, 100, 4);"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 576 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+            />
+          </svg>
+          <strong>
+            Important Disclaimers
+          </strong>
+        </div>
+        <ul
+          style="margin-left: 2rem; margin-bottom: 0px; color: rgb(133, 100, 4);"
+        >
+          <li>
+            Flodhästen is provided "as is" without warranties of any kind
+          </li>
+          <li>
+            We do not guarantee the accuracy of translations or pronunciations
+          </li>
+          <li>
+            The service may not be available at all times
+          </li>
+          <li>
+            Voice recognition accuracy depends on various factors
+          </li>
+          <li>
+            Learning outcomes are not guaranteed
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Limitation of Liability
+      </h2>
+      <p>
+        In no event shall Flodhästen or its developers be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:
+      </p>
+      <ul>
+        <li>
+          Your use or inability to use the service
+        </li>
+        <li>
+          Any unauthorized access to or use of our servers
+        </li>
+        <li>
+          Any interruption or cessation of transmission to or from the service
+        </li>
+        <li>
+          Any bugs, viruses, or other harmful code
+        </li>
+        <li>
+          Any errors or omissions in any content
+        </li>
+      </ul>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Privacy and Data
+      </h2>
+      <p>
+        Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.
+      </p>
+      <p>
+        You are responsible for maintaining the confidentiality of your learning progress and for all activities that occur under your use of the service.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Termination
+      </h2>
+      <p>
+        We may terminate or suspend your access to Flodhästen immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+      </p>
+      <p>
+        Upon termination, your right to use the service will cease immediately. You can export your data before termination using the export feature in the Privacy Policy.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Changes to Terms
+      </h2>
+      <p>
+        We reserve the right to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.
+      </p>
+      <p>
+        What constitutes a material change will be determined at our sole discretion.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Governing Law
+      </h2>
+      <p>
+        These Terms shall be interpreted and governed by the laws of Sweden, without regard to its conflict of law provisions.
+      </p>
+    </section>
+    <section
+      class="fd-legal-section"
+    >
+      <h2>
+        Contact Information
+      </h2>
+      <p>
+        If you have any questions about these Terms of Service:
+      </p>
+      <div
+        class="fd-surface fd-surface-elevation-none fd-surface-padded-sm fd-surface-bordered fd-surface-paper fd-legal-actionBox"
+      >
+        <a
+          href="mailto:legal@flodhasten.app"
+          style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;"
+        >
+          <svg
+            fill="currentColor"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"
+            />
+          </svg>
+          legal@flodhasten.app
+        </a>
+      </div>
+    </section>
+    <section
+      class="fd-legal-section"
+      style="margin-bottom: 0px;"
+    >
+      <h2>
+        Severability
+      </h2>
+      <p>
+        If any provision of these Terms is held to be unenforceable or invalid, such provision will be changed and interpreted to accomplish the objectives of such provision to the greatest extent possible under applicable law and the remaining provisions will continue in full force and effect.
+      </p>
+    </section>
+  </div>
+</div>
+`;

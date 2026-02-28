@@ -1,0 +1,32 @@
+.fd-settings-page {
+  min-height: 100vh;
+  background: var(--fd-bg-app);
+  color: var(--fd-text-primary);
+  padding: 16px;
+  font-family: var(--fd-font-sans);
+}
+
+.fd-settings-fileLabel {
+  background: var(--fd-bg-surface);
+  color: var(--fd-text-primary);
+  border: 1px solid var(--fd-border-default);
+  border-radius: 999px;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--fd-motion-fast) var(--fd-ease-standard);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  outline: none;
+}
+
+.fd-settings-fileLabel:hover {
+  background: var(--fd-color-accent-teal-tint);
+  transform: translateY(-1px);
+}
+
+.fd-settings-fileLabel:focus-visible {
+  outline: 2px solid var(--fd-accent-strong);
+  outline-offset: 2px;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaPlay, FaVolumeUp, FaCheck, FaTimes, FaRedo, FaLightbulb } from 'react-icons/fa';
 

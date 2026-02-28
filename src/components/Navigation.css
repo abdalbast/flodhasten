@@ -257,6 +257,240 @@
   flex-shrink: 0;
 }
 
+/* Redesign navigation built on src/design primitives */
+.fd-navBar {
+  background: color-mix(in srgb, var(--fd-bg-app) 88%, white 12%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--fd-border-default) 80%, transparent);
+}
+
+.fd-navBrand {
+  min-width: 0;
+}
+
+.fd-navBrandBadge {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(147, 191, 190, 0.25), rgba(147, 191, 190, 0.06)), var(--fd-bg-surface);
+}
+
+.fd-navBrandLetter {
+  line-height: 1;
+  color: var(--fd-accent-strong);
+}
+
+.fd-navBrandText {
+  min-width: 0;
+}
+
+.fd-navBrandTitle {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.fd-navBrandSubtitle {
+  margin-top: 2px;
+}
+
+.fd-navControls {
+  position: relative;
+}
+
+.fd-navCurrentPill {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--fd-radius-pill);
+  border: 1px solid var(--fd-border-default);
+  background: rgba(255, 255, 255, 0.65);
+  max-width: 220px;
+}
+
+.fd-navCurrentLabel {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.fd-navIconButton {
+  appearance: none;
+  border: 1px solid var(--fd-border-default);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--fd-text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--fd-shadow-low);
+  transition: transform var(--fd-motion-fast) var(--fd-ease-standard), box-shadow var(--fd-motion-fast) var(--fd-ease-standard), background-color var(--fd-motion-fast) var(--fd-ease-standard);
+}
+
+.fd-navIconButton:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--fd-shadow-medium);
+}
+
+.fd-navIconButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--fd-color-focus);
+}
+
+.fd-navFlag {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.fd-navIconGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.fd-navMenuWrap {
+  position: relative;
+}
+
+.fd-navMenuButton.is-open {
+  background: var(--fd-color-accent-teal-tint);
+  border-color: color-mix(in srgb, var(--fd-accent-strong) 45%, var(--fd-border-default));
+}
+
+.fd-navMenuBars {
+  width: 18px;
+  height: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fd-navMenuBars > span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform var(--fd-motion-fast) var(--fd-ease-standard), opacity var(--fd-motion-fast) var(--fd-ease-standard);
+}
+
+.fd-navMenuButton.is-open .fd-navMenuBars > span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.fd-navMenuButton.is-open .fd-navMenuBars > span:nth-child(2) {
+  opacity: 0;
+}
+
+.fd-navMenuButton.is-open .fd-navMenuBars > span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.fd-navDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(78vh, 680px);
+  overflow: auto;
+  z-index: var(--fd-z-modal);
+}
+
+.fd-navDropdownSection {
+  padding: 4px 2px;
+}
+
+.fd-navDropdownDivider {
+  margin: 8px 0;
+}
+
+.fd-navSectionTitle {
+  padding: 4px 8px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fd-navMenuItem {
+  appearance: none;
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fd-text-primary);
+  border-radius: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.fd-navMenuItem:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.fd-navMenuItem:focus-visible {
+  outline: none;
+  border-color: var(--fd-accent-strong);
+  box-shadow: 0 0 0 3px var(--fd-color-focus);
+}
+
+.fd-navMenuItem.is-active {
+  background: var(--fd-color-accent-teal-tint);
+  border-color: color-mix(in srgb, var(--fd-accent-strong) 40%, var(--fd-border-default));
+}
+
+.fd-navMenuItemIcon {
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fd-accent-strong);
+  font-size: 18px;
+}
+
+.fd-navMenuCheck {
+  margin-left: auto;
+  color: var(--fd-accent-strong);
+  font-weight: 700;
+}
+
+.fd-navVersion {
+  padding: 2px 8px 4px;
+}
+
+@media (min-width: 768px) {
+  .fd-navCurrentPill {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .fd-navBrandSubtitle {
+    display: none;
+  }
+
+  .fd-navBrandTitle {
+    font-size: 1.05rem;
+  }
+
+  .fd-navBar {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 .menu-item-label {
   font-weight: 500;
 }

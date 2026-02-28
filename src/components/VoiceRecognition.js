@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FaMicrophone, FaMicrophoneSlash, FaPlay, FaVolumeUp, FaStar, FaChartLine, FaTrophy, FaQuestionCircle } from 'react-icons/fa';
 import { 

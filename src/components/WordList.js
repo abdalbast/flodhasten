@@ -1,21 +1,20 @@
 import React, { useState, useCallback } from 'react';
-import { FaBookOpen, FaTrash, FaEdit } from 'react-icons/fa';
-import { MdVolumeUp, MdAddCircle } from 'react-icons/md';
-import { FaSpinner } from 'react-icons/fa';
+import { FaBookOpen, FaTrash, FaEdit, FaSpinner } from 'react-icons/fa';
+import { MdVolumeUp, MdAddCircle, MdUploadFile } from 'react-icons/md';
 import ttsApi from '../utils/ttsApi';
 import { translateText, translateBatch } from '../lib/translate';
+import { Button, Card, Chip, Input, ListRow, Stack, Surface, Text } from '../design/components';
 
-// Play Swedish word with TTS API (browser TTS primary, API fallback)
 async function playSwedish(word) {
   try {
-    // Use the updated TTS API that prioritizes browser TTS
     await ttsApi.playSwedish(word);
   } catch (error) {
     console.error('TTS failed:', error.message);
   }
 }
 
-// List of saved Swedish words and their English meanings, with edit/delete and add functionality
+const defaultStats = { correct: 0, incorrect: 0, lastPracticed: null };
+
 const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWords, onAdd, isDarkMode }) => {
   const [editIdx, setEditIdx] = useState(null);
   const [editSwedish, setEditSwedish] = useState('');
@@ -23,53 +22,45 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
   const [importMsg, setImportMsg] = useState('');
   const [translatingIdx, setTranslatingIdx] = useState(null);
   const [translatingAll, setTranslatingAll] = useState(false);
-  
-  // Add word form state
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [newSwedish, setNewSwedish] = useState('');
   const [newEnglish, setNewEnglish] = useState('');
   const [addMessage, setAddMessage] = useState('');
 
-  // Parse CSV or TXT file into word objects - memoized for performance
   const parseWordFile = useCallback((text, ext) => {
-    const words = [];
+    const parsedWords = [];
     if (ext === 'csv') {
-      // Accept header: Swedish,English or just Swedish
       const lines = text.split(/\r?\n/).filter(Boolean);
-      const header = lines[0].toLowerCase();
+      const header = (lines[0] || '').toLowerCase();
       const isTwoCol = header.includes('english') && header.includes('swedish');
-      for (let i = 1; i < lines.length; i++) {
+      for (let i = 1; i < lines.length; i += 1) {
         const cols = lines[i].split(',');
         if (isTwoCol) {
-          // Swedish,English
           const [swedish, english] = cols;
-          if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-          else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          if (swedish && english) parsedWords.push({ swedish: swedish.trim(), english: english.trim(), stats: defaultStats });
+          else if (swedish) parsedWords.push({ swedish: swedish.trim(), english: '(unknown)', stats: defaultStats });
         } else {
-          // Single column: just Swedish
           const swedish = cols[0];
-          if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          if (swedish) parsedWords.push({ swedish: swedish.trim(), english: '(unknown)', stats: defaultStats });
         }
       }
     } else {
-      // TXT: lines like 'häst - horse' or just 'häst'
       const lines = text.split(/\r?\n/).filter(Boolean);
       for (const line of lines) {
         if (line.includes(' - ')) {
           const [swedish, english] = line.split(' - ');
-          if (swedish && english) words.push({ swedish: swedish.trim(), english: english.trim(), stats: { correct: 0, incorrect: 0, lastPracticed: null } });
-          else if (swedish) words.push({ swedish: swedish.trim(), english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          if (swedish && english) parsedWords.push({ swedish: swedish.trim(), english: english.trim(), stats: defaultStats });
+          else if (swedish) parsedWords.push({ swedish: swedish.trim(), english: '(unknown)', stats: defaultStats });
         } else {
-          // Just Swedish
           const swedish = line.trim();
-          if (swedish) words.push({ swedish, english: '(unknown)', stats: { correct: 0, incorrect: 0, lastPracticed: null } });
+          if (swedish) parsedWords.push({ swedish, english: '(unknown)', stats: defaultStats });
         }
       }
     }
-    return words;
+    return parsedWords;
   }, []);
 
-  // Handle adding a new word
   const handleAddWord = (e) => {
     e.preventDefault();
     if (!newSwedish.trim() || !newEnglish.trim()) {
@@ -83,7 +74,6 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     setTimeout(() => setAddMessage(''), 1200);
   };
 
-  // Translate Swedish to English using secure API (single word)
   async function handleTranslate(idx, swedish) {
     setTranslatingIdx(idx);
     try {
@@ -96,14 +86,12 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     setTranslatingIdx(null);
   }
 
-  // Batch translate all unknowns using secure API
   async function handleTranslateAll() {
     setTranslatingAll(true);
     setImportMsg('');
-    // Gather all indices and Swedish words needing translation
     const indices = [];
     const swedishWords = [];
-    for (let i = 0; i < words.length; i++) {
+    for (let i = 0; i < words.length; i += 1) {
       if (words[i].english === '(unknown)') {
         indices.push(i);
         swedishWords.push(words[i].swedish);
@@ -111,12 +99,12 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     }
     if (swedishWords.length === 0) {
       setTranslatingAll(false);
-      setImportMsg('No unknowns to translate.');
+      setImportMsg('No unknown words to translate.');
       return;
     }
     try {
       const translations = await translateBatch(swedishWords, 'sv', 'en');
-      for (let j = 0; j < indices.length; j++) {
+      for (let j = 0; j < indices.length; j += 1) {
         onEdit(indices[j], { swedish: swedishWords[j], english: translations[j] });
       }
       setImportMsg('Batch translation complete!');
@@ -128,13 +116,12 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
     setTranslatingAll(false);
   }
 
-  // Handle file import
   function handleImportFile(e) {
     const file = e.target.files[0];
     if (!file) return;
     const ext = file.name.split('.').pop().toLowerCase();
     if (ext !== 'csv' && ext !== 'txt') {
-      setImportMsg('Please upload a .csv or .txt file.');
+      setImportMsg('Please upload a CSV or TXT file.');
       return;
     }
     const reader = new FileReader();
@@ -144,229 +131,230 @@ const WordList = React.memo(({ words, skillWords, onDelete, onEdit, onImportWord
       if (newWords.length === 0) {
         setImportMsg('No valid words found in file.');
       } else {
-        setImportMsg(`Imported ${newWords.length} words!`);
+        setImportMsg(`Imported ${newWords.length} words.`);
         if (onImportWords) onImportWords(newWords);
       }
     };
     reader.readAsText(file);
   }
 
-  // Start editing a word
   function startEdit(i) {
     setEditIdx(i);
     setEditSwedish(words[i].swedish);
     setEditEnglish(words[i].english);
   }
 
-  // Save the edited word
   function saveEdit() {
     onEdit(editIdx, { swedish: editSwedish, english: editEnglish });
     setEditIdx(null);
   }
 
-  // Cancel editing
   function cancelEdit() {
     setEditIdx(null);
   }
 
   return (
-    <div className="max-w-md mx-auto my-8 bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/30">
-      <h2 className="text-xl font-bold text-amber-600 dark:text-amber-400 flex items-center mb-4">
-        <FaBookOpen className="mr-2" />
-        <span>Saved Words</span>
-      </h2>
-      
-      {/* Add Word Section */}
-      <div className="mb-6 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border-2 border-cyan-200 dark:border-cyan-800">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-cyan-700 dark:text-cyan-400 flex items-center m-0">
-            <MdAddCircle className="mr-2" />
-            <span>Add New Word</span>
-          </h3>
-          <button 
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-          >
-            {showAddForm ? 'Cancel' : 'Add Word'}
-          </button>
-        </div>
-        
-        {showAddForm && (
-          <form onSubmit={handleAddWord} className="mt-4">
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-cyan-700 dark:text-cyan-400">Swedish</label>
-              <input 
-                value={newSwedish} 
-                onChange={e => setNewSwedish(e.target.value)} 
-                className="w-full px-3 py-2 text-sm border border-cyan-200 dark:border-cyan-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                placeholder="Enter Swedish word..."
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-cyan-700 dark:text-cyan-400">English</label>
-              <input 
-                value={newEnglish} 
-                onChange={e => setNewEnglish(e.target.value)} 
-                className="w-full px-3 py-2 text-sm border border-cyan-200 dark:border-cyan-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                placeholder="Enter English translation..."
-              />
-            </div>
-            <button 
-              type="submit" 
-              className="w-full py-3 px-4 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white font-medium rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:translate-y-0 active:shadow-sm"
-            >
-              Add Word
-            </button>
-            {addMessage && <div className="mt-3 text-center font-medium text-green-600 dark:text-green-400">{addMessage}</div>}
-          </form>
+    <div className={isDarkMode ? 'fd-theme-dark' : ''} style={{ maxWidth: '760px', margin: '2rem auto', padding: '0 1rem' }}>
+      <Card
+        title={(
+          <Text as="h2" variant="title" serif weight="medium">
+            Saved Words
+          </Text>
         )}
-      </div>
+        leading={<FaBookOpen style={{ color: 'var(--fd-accent-strong)' }} />}
+        className="mb-4"
+        style={{ borderRadius: '22px' }}
+      >
+        <Stack direction="column" gap="16px">
+          <Card
+            title="Add New Word"
+            subtitle="Create your own vocabulary entries"
+            leading={<MdAddCircle style={{ color: 'var(--fd-accent-strong)' }} />}
+            trailing={(
+              <Button variant="secondary" onClick={() => setShowAddForm(!showAddForm)}>
+                {showAddForm ? 'Close' : 'Add Word'}
+              </Button>
+            )}
+            tone="tint"
+          >
+            {showAddForm && (
+              <form onSubmit={handleAddWord}>
+                <Stack direction="column" gap="12px">
+                  <Input
+                    label="Swedish"
+                    value={newSwedish}
+                    onChange={(e) => setNewSwedish(e.target.value)}
+                    placeholder="Enter Swedish word"
+                  />
+                  <Input
+                    label="English"
+                    value={newEnglish}
+                    onChange={(e) => setNewEnglish(e.target.value)}
+                    placeholder="Enter English translation"
+                  />
+                  <Button type="submit" fullWidth>
+                    Add Word
+                  </Button>
+                  {addMessage ? (
+                    <Text as="p" variant="caption" color={addMessage.includes('Please') ? 'danger' : 'success'}>
+                      {addMessage}
+                    </Text>
+                  ) : null}
+                </Stack>
+              </form>
+            )}
+          </Card>
 
-      {/* Import file input */}
-      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-        <h3 className="text-lg font-medium text-blue-700 dark:text-blue-400 mb-3">Import Words</h3>
-        <div className="flex flex-col space-y-2">
-          <label className="flex items-center justify-center w-full px-4 py-2 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
-            <input 
-              type="file" 
-              accept=".csv,.txt" 
-              onChange={handleImportFile} 
-              className="hidden" 
-            />
-            <span className="text-blue-600 dark:text-blue-400 font-medium">Choose CSV or TXT file</span>
-          </label>
-          <div className="text-xs text-gray-500 dark:text-gray-400 ml-1">Import .csv (Swedish,English) or .txt (Swedish - English)</div>
-        </div>
-        
-        <button 
-          type="button" 
-          onClick={handleTranslateAll} 
-          disabled={translatingAll}
-          className={`mt-4 w-full py-2 px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center
-            ${translatingAll 
-              ? 'bg-blue-400 dark:bg-blue-700 cursor-not-allowed opacity-70' 
-              : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-sm'
-            }
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800`}
-        >
-          {translatingAll && <FaSpinner className="animate-spin mr-2" />}
-          Translate All Unknown
-        </button>
-        
-        {importMsg && <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">{importMsg}</div>}
-      </div>
-      {words.length === 0 ? (
-        <div className="text-gray-400 dark:text-gray-500 text-center py-6">No words yet. Add some!</div>
-      ) : (
-        <ul className="list-none p-0 space-y-3">
-          {words.map((w, i) => {
-            const isSkillWord = i < skillWords.length;
-            return (
-              <li key={i} className={`flex items-center justify-between rounded-lg p-3 border ${
-                isSkillWord 
-                  ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-                  : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
-              }`}>
-                {editIdx === i ? (
-                  <span className="flex-1 flex items-center gap-2">
-                    <input 
-                      value={editSwedish} 
-                      onChange={e=>setEditSwedish(e.target.value)} 
-                      className="w-24 px-2 py-1 text-sm border border-cyan-200 dark:border-cyan-700 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white" 
-                    />
-                    <span className="text-gray-400 dark:text-gray-500">–</span>
-                    <input 
-                      value={editEnglish} 
-                      onChange={e=>setEditEnglish(e.target.value)} 
-                      className="w-24 px-2 py-1 text-sm border border-cyan-200 dark:border-cyan-700 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:text-white" 
-                    />
-                  </span>
-                ) : (
-                  <span className="flex-1">
-                    <div className="flex items-center flex-wrap">
-                      <span className="font-bold text-cyan-600 dark:text-cyan-400">{w.swedish}</span>
-                      <button 
-                        type="button" 
-                        aria-label={`Play ${w.swedish}`} 
-                        onClick={()=>playSwedish(w.swedish)}
-                        className="bg-transparent border-none text-cyan-600 dark:text-cyan-400 cursor-pointer mx-1 p-1 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                      >
-                        <MdVolumeUp className="text-xl" />
-                      </button>
-                      <span className="text-gray-400 dark:text-gray-500 mx-1">–</span> 
-                      <span className="text-gray-700 dark:text-gray-300">{w.english}</span>
-                      {isSkillWord && (
-                        <span className="ml-2 bg-green-500 dark:bg-green-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                          Skill
-                        </span>
-                      )}
-                      {w.english === '(unknown)' && (
-                        <button 
-                          type="button" 
-                          onClick={()=>handleTranslate(i, w.swedish)} 
-                          disabled={translatingIdx===i}
-                          className={`ml-2 px-3 py-1 text-xs rounded-md font-medium text-white transition-all duration-200
-                            ${translatingIdx===i 
-                              ? 'bg-cyan-400 dark:bg-cyan-700 cursor-not-allowed' 
-                              : 'bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 hover:-translate-y-0.5 hover:shadow-sm'
-                            }
-                            focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1`}
+          <Card
+            title="Import Words"
+            subtitle="Import CSV or TXT files and auto translate unknown words"
+            leading={<MdUploadFile style={{ color: 'var(--fd-accent-strong)' }} />}
+            tone="paper"
+          >
+            <Stack direction="column" gap="12px">
+              <label htmlFor="wordlist-import-file">
+                <Surface
+                  as="span"
+                  bordered
+                  padding="md"
+                  className="fd-listRow fd-listRow-interactive"
+                  style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <Text as="span" variant="body" weight="medium" color="accent">
+                    Choose CSV or TXT file
+                  </Text>
+                </Surface>
+              </label>
+              <input
+                id="wordlist-import-file"
+                type="file"
+                accept=".csv,.txt"
+                onChange={handleImportFile}
+                style={{ display: 'none' }}
+              />
+              <Text as="p" variant="micro" color="secondary">
+                Import CSV with Swedish and English columns or TXT with Swedish and English pairs
+              </Text>
+              <Button onClick={handleTranslateAll} disabled={translatingAll}>
+                {translatingAll ? <FaSpinner className="animate-spin" aria-hidden="true" /> : null}
+                Translate Unknown Words
+              </Button>
+              {importMsg ? <Text as="p" variant="caption" color="success">{importMsg}</Text> : null}
+            </Stack>
+          </Card>
+
+          {words.length === 0 ? (
+            <Surface bordered padding="md" tone="paper" style={{ textAlign: 'center' }}>
+              <Text as="p" variant="body" color="secondary">
+                No words yet. Add some words to get started.
+              </Text>
+            </Surface>
+          ) : (
+            <Stack as="ul" direction="column" gap="10px" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {words.map((w, i) => {
+                const isSkillWord = i < skillWords.length;
+                return (
+                  <li key={`${w.swedish}-${i}`}>
+                    <ListRow
+                      interactive
+                      className={isSkillWord ? 'fd-surface-success' : 'fd-surface-warning'}
+                      leading={(
+                        <button
+                          type="button"
+                          aria-label={`Play ${w.swedish}`}
+                          onClick={() => playSwedish(w.swedish)}
+                          style={{
+                            border: '1px solid var(--fd-border-default)',
+                            background: 'var(--fd-bg-surface)',
+                            color: 'var(--fd-accent-strong)',
+                            borderRadius: '999px',
+                            width: '34px',
+                            height: '34px',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
                         >
-                          {translatingIdx===i ? <FaSpinner className="animate-spin" /> : 'Translate'}
+                          <MdVolumeUp />
                         </button>
                       )}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
-                      <span className="flex items-center"><span className="text-green-500 mr-0.5">✓</span> {w.stats?.correct || 0}</span>
-                      <span className="flex items-center"><span className="text-red-500 mr-0.5">✗</span> {w.stats?.incorrect || 0}</span>
-                      <span className="flex items-center"><span className="text-gray-400 mr-0.5">⏱</span> {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</span>
-                    </div>
-                  </span>
-                )}
-                {editIdx === i ? (
-                  <span className="flex gap-2">
-                    <button 
-                      onClick={saveEdit}
-                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-medium py-1 px-3 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                      title={editIdx === i ? null : (
+                        <Stack direction="row" align="center" gap="8px" wrap>
+                          <Text as="span" variant="body" weight="semibold">{w.swedish}</Text>
+                          <Text as="span" variant="caption" color="muted">to</Text>
+                          <Text as="span" variant="body" color="secondary">{w.english}</Text>
+                          {isSkillWord ? <Chip tone="success">Skill</Chip> : null}
+                          {w.english === '(unknown)' ? <Chip tone="warning">Unknown</Chip> : null}
+                        </Stack>
+                      )}
+                      subtitle={editIdx === i ? null : (
+                        <Stack direction="row" gap="8px" wrap align="center">
+                          <Chip tone="success">✓ {w.stats?.correct || 0}</Chip>
+                          <Chip tone="danger">✗ {w.stats?.incorrect || 0}</Chip>
+                          <Chip>⏱ {w.stats?.lastPracticed ? new Date(w.stats.lastPracticed).toLocaleDateString() : 'Never'}</Chip>
+                        </Stack>
+                      )}
+                      trailing={(
+                        <Stack direction="row" gap="8px" align="center">
+                          {editIdx === i ? (
+                            <>
+                              <Button variant="secondary" onClick={saveEdit}>Save</Button>
+                              <Button variant="ghost" onClick={cancelEdit}>Cancel</Button>
+                            </>
+                          ) : (
+                            <>
+                              {w.english === '(unknown)' ? (
+                                <Button
+                                  variant="secondary"
+                                  onClick={() => handleTranslate(i, w.swedish)}
+                                  disabled={translatingIdx === i}
+                                >
+                                  {translatingIdx === i ? <FaSpinner className="animate-spin" aria-hidden="true" /> : null}
+                                  Translate
+                                </Button>
+                              ) : null}
+                              {!isSkillWord ? (
+                                <>
+                                  <Button variant="secondary" aria-label="Edit word" onClick={() => startEdit(i)} leftIcon={<FaEdit />}>
+                                    Edit
+                                  </Button>
+                                  <Button variant="destructive" aria-label="Delete word" onClick={() => onDelete(i)} leftIcon={<FaTrash />}>
+                                    Delete
+                                  </Button>
+                                </>
+                              ) : null}
+                            </>
+                          )}
+                        </Stack>
+                      )}
                     >
-                      Save
-                    </button>
-                    <button 
-                      onClick={cancelEdit}
-                      className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white font-medium py-1 px-3 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
-                    >
-                      Cancel
-                    </button>
-                  </span>
-                ) : (
-                  <span className="flex gap-2">
-                    {!isSkillWord && (
-                      <>
-                        <button 
-                          onClick={() => startEdit(i)}
-                          className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-white p-2 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-1"
-                          aria-label="Edit word"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button 
-                          onClick={() => onDelete(i)}
-                          className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white p-2 rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
-                          aria-label="Delete word"
-                        >
-                          <FaTrash />
-                        </button>
-                      </>
-                    )}
-                  </span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                      {editIdx === i ? (
+                        <Stack direction="row" gap="8px" wrap>
+                          <Input
+                            label="Swedish"
+                            value={editSwedish}
+                            onChange={(e) => setEditSwedish(e.target.value)}
+                            className="flex-1"
+                          />
+                          <Input
+                            label="English"
+                            value={editEnglish}
+                            onChange={(e) => setEditEnglish(e.target.value)}
+                            className="flex-1"
+                          />
+                        </Stack>
+                      ) : null}
+                    </ListRow>
+                  </li>
+                );
+              })}
+            </Stack>
+          )}
+        </Stack>
+      </Card>
     </div>
   );
 });
 
-export default WordList; 
+export default WordList;

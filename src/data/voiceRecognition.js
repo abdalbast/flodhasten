@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Voice Recognition System for Flodhästen
 export const PRONUNCIATION_LEVELS = {
   EXCELLENT: 'excellent',

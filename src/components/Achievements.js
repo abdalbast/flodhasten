@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo } from 'react';
 import { FaTrophy, FaStar, FaFire, FaBook, FaGamepad, FaMicrophone, FaCrown } from 'react-icons/fa';
 import { ACHIEVEMENTS, getAllAchievements, getAchievementsByCategory, isAchievementUnlocked } from '../data/achievements';

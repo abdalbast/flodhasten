@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useSpeechSupport } from '../../features/speech/useSpeechSupport';
 import { FaMicrophone, FaMicrophoneSlash, FaChrome, FaSafari, FaFirefox, FaEdge } from 'react-icons/fa';

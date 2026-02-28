@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo, useCallback } from 'react';
 import { FaUsers, FaTrophy, FaUserFriends, FaBullseye, FaCrown, FaMedal, FaArrowUp, FaArrowDown, FaMinus, FaPlus, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { 

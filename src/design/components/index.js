@@ -1,3 +1,10 @@
 export { default as Text } from './Text';
 export { default as Button } from './Button';
 export { default as Input } from './Input';
+export { default as Surface } from './Surface';
+export { default as Stack } from './Stack';
+export { default as Divider } from './Divider';
+export { default as TopBar } from './TopBar';
+export { default as Card } from './Card';
+export { default as ListRow } from './ListRow';
+export { default as Chip } from './Chip';

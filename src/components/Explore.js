@@ -1,266 +1,238 @@
 import React from 'react';
 import SwedenMap from './SwedenMap';
+import { Stack, Surface, Text } from '../design/components';
 
 function Explore({ skills, progress, onSelectSkill, isDarkMode, currentLanguage }) {
-  // Moomin-inspired colour palette
-  const textColor = isDarkMode ? '#f5f5f5' : '#2c3e50';
-  const backgroundColor = isDarkMode ? '#2d2d2d' : '#f8f9fa';
-  const cardBackground = isDarkMode ? '#3d3d3d' : '#ffffff';
-  const borderColor = isDarkMode ? '#555555' : '#e8f4f8';
-  const titleColor = isDarkMode ? '#64b5f6' : '#3498db';
-  
-  // Moomin-inspired accent colours
-  const moominBlue = '#3498db';
-  const moominGreen = '#27ae60';
-  const moominYellow = '#f1c40f';
-  const moominOrange = '#e67e22';
-  const moominPink = '#e91e63';
+  const heroTitle =
+    currentLanguage === 'ku'
+      ? 'لەگەڵ ئەسپە ڕووبارەکە فێربە'
+      : currentLanguage === 'ku-lat'
+        ? 'Lêgel Espê Rûbarê Fêrbê'
+        : 'Learn with the River Horse';
+
+  const heroSubtitle =
+    currentLanguage === 'ku'
+      ? 'پێشکەوتنەکەت لە سوید ببینە'
+      : currentLanguage === 'ku-lat'
+        ? 'Pêşketinêket le Swêd bibîne'
+        : 'Explore your progress across Sweden';
+
+  const summaryTitle =
+    currentLanguage === 'ku'
+      ? 'کورتەی پێشکەوتنی وانەکان'
+      : currentLanguage === 'ku-lat'
+        ? 'Kurtay Pêşketinê Wane'
+        : 'Lesson Progress Summary';
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      {/* Title - Moomin-inspired */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '2.5rem',
-        padding: '2rem',
-        background: isDarkMode 
-          ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)' 
-          : 'linear-gradient(135deg, #e8f4f8 0%, #f8f9fa 50%, #e8f4f8 100%)',
-        borderRadius: '25px',
-        boxShadow: isDarkMode 
-          ? '0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)' 
-          : '0 12px 40px rgba(52, 152, 219, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
-        border: isDarkMode 
-          ? '1px solid rgba(255,255,255,0.1)' 
-          : '1px solid rgba(52, 152, 219, 0.2)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <h2 style={{ 
-          color: moominBlue, 
-          fontSize: '3rem', 
-          fontWeight: 'bold',
-          margin: '0',
-          textShadow: isDarkMode 
-            ? '0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.3)' 
-            : '0 4px 8px rgba(0,0,0,0.1), 0 0 20px rgba(52, 152, 219, 0.2)',
-          letterSpacing: '2px',
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: '"Georgia", serif'
-        }}>
-          {currentLanguage === 'ku' ? 'لەگەڵ ئەسپە ڕووبارەکە فێربە' : 
-           currentLanguage === 'ku-lat' ? 'Lêgel Espê Rûbarê Fêrbê' : 
-           'Learn with the River Horse'}
-        </h2>
-        
-        <p style={{
-          color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-          fontSize: '1.2rem',
-          margin: '0.8rem 0 0 0',
-          fontStyle: 'italic',
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: '"Georgia", serif'
-        }}>
-          {currentLanguage === 'ku' ? 'پێشکەوتنەکەت لە سوید ببینە' : 
-           currentLanguage === 'ku-lat' ? 'Pêşketinêket le Swêd bibîne' : 
-           'Explore your progress across Sweden'}
-        </p>
-        
-        {/* Moomin-inspired decorative elements */}
-        <div style={{
-          position: 'absolute',
-          top: '25px',
-          right: '35px',
-          width: '35px',
-          height: '35px',
-          background: moominYellow,
-          borderRadius: '50%',
-          animation: 'gentleGlow 3s ease-in-out infinite'
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '35px',
-          left: '45px',
-          width: '20px',
-          height: '20px',
-          background: moominGreen,
-          borderRadius: '50%',
-          animation: 'gentleGlow 4s ease-in-out infinite 1s'
-        }} />
-      </div>
+    <div style={{ textAlign: 'center', padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <Surface
+        elevation="medium"
+        bordered
+        padding="lg"
+        className="relative overflow-hidden"
+        style={{
+          marginBottom: '2rem',
+          borderRadius: '24px',
+          background: isDarkMode
+            ? 'linear-gradient(180deg, rgba(42,39,34,0.95), rgba(36,33,29,0.95))'
+            : 'linear-gradient(180deg, rgba(255,255,255,0.9), rgba(147,191,190,0.08))'
+        }}
+      >
+        <Text
+          as="h2"
+          variant="display"
+          serif
+          weight="medium"
+          align="center"
+          style={{
+            margin: 0,
+            color: isDarkMode ? '#a8ccff' : 'var(--fd-accent-strong)',
+            fontSize: 'clamp(2rem, 5vw, 3rem)'
+          }}
+        >
+          {heroTitle}
+        </Text>
 
-      {/* Map Container - Moomin-inspired */}
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        height: '70vh',
-        background: cardBackground,
-        borderRadius: '25px',
-        boxShadow: isDarkMode ? '0 12px 40px rgba(0,0,0,0.3)' : '0 12px 40px rgba(52, 152, 219, 0.15)',
-        border: `3px solid ${borderColor}`,
-        overflow: 'hidden',
-        marginBottom: '2rem'
-      }}>
-        <SwedenMap 
-          isDarkMode={isDarkMode} 
+        <Text
+          as="p"
+          variant="bodyLg"
+          serif
+          color="secondary"
+          align="center"
+          style={{ marginTop: '0.8rem', fontStyle: 'italic' }}
+        >
+          {heroSubtitle}
+        </Text>
+
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '28px',
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: '#f1c40f',
+            opacity: 0.9
+          }}
+          aria-hidden="true"
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '28px',
+            left: '36px',
+            width: '16px',
+            height: '16px',
+            borderRadius: '50%',
+            background: '#27ae60',
+            opacity: 0.85
+          }}
+          aria-hidden="true"
+        />
+      </Surface>
+
+      <Surface
+        elevation="medium"
+        bordered
+        className="overflow-hidden"
+        style={{
+          width: '100%',
+          height: '70vh',
+          minHeight: '420px',
+          borderRadius: '24px',
+          marginBottom: '2rem'
+        }}
+      >
+        <SwedenMap
+          isDarkMode={isDarkMode}
           currentLesson={null}
           skills={skills}
           progress={progress}
           onSelectSkill={onSelectSkill}
         />
-      </div>
+      </Surface>
 
-      {/* Lesson Progress Summary - Moomin-inspired */}
-      <div style={{
-        padding: '2rem',
-        background: backgroundColor,
-        borderRadius: '25px',
-        boxShadow: isDarkMode ? '0 8px 25px rgba(0,0,0,0.3)' : '0 8px 25px rgba(52, 152, 219, 0.15)',
-        border: `3px solid ${borderColor}`,
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-15px',
-          right: '-15px',
-          width: '40px',
-          height: '40px',
-          background: moominPink,
-          borderRadius: '50%',
-          animation: 'gentleGlow 2.5s ease-in-out infinite 0.5s'
-        }} />
-        
-        <h3 style={{
-          color: moominBlue,
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          margin: '0 0 1.5rem 0',
-          textAlign: 'center',
-          fontFamily: '"Georgia", serif'
-        }}>
-          {currentLanguage === 'ku' ? 'کورتەی پێشکەوتنی وانەکان' : 
-           currentLanguage === 'ku-lat' ? 'Kurtay Pêşketinê Wane' : 
-           'Lesson Progress Summary'}
-        </h3>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '1.5rem',
-          marginTop: '1.5rem'
-        }}>
+      <Surface
+        elevation="medium"
+        bordered
+        padding="lg"
+        className="relative overflow-hidden"
+        style={{ borderRadius: '24px' }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: '-10px',
+            right: '-10px',
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: '#e91e63',
+            opacity: 0.8
+          }}
+          aria-hidden="true"
+        />
+
+        <Text
+          as="h3"
+          variant="title"
+          serif
+          weight="medium"
+          align="center"
+          style={{ marginBottom: '1rem', color: 'var(--fd-accent-strong)' }}
+        >
+          {summaryTitle}
+        </Text>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1rem',
+            marginTop: '1rem'
+          }}
+        >
           {skills.map((skill, index) => {
             const progressValue = progress[skill.id] || 0;
             const isCompleted = progressValue >= 100;
             const isUnlocked = index === 0 || (progress[skills[index - 1].id] >= 100);
-            
+
             return (
-              <div key={skill.id} style={{
-                background: cardBackground,
-                padding: '1.5rem',
-                borderRadius: '20px',
-                border: `3px solid ${isCompleted ? moominGreen : isUnlocked ? moominBlue : borderColor}`,
-                textAlign: 'left',
-                transition: 'all 0.4s ease',
-                transform: 'translateY(0)',
-                boxShadow: isDarkMode ? '0 6px 20px rgba(0,0,0,0.3)' : '0 6px 20px rgba(52, 152, 219, 0.1)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-5px)';
-                e.target.style.boxShadow = isDarkMode 
-                  ? '0 10px 30px rgba(0,0,0,0.4)' 
-                  : '0 10px 30px rgba(52, 152, 219, 0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = isDarkMode 
-                  ? '0 6px 20px rgba(0,0,0,0.3)' 
-                  : '0 6px 20px rgba(52, 152, 219, 0.1)';
-              }}
+              <Surface
+                key={skill.id}
+                elevation="low"
+                bordered
+                padding="md"
+                interactive
+                style={{
+                  position: 'relative',
+                  borderRadius: '18px',
+                  textAlign: 'left',
+                  borderColor: isCompleted
+                    ? '#27ae60'
+                    : isUnlocked
+                      ? 'var(--fd-accent-strong)'
+                      : 'var(--fd-border-default)',
+                  opacity: isUnlocked ? 1 : 0.72
+                }}
               >
-                {/* Decorative element */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  left: '-8px',
-                  width: '20px',
-                  height: '20px',
-                  background: isCompleted ? moominGreen : moominOrange,
-                  borderRadius: '50%',
-                  animation: 'gentleGlow 3s ease-in-out infinite',
-                  opacity: isUnlocked ? 1 : 0.3
-                }} />
-                
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '1rem'
-                }}>
-                  <span style={{
-                    fontSize: '1.3rem',
-                    fontWeight: 'bold',
-                    color: textColor,
-                    fontFamily: '"Georgia", serif'
-                  }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    background: isCompleted ? '#27ae60' : '#ed9382',
+                    top: '8px',
+                    left: '8px',
+                    opacity: isUnlocked ? 1 : 0.35
+                  }}
+                  aria-hidden="true"
+                />
+
+                <Stack direction="row" align="center" justify="space-between" style={{ marginBottom: '0.75rem', position: 'relative' }}>
+                  <Text as="span" variant="bodyLg" serif weight="medium" style={{ paddingLeft: '14px' }}>
                     {skill.name}
-                  </span>
-                  <span style={{
-                    fontSize: '1.8rem',
-                    opacity: isUnlocked ? 1 : 0.5
-                  }}>
+                  </Text>
+                  <Text as="span" variant="section" style={{ opacity: isUnlocked ? 1 : 0.5 }}>
                     {skill.icon || '📚'}
-                  </span>
+                  </Text>
+                </Stack>
+
+                <div
+                  style={{
+                    width: '100%',
+                    height: '10px',
+                    background: 'var(--fd-border-default)',
+                    borderRadius: '999px',
+                    overflow: 'hidden',
+                    marginBottom: '0.75rem'
+                  }}
+                  aria-hidden="true"
+                >
+                  <div
+                    style={{
+                      width: `${progressValue}%`,
+                      height: '100%',
+                      borderRadius: '999px',
+                      background: isCompleted ? '#27ae60' : 'var(--fd-accent-strong)',
+                      transition: 'width var(--fd-motion-base) var(--fd-ease-standard)'
+                    }}
+                  />
                 </div>
-                
-                <div style={{
-                  width: '100%',
-                  height: '12px',
-                  background: borderColor,
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  marginBottom: '1rem'
-                }}>
-                  <div style={{
-                    width: `${progressValue}%`,
-                    height: '100%',
-                    background: isCompleted ? moominGreen : moominBlue,
-                    transition: 'width 0.4s ease',
-                    borderRadius: '8px'
-                  }} />
-                </div>
-                
-                <div style={{
-                  fontSize: '1rem',
-                  color: isDarkMode ? '#bdc3c7' : '#7f8c8d',
-                  textAlign: 'center',
-                  fontFamily: '"Georgia", serif',
-                  fontStyle: 'italic'
-                }}>
+
+                <Text as="div" variant="caption" color="secondary" align="center" serif style={{ fontStyle: 'italic' }}>
                   {isCompleted ? '✅ Completed' : `${progressValue}% Complete`}
-                </div>
-              </div>
+                </Text>
+              </Surface>
             );
           })}
         </div>
-      </div>
-      
-      {/* CSS animations */}
-      <style>
-        {`
-          @keyframes gentleGlow {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-          }
-        `}
-      </style>
+      </Surface>
     </div>
   );
 }
 
-export default Explore; 
+export default Explore;

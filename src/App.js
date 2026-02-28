@@ -6,6 +6,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import AchievementNotification from './components/AchievementNotification';
 import UserFeedback from './components/UserFeedback';
 import Footer from './components/Footer';
+import { Stack, Surface, Text } from './design/components';
+import './design/patterns/app-shell.css';
 import { getNewlyUnlockedAchievements } from './data/achievements';
 import { getDailyChallenges, checkChallengeCompletion } from './data/dailyChallenges';
 import { getLessonById } from './data/lessons';
@@ -1162,14 +1164,7 @@ function App() {
         Skip to main content
       </a>
       <div 
-        className="moomin-app-container"
-        style={{ 
-          minHeight: '100vh',
-          background: isDarkMode ? '#1a1a1a' : 'var(--background)',
-          color: isDarkMode ? '#f5f5f5' : 'var(--text-primary)',
-          fontFamily: 'var(--font-family-primary, Inter, sans-serif)',
-          transition: 'all 0.3s ease'
-        }}
+        className={`moomin-app-container fd-app-shell ${isDarkMode ? 'fd-theme-dark' : ''}`}
       >
         <style>{`
           @media (max-width: 600px) {
@@ -1192,11 +1187,13 @@ function App() {
           </Suspense>
         )}
         <Navigation currentScreen={screen} setScreen={s => { setScreen(s); setGame(null); }} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} onToggleLanguage={toggleLanguage} currentLanguage={currentLanguage} onPlayIntro={handlePlayIntro} />
-        <main id="main-content" style={{ paddingTop: '60px', minHeight: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ flex: 1 }}>
+        <main id="main-content" className="fd-app-main">
+          <Stack className="fd-app-mainStack" direction="column">
+          <div className="fd-app-mainBody">
             {content}
           </div>
           <Footer isDarkMode={isDarkMode} setScreen={setScreen} />
+          </Stack>
         </main>
         
         {/* Achievement Notification */}
@@ -1219,20 +1216,7 @@ function App() {
 
         {/* Global Loading State */}
         {isLoading && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9998,
-            backdropFilter: 'blur(5px)',
-            WebkitBackdropFilter: 'blur(5px)'
-          }}>
+          <div className="fd-app-loadingOverlay">
             <LoadingSpinner 
               message={loadingMessage} 
               isDarkMode={isDarkMode} 
@@ -1243,61 +1227,44 @@ function App() {
         
         {/* Challenge Completion Notification */}
         {showChallengeComplete && currentChallenge && (
-          <div style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            zIndex: 10000,
-            background: isDarkMode ? '#2c3e50' : '#f8f9fa',
-            border: '3px solid #27ae60',
-            borderRadius: '20px',
-            padding: '1.5rem',
-            boxShadow: '0 10px 40px rgba(39, 174, 96, 0.3)',
-            maxWidth: '400px',
-            animation: 'slideIn 0.5s ease-out'
-          }}>
-            <div style={{
-              textAlign: 'center',
-              color: isDarkMode ? '#f5f5f5' : '#2c3e50'
-            }}>
-              <div style={{
-                fontSize: '3rem',
-                marginBottom: '1rem',
-                animation: 'trophyBounce 0.6s ease-out'
-              }}>
+          <div className="fd-app-toastAnchor">
+            <Surface
+              className="fd-app-challengeToast"
+              elevation="high"
+              bordered
+              padding="lg"
+              style={{
+                borderWidth: '2px',
+                borderColor: 'var(--fd-color-success)',
+                textAlign: 'center'
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '3rem',
+                  marginBottom: '1rem',
+                  animation: 'trophyBounce 0.6s ease-out'
+                }}
+              >
                 🎯
               </div>
-              <h3 style={{
-                margin: '0 0 0.5rem 0',
-                fontSize: '1.3rem',
-                fontFamily: '"Georgia", serif',
-                color: '#27ae60'
-              }}>
+              <Text as="h3" variant="section" serif weight="medium" color="success" style={{ marginBottom: '0.5rem' }}>
                 Challenge Complete!
-              </h3>
-              <h4 style={{
-                margin: '0 0 0.5rem 0',
-                fontSize: '1.1rem',
-                fontFamily: '"Georgia", serif'
-              }}>
+              </Text>
+              <Text as="h4" variant="bodyLg" serif weight="medium" style={{ marginBottom: '0.5rem' }}>
                 {currentChallenge.title}
-              </h4>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                marginTop: '1rem',
-                fontFamily: '"Georgia", serif'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#f39c12' }}>
+              </Text>
+              <div className="fd-app-challengeRows">
+                <div className="fd-app-challengeReward" style={{ color: '#f39c12' }}>
                   <span>⭐</span>
-                  <span>+{currentChallenge.xpReward} XP</span>
+                  <Text as="span" variant="caption" serif>+{currentChallenge.xpReward} XP</Text>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#f1c40f' }}>
+                <div className="fd-app-challengeReward" style={{ color: '#f1c40f' }}>
                   <span>🪙</span>
-                  <span>+{currentChallenge.coinsReward} Coins</span>
+                  <Text as="span" variant="caption" serif>+{currentChallenge.coinsReward} Coins</Text>
                 </div>
               </div>
-            </div>
+            </Surface>
           </div>
         )}
         

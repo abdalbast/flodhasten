@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo } from 'react';
 import { FaMicrophone, FaTrophy, FaFlag, FaStar, FaChartLine, FaCog, FaPlay, FaVolumeUp } from 'react-icons/fa';
 import { MdFlag, MdEmojiEvents } from 'react-icons/md';

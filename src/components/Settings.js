@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaArrowLeft, FaDownload, FaUpload, FaTrash, FaCog, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { fetchWithRetry } from './ErrorBoundary';
+import { Button, Card, Surface, Stack, Text, TopBar } from '../design/components';
+import '../design/patterns/settings.css';
 
 const Settings = ({ isDarkMode, onBack }) => {
   const [exportData, setExportData] = useState(null);
@@ -8,11 +9,8 @@ const Settings = ({ isDarkMode, onBack }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [dataPreview, setDataPreview] = useState(null);
 
-  const textColor = isDarkMode ? '#f5f5f5' : '#2c3e50';
-  const bgColor = isDarkMode ? '#2d2d2d' : '#f8f9fa';
   const borderColor = isDarkMode ? '#555' : '#e8f4f8';
-  const accentColor = '#3498db';
-  const cardBg = isDarkMode ? '#3a3a3a' : '#ffffff';
+  const cardBg = isDarkMode ? 'var(--fd-bg-surface)' : 'var(--fd-bg-surface)';
 
   // Collect all user data
   const collectUserData = () => {
@@ -148,98 +146,59 @@ const Settings = ({ isDarkMode, onBack }) => {
   const summary = getDataSummary();
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: bgColor,
-      color: textColor,
-      padding: '1rem',
-      fontFamily: '"Georgia", serif'
-    }}>
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-        marginBottom: '2rem',
-        paddingBottom: '1rem',
-        borderBottom: `1px solid ${borderColor}`
-      }}>
-        <button
-          onClick={onBack}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: textColor,
-            fontSize: '1.2rem',
-            cursor: 'pointer',
-            padding: '0.5rem',
-            borderRadius: '5px',
-            outline: 'none'
-          }}
-          onFocus={(e) => {
-            e.target.style.outline = `2px solid ${accentColor}`;
-            e.target.style.outlineOffset = '2px';
-          }}
-          onBlur={(e) => {
-            e.target.style.outline = 'none';
-          }}
-          aria-label="Go back"
-        >
-          <FaArrowLeft />
-        </button>
-        <h1 style={{
-          margin: 0,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem'
-        }}>
-          <FaCog />
-          Settings
-        </h1>
-      </div>
+    <div className={`fd-settings-page ${isDarkMode ? 'fd-theme-dark' : ''}`}>
+      <TopBar
+        sticky={false}
+        className="mb-4"
+        leading={(
+          <Button variant="ghost" onClick={onBack} aria-label="Go back" leftIcon={<FaArrowLeft />}>
+            Back
+          </Button>
+        )}
+        title={(
+          <Stack direction="row" align="center" gap="8px">
+            <FaCog style={{ color: 'var(--fd-accent-strong)' }} />
+            <Text as="h1" variant="title" serif weight="medium">Settings</Text>
+          </Stack>
+        )}
+      />
 
       {/* Status Messages */}
       {exportData && (
-        <div style={{
-          padding: '1rem',
-          marginBottom: '1rem',
-          borderRadius: '10px',
-          backgroundColor: exportData.success ? '#d4edda' : '#f8d7da',
-          color: exportData.success ? '#155724' : '#721c24',
-          border: `1px solid ${exportData.success ? '#c3e6cb' : '#f5c6cb'}`
-        }}>
-          {exportData.success ? <FaCheck /> : <FaTimes />}
-          {exportData.message}
-        </div>
+        <Surface
+          bordered
+          padding="md"
+          tone={exportData.success ? 'success' : 'danger'}
+          style={{ marginBottom: '1rem' }}
+        >
+          <Stack direction="row" align="center" gap="8px">
+            {exportData.success ? <FaCheck /> : <FaTimes />}
+            <Text as="p" variant="caption" weight="medium">{exportData.message}</Text>
+          </Stack>
+        </Surface>
       )}
 
       {importStatus && (
-        <div style={{
-          padding: '1rem',
-          marginBottom: '1rem',
-          borderRadius: '10px',
-          backgroundColor: importStatus.error ? '#f8d7da' : 
-                         importStatus.success ? '#d4edda' : '#d1ecf1',
-          color: importStatus.error ? '#721c24' : 
-                 importStatus.success ? '#155724' : '#0c5460',
-          border: `1px solid ${importStatus.error ? '#f5c6cb' : 
-                              importStatus.success ? '#c3e6cb' : '#bee5eb'}`
-        }}>
-          {importStatus.loading ? <FaCog style={{ animation: 'spin 1s linear infinite' }} /> :
-           importStatus.error ? <FaTimes /> : <FaCheck />}
-          {importStatus.message}
-        </div>
+        <Surface
+          bordered
+          padding="md"
+          tone={importStatus.error ? 'danger' : importStatus.success ? 'success' : 'tint'}
+          style={{ marginBottom: '1rem' }}
+        >
+          <Stack direction="row" align="center" gap="8px">
+            {importStatus.loading ? <FaCog style={{ animation: 'spin 1s linear infinite' }} /> :
+             importStatus.error ? <FaTimes /> : <FaCheck />}
+            <Text as="p" variant="caption" weight="medium">{importStatus.message}</Text>
+          </Stack>
+        </Surface>
       )}
 
       {/* Data Summary */}
-      <div style={{
-        backgroundColor: cardBg,
-        padding: '1.5rem',
-        borderRadius: '15px',
-        marginBottom: '2rem',
-        border: `1px solid ${borderColor}`
-      }}>
-        <h2 style={{ margin: '0 0 1rem 0', color: accentColor }}>Your Data Summary</h2>
+      <Card
+        title="Your Data Summary"
+        className="mb-6"
+        style={{ backgroundColor: cardBg, borderColor: borderColor, marginBottom: '2rem' }}
+      >
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -258,70 +217,34 @@ const Settings = ({ isDarkMode, onBack }) => {
             <strong>Storage Used:</strong> {(summary.totalStorage / 1024).toFixed(1)} KB
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Export Section */}
-      <div style={{
-        backgroundColor: cardBg,
-        padding: '1.5rem',
-        borderRadius: '15px',
-        marginBottom: '2rem',
-        border: `1px solid ${borderColor}`
-      }}>
-        <h2 style={{ margin: '0 0 1rem 0', color: accentColor }}>Export Your Progress</h2>
-        <p style={{ margin: '0 0 1rem 0', opacity: 0.8 }}>
+      <Card
+        title="Export Your Progress"
+        className="mb-6"
+        style={{ backgroundColor: cardBg, borderColor: borderColor, marginBottom: '2rem' }}
+      >
+        <Text as="p" variant="body" color="secondary" style={{ margin: '0 0 1rem 0' }}>
           Download a backup of all your learning progress, achievements, and settings.
-        </p>
-        <button
+        </Text>
+        <Button
           onClick={handleExport}
-          style={{
-            background: accentColor,
-            color: '#fff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '0.8rem 1.5rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            fontFamily: '"Georgia", serif',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            outline: 'none'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = '#2980b9';
-            e.target.style.transform = 'scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = accentColor;
-            e.target.style.transform = 'scale(1)';
-          }}
-          onFocus={(e) => {
-            e.target.style.outline = `2px solid ${accentColor}`;
-            e.target.style.outlineOffset = '2px';
-          }}
-          onBlur={(e) => {
-            e.target.style.outline = 'none';
-          }}
+          leftIcon={<FaDownload />}
         >
-          <FaDownload />
           Export Progress
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       {/* Import Section */}
-      <div style={{
-        backgroundColor: cardBg,
-        padding: '1.5rem',
-        borderRadius: '15px',
-        marginBottom: '2rem',
-        border: `1px solid ${borderColor}`
-      }}>
-        <h2 style={{ margin: '0 0 1rem 0', color: accentColor }}>Import Progress</h2>
-        <p style={{ margin: '0 0 1rem 0', opacity: 0.8 }}>
+      <Card
+        title="Import Progress"
+        className="mb-6"
+        style={{ backgroundColor: cardBg, borderColor: borderColor, marginBottom: '2rem' }}
+      >
+        <Text as="p" variant="body" color="secondary" style={{ margin: '0 0 1rem 0' }}>
           Restore your progress from a previously exported backup file.
-        </p>
+        </Text>
         
         <input
           type="file"
@@ -335,53 +258,24 @@ const Settings = ({ isDarkMode, onBack }) => {
         
         <label
           htmlFor="import-file"
-          style={{
-            background: 'transparent',
-            color: textColor,
-            border: `2px solid ${borderColor}`,
-            borderRadius: '10px',
-            padding: '0.8rem 1.5rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            fontFamily: '"Georgia", serif',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            outline: 'none'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = isDarkMode ? '#3a3a3a' : '#e8f4f8';
-            e.target.style.transform = 'scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = 'transparent';
-            e.target.style.transform = 'scale(1)';
-          }}
-          onFocus={(e) => {
-            e.target.style.outline = `2px solid ${accentColor}`;
-            e.target.style.outlineOffset = '2px';
-          }}
-          onBlur={(e) => {
-            e.target.style.outline = 'none';
-          }}
+          className="fd-settings-fileLabel"
         >
           <FaUpload />
           Choose Backup File
         </label>
 
         {dataPreview && (
-          <div style={{
+          <Surface style={{
             marginTop: '1rem',
             padding: '1rem',
-            backgroundColor: isDarkMode ? '#2d2d2d' : '#f8f9fa',
-            borderRadius: '10px',
+            backgroundColor: 'var(--fd-bg-app)',
+            borderRadius: '12px',
             border: `1px solid ${borderColor}`
           }}>
-            <h3 style={{ margin: '0 0 0.5rem 0' }}>Backup Preview</h3>
-            <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem' }}>
+            <Text as="h3" variant="section" serif weight="medium" style={{ marginBottom: '0.5rem' }}>Backup Preview</Text>
+            <Text as="p" variant="caption" color="secondary" style={{ margin: '0 0 1rem 0' }}>
               Export date: {new Date(dataPreview.exportDate).toLocaleDateString()}
-            </p>
+            </Text>
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -392,125 +286,50 @@ const Settings = ({ isDarkMode, onBack }) => {
               <div>Lessons: {Object.keys(dataPreview.progress || {}).length}</div>
               <div>Achievements: {dataPreview.achievements?.length || 0}</div>
             </div>
-            <button
+            <Button
               onClick={applyImportedData}
-              style={{
-                background: '#27ae60',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '0.6rem 1rem',
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: '"Georgia", serif',
-                outline: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = '#229954';
-                e.target.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = '#27ae60';
-                e.target.style.transform = 'scale(1)';
-              }}
-              onFocus={(e) => {
-                e.target.style.outline = `2px solid ${accentColor}`;
-                e.target.style.outlineOffset = '2px';
-              }}
-              onBlur={(e) => {
-                e.target.style.outline = 'none';
-              }}
+              variant="secondary"
+              style={{ marginTop: '0.75rem' }}
             >
               Apply Import
-            </button>
-          </div>
+            </Button>
+          </Surface>
         )}
-      </div>
+      </Card>
 
       {/* Advanced Settings */}
-      <div style={{
-        backgroundColor: cardBg,
-        padding: '1.5rem',
-        borderRadius: '15px',
-        marginBottom: '2rem',
-        border: `1px solid ${borderColor}`
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '1rem'
-        }}>
-          <h2 style={{ margin: 0, color: accentColor }}>Advanced Settings</h2>
-          <button
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: textColor,
-              cursor: 'pointer',
-              padding: '0.5rem',
-              borderRadius: '5px',
-              outline: 'none'
-            }}
-            onFocus={(e) => {
-              e.target.style.outline = `2px solid ${accentColor}`;
-              e.target.style.outlineOffset = '2px';
-            }}
-            onBlur={(e) => {
-              e.target.style.outline = 'none';
-            }}
-            aria-label={showAdvanced ? 'Hide advanced settings' : 'Show advanced settings'}
-          >
-            {showAdvanced ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        </div>
-
+      <Card
+        title={(
+          <Stack direction="row" align="center" justify="space-between" gap="8px">
+            <Text as="h2" variant="section" serif weight="medium">Advanced Settings</Text>
+            <Button
+              variant="ghost"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              aria-label={showAdvanced ? 'Hide advanced settings' : 'Show advanced settings'}
+              leftIcon={showAdvanced ? <FaEyeSlash /> : <FaEye />}
+            >
+              {showAdvanced ? 'Hide' : 'Show'}
+            </Button>
+          </Stack>
+        )}
+        className="mb-6"
+        style={{ backgroundColor: cardBg, borderColor: borderColor, marginBottom: '2rem' }}
+      >
         {showAdvanced && (
           <div>
-            <p style={{ margin: '0 0 1rem 0', opacity: 0.8 }}>
+            <Text as="p" variant="body" color="secondary" style={{ margin: '0 0 1rem 0' }}>
               These actions are irreversible. Please be careful.
-            </p>
-            <button
+            </Text>
+            <Button
               onClick={handleClearData}
-              style={{
-                background: '#e74c3c',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '0.8rem 1.5rem',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: '"Georgia", serif',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                outline: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = '#c0392b';
-                e.target.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = '#e74c3c';
-                e.target.style.transform = 'scale(1)';
-              }}
-              onFocus={(e) => {
-                e.target.style.outline = `2px solid ${accentColor}`;
-                e.target.style.outlineOffset = '2px';
-              }}
-              onBlur={(e) => {
-                e.target.style.outline = 'none';
-              }}
+              variant="destructive"
+              leftIcon={<FaTrash />}
             >
-              <FaTrash />
               Clear All Data
-            </button>
+            </Button>
           </div>
         )}
-      </div>
+      </Card>
 
       <style>{`
         @keyframes spin {
